@@ -1,7 +1,7 @@
 import { RouteObject, createBrowserRouter } from "react-router-dom";
 import App from "../layout/App";
 import Activities from "../features/activities/Activities";
-import ActivitiesEdit from "../features/activities/ActivitiesAdd";
+import ActivitiesAdd from "../features/activities/ActivitiesAdd";
 
 export const routes: RouteObject[] = [
   {
@@ -10,7 +10,7 @@ export const routes: RouteObject[] = [
     children: [
       {},
       { path: "etkinlikler", element: <Activities /> },
-      { path: "etkinlikler/yeni-ekle", element: <ActivitiesEdit /> },
+      { path: "etkinlikler/yeni-ekle", element: <ActivitiesAdd /> },
     ],
   },
 ];

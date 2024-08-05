@@ -11,7 +11,6 @@ export const routes: RouteObject[] = [
       {},
       { path: "etkinlikler", element: <Activities /> },
       { path: "etkinlikler/yeni-ekle", element: <ActivitiesEdit /> },
-
     ],
   },
 ];

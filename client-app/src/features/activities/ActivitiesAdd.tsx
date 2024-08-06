@@ -1,12 +1,16 @@
 
 import { Button, DatePicker, Divider, Form, Input, Select, Space, Switch, TimePicker } from 'antd';
+import { router } from '../../routes/Routes';
 
 const ActivitiesAdd = () => {
   const [form] = Form.useForm();
 
   const formItemLayout ={ labelCol: { span: 8 }, wrapperCol: { span: 14 } } ;
-
   const buttonItemLayout ={ wrapperCol: { span: 14, offset: 8 } } ;
+
+  const handleSubmit = () => {
+    router.navigate('/etkinlikler')
+  }
 
   return (
     <Form
@@ -43,12 +47,12 @@ const ActivitiesAdd = () => {
         </Form.Item>
         <Form.Item label="Tarih" name="date" >
           <Space size={'large'}>
-        <DatePicker format={'DD-MM-YYYY'}/>
-        <TimePicker minuteStep={15} hourStep={1} showSecond={false} showNow={false}/>
+        <DatePicker format={'DD-MM-YYYY'} placeholder='Tarih seçiniz'/>
+        <TimePicker minuteStep={15} hourStep={1} showSecond={false} showNow={false} placeholder='Saat seçiniz'/>
         </Space>
       </Form.Item>
       <Form.Item {...buttonItemLayout}>
-        <Button type="primary" size='large'>Submit</Button>
+        <Button type="primary" size='large'  onClick={handleSubmit} >Kaydet</Button>
       </Form.Item>
     </Form>
   );

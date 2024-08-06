@@ -4,6 +4,7 @@ import { Button, Flex, message, Popconfirm, Table, TableProps, Tooltip, Typograp
 import { Activity } from "../../models/activity";
 import { Link } from "react-router-dom";
 import { DeleteOutlined, EditOutlined, PictureOutlined } from "@ant-design/icons";
+import { router } from "../../routes/Routes";
 
 
 
@@ -71,12 +72,20 @@ const Activities = () => {
     },
   ];
   return (
+    <>
+    <Flex wrap gap='large' vertical>
     <Table
       bordered
       scroll={{ x: 500 }}
       columns={columns}
       dataSource={activityStore.activities}
     />
+    <Button type="primary" size="large" onClick={() => router.navigate('/etkinlikler/yeni-ekle')}>
+      Yeni Ekle
+    </Button>
+    </Flex>
+    </>
+    
   );
 }
 

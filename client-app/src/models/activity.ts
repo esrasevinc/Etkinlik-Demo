@@ -1,5 +1,5 @@
 export interface Activity {
-    id: number;
+    id: string;
     name: string;
     categoryId: number;
     category: string;
@@ -10,3 +10,4 @@ export interface Activity {
     isDeleted?: boolean;
     isCancelled?: boolean;
 }
+

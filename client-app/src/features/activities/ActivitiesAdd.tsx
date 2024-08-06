@@ -4,12 +4,9 @@ import { Button, DatePicker, Divider, Form, Input, Select, Space, Switch, TimePi
 const ActivitiesAdd = () => {
   const [form] = Form.useForm();
 
+  const formItemLayout ={ labelCol: { span: 8 }, wrapperCol: { span: 14 } } ;
 
-
-
-  const formItemLayout ={ labelCol: { span: 4 }, wrapperCol: { span: 14 } } ;
-
-  const buttonItemLayout ={ wrapperCol: { span: 14, offset: 4 } } ;
+  const buttonItemLayout ={ wrapperCol: { span: 14, offset: 8 } } ;
 
   return (
     <Form
@@ -23,7 +20,7 @@ const ActivitiesAdd = () => {
         <Input type="hidden" />
       </Form.Item>
       <Form.Item label="Durum" name="isActive" valuePropName="checked">
-        <Switch checkedChildren="Aktif" unCheckedChildren="Pasif" />
+        <Switch checkedChildren="Aktif" unCheckedChildren="Pasif" defaultChecked />
       </Form.Item>
       <Divider orientation="left">Etkinlik Detayları</Divider>
       <Form.Item label="Başlık" name="title">
@@ -51,7 +48,7 @@ const ActivitiesAdd = () => {
         </Space>
       </Form.Item>
       <Form.Item {...buttonItemLayout}>
-        <Button type="primary">Submit</Button>
+        <Button type="primary" size='large'>Submit</Button>
       </Form.Item>
     </Form>
   );

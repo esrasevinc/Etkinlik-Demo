@@ -22,13 +22,39 @@ export default class ActivityStore {
         return this.activityRegistry.get(id);
       };
     
-      clearSelectedArticle = () => {
+      clearSelectedActivity = () => {
         this.selectedActivity = undefined;
       };
 
       get activitiesAll() {
         return Array.from(this.activityRegistry.values());
       }
+
+      get axiosParams() {
+        const params = new URLSearchParams();
+        return params;
+      }
+
+      loadActivityById = async (id: string) => {
+        let activity = this.getActivity(id);
+        if (activity) {
+            this.selectedActivity = activity;
+            return activity;
+        }
+        else {
+            this.setLoadingInitial(true);
+            try {
+                activity = await agent.Activities.details(id);
+                this.setActivity(activity);
+                runInAction(() => this.selectedActivity = activity);
+                this.setLoadingInitial(false);
+                return activity;
+            } catch (error) {
+                console.log(error);
+                this.setLoadingInitial(false);
+            }
+        }
+    }
 
 
     loadActivities = async () => {

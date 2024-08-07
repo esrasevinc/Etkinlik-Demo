@@ -6,6 +6,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { router } from "../../routes/Routes";
 import { toJS } from "mobx";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 
 const Activities = () => {
@@ -50,11 +51,11 @@ const Activities = () => {
       dataIndex: "actions",
       render: (_, record) => (
         <Flex wrap="wrap" gap="small">
-       
+          <Link to={`duzenle?activityId=${record.id}`}>
             <Tooltip title="Düzenle">
               <Button type="primary" shape="circle" icon={<EditOutlined />} />
             </Tooltip>
-       
+            </Link>
           <Popconfirm
             title="Etlikliği sil"
             description="Bu enkinliği silmek istediğinize emin misiniz?"

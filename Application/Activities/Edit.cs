@@ -14,6 +14,14 @@ namespace Application.Activities
       public Activity Activity { get; set; }
     }
 
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
+        }
+    }
+
 
     public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Command, Result<Unit>>
     {

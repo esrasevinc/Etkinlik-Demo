@@ -1,12 +1,11 @@
 
-import { Button, DatePicker, Divider, Form, Input, Select, Space, Switch, TimePicker, FormProps, message } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, Select, Space, Switch, TimePicker, FormProps } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 import { useStore } from '../../stores/store';
 import { useEffect } from 'react';
 import LoadingComponent from '../../layout/LoadingComponent';
 import { Activity } from '../../models/activity';
-import { router } from '../../routes/Routes';
 
 const ActivitiesEdit = observer(() => {
   const location = useLocation();
@@ -32,12 +31,9 @@ const ActivitiesEdit = observer(() => {
   const onFinish: FormProps<Activity>["onFinish"] = (values) => {
     if (id) {
       updateActivity(values);
-      message.success("Etkinlik başarıyla güncellendi.");
     } else {
       createActivity(values);
-      message.success("Etkinlik başarıyla oluşturuldu.");
     }
-    router.navigate('/etkinlikler')
   };
 
   if (loadingInitial) return <LoadingComponent />;
@@ -59,19 +55,19 @@ const ActivitiesEdit = observer(() => {
         <Switch checkedChildren="Aktif" unCheckedChildren="Pasif" defaultChecked />
       </Form.Item>
       <Divider orientation="left">Etkinlik Detayları</Divider>
-      <Form.Item<Activity> label="Başlık" name="name">
+      <Form.Item<Activity> label="Başlık" name="name" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
         <Input />
       </Form.Item>
-      <Form.Item<Activity> label="Açıklama" name="description">
+      <Form.Item<Activity> label="Açıklama" name="description" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
         <Input />
       </Form.Item>
-      <Form.Item label="Etkinlik Yeri" name="location">
+      <Form.Item label="Etkinlik Yeri" name="location" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
           <Select placeholder='Etkinlik yeri seçiniz'>
             <Select.Option value="BAKSM">BAKSM</Select.Option>
             <Select.Option value="FSM">FSM</Select.Option>
           </Select>
         </Form.Item>
-      <Form.Item label="Etkinlik Türü" name="category">
+      <Form.Item label="Etkinlik Türü" name="category" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
           <Select placeholder='Etkinlik türü seçiniz'>
             <Select.Option value="tiyatro">Tiyatro</Select.Option>
             <Select.Option value="konser">Konser</Select.Option>

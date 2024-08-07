@@ -85,18 +85,25 @@ export default class ActivityStore {
         this.loading = true
 
         try {
-            await agent.Activities.create(activity)
+            this.loading = true;
+            await agent.Activities.create(activity);
+
             runInAction(() => {
-                this.setActivity(activity)
-                this.selectedActivity = activity
-                this.loading = false
-            })
-        } catch (error) {
-            console.log(error)
+              this.setActivity(activity);
+              router.navigate("/etkinlikler");
+              store.notificationStore.openNotification("success", "Etkinlik başarıyla oluşturuldu!", "");
+              this.loading = false;
+            });
+          }  catch (err) {
+            if (err instanceof Array) {
+              for (const error of err) {
+                store.notificationStore.openNotification("error", error, "");
+              }
+            } else store.notificationStore.openNotification("error", "Etkinlik oluşturulamadı!", "");
             runInAction(() => {
-                this.loading = false
-            })
-        }
+              this.loading = false;
+            });
+          }
     }
 
     updateActivity = async (activity: Activity) => {
@@ -111,15 +118,19 @@ export default class ActivityStore {
                   this.selectedActivity = updatedActivity as Activity;
                 }
                 router.navigate("/etkinlikler");
-                store.notificationStore.openNotification("success", "Etkinlik başarıyla güncellendi.", "");
+                store.notificationStore.openNotification("success", "Etkinlik başarıyla güncellendi!", "");
                 this.loading = false;
               });
-        } catch (error) {
-            console.log(error)
+        } catch (err) {
+            if (err instanceof Array) {
+              for (const error of err) {
+                store.notificationStore.openNotification("error", error, "");
+              }
+            } else store.notificationStore.openNotification("error", "Etkinlik güncellenemedi!", "");
             runInAction(() => {
-                this.loading = false
-            })
-        }
+              this.loading = false;
+            });
+          }
     }
 
     deleteActivity = async (id: string) => {
@@ -128,17 +139,20 @@ export default class ActivityStore {
             await agent.Activities.delete(id);
             runInAction(() => {
                 this.activityRegistry.delete(id);
+                store.notificationStore.openNotification("success", "Etkinlik başarıyla silindi!", "");
                 this.loading = false;
             })
-        } catch (error) {
-            console.log(error);
-            runInAction(() => {
-                this.loading = false;
-            })
+        } catch (err) {
+          if (err instanceof Array) {
+            for (const error of err) {
+              store.notificationStore.openNotification("error", error, "");
+            }
+          } else store.notificationStore.openNotification("error", "Etkinlik silinemedi!", "");
+          runInAction(() => {
+            this.loading = false;
+          });
         }
-    }
-
-    
+    }   
 }
 
 

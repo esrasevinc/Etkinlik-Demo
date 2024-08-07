@@ -7,6 +7,7 @@ import { router } from "../../routes/Routes";
 import { toJS } from "mobx";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
 
 const Activities = observer(() => {
@@ -25,14 +26,21 @@ const Activities = observer(() => {
       dataIndex: "name",
       key: "name",
       render: (text) => <p>{text}</p>,
-      width: 300,
+      width: 250,
     },
     {
       title: "Etkinlik Yeri",
       dataIndex: "location",
       key: "location",
       render: (text) => <p>{text}</p>,
-      width: 300,
+      width: 200,
+    },
+    {
+      title: "Tarih ve Saat",
+      dataIndex: "date",
+      key: "date",
+      render: (text) => <p>{format(text as Date, "dd.MM.yyyy HH:mm")}</p>,
+      width: 200,
     },
     {
       title: "Durum",

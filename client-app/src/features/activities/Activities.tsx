@@ -84,7 +84,12 @@ const Activities = () => {
       dataSource={activitiesAll}
       loading={loadingInitial}
     />
-    <Button type="primary" size="large" onClick={() => router.navigate('/etkinlikler/yeni-ekle')}>
+    <Button 
+    type="primary" 
+    size="large" 
+    onClick={() => router.navigate('/etkinlikler/yeni-ekle')}
+    style={ { flexBasis : 'auto' }}
+    >
       Yeni Ekle
     </Button>
     </Flex>

@@ -4,11 +4,9 @@ import { Button, Flex, message, Popconfirm, Table, TableProps, Tooltip, Typograp
 import { Activity } from "../../models/activity";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { router } from "../../routes/Routes";
-import { toJS } from "mobx";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
-
+//import { format } from "date-fns";
 
 const Activities = observer(() => {
   const { activityStore } = useStore();
@@ -18,7 +16,6 @@ const Activities = observer(() => {
     loadActivities();
   }, [loadActivities]);
 
-  console.log(toJS(activitiesAll))
 
   const columns: TableProps<Activity>["columns"] = [
     {
@@ -39,7 +36,8 @@ const Activities = observer(() => {
       title: "Tarih ve Saat",
       dataIndex: "date",
       key: "date",
-      render: (text) => <p>{format(text as Date, "dd.MM.yyyy HH:mm")}</p>,
+      //render: (text) => <p>{format(text as Date, "dd.MM.yyyy HH:mm")}</p>,
+      render: (text) => <p>{text}</p>,
       width: 200,
     },
     {
@@ -92,22 +90,24 @@ const Activities = observer(() => {
   ];
   return (
     <>
-    <Flex wrap gap='large' vertical>
+    <Flex wrap gap='large' vertical align="end">
+    <Button 
+    type="primary" 
+    size="large" 
+    onClick={() => router.navigate('/etkinlikler/yeni-ekle')}
+    style={ { width : '25%' }}
+    >
+      Yeni Etkinlik Ekle
+    </Button>
     <Table
       bordered
       scroll={{ x: 500 }}
       columns={columns}
       dataSource={activitiesAll}
       loading={loadingInitial}
+      style={ { width : '100%' }}
     />
-    <Button 
-    type="primary" 
-    size="large" 
-    onClick={() => router.navigate('/etkinlikler/yeni-ekle')}
-    style={ { flexBasis : 'auto' }}
-    >
-      Yeni Ekle
-    </Button>
+    
     </Flex>
     </>
     

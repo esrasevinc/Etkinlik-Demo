@@ -1,11 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../models/activity";
 import agent from "../api/agent";
+import { router } from "../routes/Routes";
+import { store } from "./store";
 
 export default class ActivityStore {
-    activities: Activity[] = [];
+    activityRegistry = new Map<string, Activity>();
     selectedActivity?: Activity = undefined;
-    editMode = false;
     loading = false;
     loadingInitial = false;
 
@@ -13,13 +14,31 @@ export default class ActivityStore {
         makeAutoObservable(this);
     }
 
+    private setActivity = (activity: Activity) => {
+        this.activityRegistry.set(activity.id!, activity);
+      };
+    
+      private getActivity = (id: string) => {
+        return this.activityRegistry.get(id);
+      };
+    
+      clearSelectedArticle = () => {
+        this.selectedActivity = undefined;
+      };
+
+      get activitiesAll() {
+        return Array.from(this.activityRegistry.values());
+      }
+
+
     loadActivities = async () => {
         this.setLoadingInitial(true)
+        this.activityRegistry.clear()
 
         try {
-            const activities = await agent.Activities.list()
-                activities.forEach(activity => {
-                    this.activities.push(activity)
+            const result = await agent.Activities.list()
+                result.forEach(activity => {
+                    this.setActivity(activity)
                 })
                 this.setLoadingInitial(false)
            
@@ -34,9 +53,7 @@ export default class ActivityStore {
         this.loadingInitial = state
     }
 
-    selectActivity = (id: string) => {
-        this.selectedActivity = this.activities.find(a => a.id === id);
-    }
+    
 
     createActivity = async (activity: Activity) => {
         this.loading = true
@@ -44,7 +61,7 @@ export default class ActivityStore {
         try {
             await agent.Activities.create(activity)
             runInAction(() => {
-                this.activities.push(activity)
+                this.setActivity(activity)
                 this.selectedActivity = activity
                 this.loading = false
             })
@@ -62,10 +79,15 @@ export default class ActivityStore {
         try {
             await agent.Activities.update(activity)
             runInAction(() => {
-                this.activities = [...this.activities.filter(a => a.id != activity.id), activity]
-                this.selectedActivity = activity
-                this.loading = false
-            })
+                if (activity.id) {
+                  const updatedActivity = { ...this.getActivity(activity.id), ...activity };
+                  this.activityRegistry.set(activity.id, updatedActivity as Activity);
+                  this.selectedActivity = updatedActivity as Activity;
+                }
+                router.navigate("/etkinlikler");
+                store.notificationStore.openNotification("success", "Etkinlik başarıyla güncellendi.", "");
+                this.loading = false;
+              });
         } catch (error) {
             console.log(error)
             runInAction(() => {
@@ -79,6 +101,7 @@ export default class ActivityStore {
         try {
             await agent.Activities.delete(id);
             runInAction(() => {
+                this.activityRegistry.delete(id);
                 this.loading = false;
             })
         } catch (error) {
@@ -88,6 +111,8 @@ export default class ActivityStore {
             })
         }
     }
+
+    
 }
 
 

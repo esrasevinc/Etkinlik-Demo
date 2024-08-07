@@ -7,32 +7,33 @@ namespace Application.Activities
     public class Delete
     {
         public class Command : IRequest<Result<Unit>>
-    {
-      public Guid Id { get; set; }
-    }
+        {
+            public Guid Id { get; set; }
+        }
 
-    public class Handler : IRequestHandler<Command, Result<Unit>>
-    {
-      private readonly DataContext _context;
-      public Handler(DataContext context)
-      {
-        _context = context;
-      }
+        public class Handler : IRequestHandler<Command, Result<Unit>>
+        {
+            private readonly DataContext _context;
 
-      public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
-      {
-        var activity = await _context.Activities.FindAsync(request.Id);
+            public Handler(DataContext context)
+            {
+                _context = context;
+            }
 
-        if (activity == null) return null;
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            {
+                var activity = await _context.Activities.FindAsync(request.Id);
 
-        activity.IsDeleted = true;
+                if (activity == null) return null;
 
-        var result = await _context.SaveChangesAsync() > 0;
+                _context.Remove(activity);
 
-        if (!result) return Result<Unit>.Failure("Etkinlik silinemedi!");
+                var result = await _context.SaveChangesAsync() > 0;
 
-        return Result<Unit>.Success(Unit.Value);
-      }
-    }
+                if (!result) return Result<Unit>.Failure("Etkinlik silinirken bir hata oluştu!");
+
+                return Result<Unit>.Success(Unit.Value);
+            }
+        }
     }
 }

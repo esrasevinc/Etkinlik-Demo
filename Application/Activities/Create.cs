@@ -2,6 +2,7 @@ using Application.Core;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Activities
@@ -17,22 +18,17 @@ namespace Application.Activities
         {
             private readonly DataContext _context;
 
-
             public Handler(DataContext context)
             {
+
                 _context = context;
             }
 
-            public class CommandValidator : AbstractValidator<Command>
-            {
-                public CommandValidator()
-                {
-                    RuleFor(x => x.Activity).NotEmpty();
-                }
-            }
+        
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+
                 _context.Activities.Add(request.Activity);
 
                 var result = await _context.SaveChangesAsync() > 0;

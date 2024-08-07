@@ -2,15 +2,21 @@ import { useStore } from "../../stores/store"
 import { observer } from "mobx-react-lite";
 import { Button, Flex, message, Popconfirm, Table, TableProps, Tooltip, Typography } from "antd";
 import { Activity } from "../../models/activity";
-import { Link } from "react-router-dom";
-import { DeleteOutlined, EditOutlined, PictureOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { router } from "../../routes/Routes";
-
+import { toJS } from "mobx";
+import { useEffect } from "react";
 
 
 const Activities = () => {
   const { activityStore } = useStore();
-  const { deleteActivity } = activityStore;
+  const { activitiesAll, deleteActivity, loadingInitial, loadActivities } = activityStore;
+
+  useEffect(() => {
+    loadActivities();
+  }, [loadActivities]);
+
+  console.log(toJS(activitiesAll))
 
   const columns: TableProps<Activity>["columns"] = [
     {
@@ -44,27 +50,24 @@ const Activities = () => {
       dataIndex: "actions",
       render: (_, record) => (
         <Flex wrap="wrap" gap="small">
-          <Link to={`galeri?newsId=${record.id}`}>
-            <Tooltip title="Galeri">
-              <Button type="default" shape="circle" icon={<PictureOutlined />} />
-            </Tooltip>
-          </Link>
-          <Link to={`duzenle?newsId=${record.id}`}>
+       
             <Tooltip title="Düzenle">
               <Button type="primary" shape="circle" icon={<EditOutlined />} />
             </Tooltip>
-          </Link>
+       
           <Popconfirm
-            title="Haberi sil"
-            description="Bu haberi silmek istediğinize emin misiniz?"
+            title="Etlikliği sil"
+            description="Bu enkinliği silmek istediğinize emin misiniz?"
             onConfirm={() => {
               deleteActivity(record.id as string);
-              message.success("Haber başarıyla silindi.");
+              message.success("Etkinlik başarıyla silindi.");
             }}
             okText="Sil"
             cancelText="İptal"
           >
+            <Tooltip title="Sil">
             <Button type="primary" danger shape="circle" icon={<DeleteOutlined />} />
+            </Tooltip>
           </Popconfirm>
         </Flex>
       ),
@@ -78,7 +81,8 @@ const Activities = () => {
       bordered
       scroll={{ x: 500 }}
       columns={columns}
-      dataSource={activityStore.activities}
+      dataSource={activitiesAll}
+      loading={loadingInitial}
     />
     <Button type="primary" size="large" onClick={() => router.navigate('/etkinlikler/yeni-ekle')}>
       Yeni Ekle

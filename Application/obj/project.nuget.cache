@@ -1,14 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "UOsfA5818Ys=",
+  "dgSpecHash": "i3XrQjPH+NQ=",
   "success": true,
   "projectFilePath": "/Users/bimteknik/Etkinlik-Demo/Application/Application.csproj",
   "expectedPackageFiles": [
+    "/Users/bimteknik/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
+    "/Users/bimteknik/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/fluentvalidation/11.5.1/fluentvalidation.11.5.1.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/fluentvalidation.aspnetcore/11.3.0/fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/fluentvalidation.dependencyinjectionextensions/11.5.1/fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/mediatr/12.4.0/mediatr.12.4.0.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
+    "/Users/bimteknik/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/microsoft.data.sqlite.core/8.0.7/microsoft.data.sqlite.core.8.0.7.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/microsoft.entityframeworkcore/8.0.7/microsoft.entityframeworkcore.8.0.7.nupkg.sha512",
     "/Users/bimteknik/.nuget/packages/microsoft.entityframeworkcore.abstractions/8.0.7/microsoft.entityframeworkcore.abstractions.8.0.7.nupkg.sha512",

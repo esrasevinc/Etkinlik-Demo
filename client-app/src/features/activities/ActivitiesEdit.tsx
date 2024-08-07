@@ -31,7 +31,6 @@ const ActivitiesEdit = observer(() => {
 
   const onFinish: FormProps<Activity>["onFinish"] = (values) => {
     if (id) {
-      form.setFieldValue("id", Number(id));
       updateActivity(values);
       message.success("Etkinlik başarıyla güncellendi.");
     } else {
@@ -68,8 +67,8 @@ const ActivitiesEdit = observer(() => {
       </Form.Item>
       <Form.Item label="Etkinlik Yeri" name="location">
           <Select placeholder='Etkinlik yeri seçiniz'>
-            <Select.Option value="baksm">BAKSM</Select.Option>
-            <Select.Option value="fsm">FSM</Select.Option>
+            <Select.Option value="BAKSM">BAKSM</Select.Option>
+            <Select.Option value="FSM">FSM</Select.Option>
           </Select>
         </Form.Item>
       <Form.Item label="Etkinlik Türü" name="category">

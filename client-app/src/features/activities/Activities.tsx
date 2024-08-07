@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 
-const Activities = () => {
+const Activities = observer(() => {
   const { activityStore } = useStore();
   const { activitiesAll, deleteActivity, loadingInitial, loadActivities } = activityStore;
 
@@ -24,6 +24,13 @@ const Activities = () => {
       title: "Etkinlik İsmi",
       dataIndex: "name",
       key: "name",
+      render: (text) => <p>{text}</p>,
+      width: 300,
+    },
+    {
+      title: "Etkinlik Yeri",
+      dataIndex: "location",
+      key: "location",
       render: (text) => <p>{text}</p>,
       width: 300,
     },
@@ -97,6 +104,6 @@ const Activities = () => {
     </>
     
   );
-}
+});
 
-export default observer(Activities);
+export default Activities;

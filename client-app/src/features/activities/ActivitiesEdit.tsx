@@ -1,11 +1,15 @@
 
-import { Button, DatePicker, Divider, Form, Input, Select, Space, Switch, TimePicker, FormProps } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, Select, Switch, FormProps } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 import { useStore } from '../../stores/store';
 import { useEffect } from 'react';
 import LoadingComponent from '../../layout/LoadingComponent';
 import { Activity, ActivityFormValues } from '../../models/activity';
+import type { DatePickerProps } from 'antd';
+import tr from 'antd/es/date-picker/locale/tr_TR';
+
+
 
 const ActivitiesEdit = observer(() => {
   const location = useLocation();
@@ -38,7 +42,22 @@ const ActivitiesEdit = observer(() => {
     }
   };
 
+  const dateLocale: typeof tr = {
+    ...tr,
+    lang: {
+      ...tr.lang,
+      fieldDateFormat: 'DD-MM-YYYY',
+      fieldDateTimeFormat: 'DD-MM-YYYY HH:mm',
+      yearFormat: 'YYYY',
+      cellYearFormat: 'YYYY',
+    },
+  };
+
   if (loadingInitial) return <LoadingComponent />;
+
+  const onChange: DatePickerProps['onChange'] = (_, dateStr) => {
+    console.log('onChange:', dateStr);
+  };
 
   return (
     <Form
@@ -79,11 +98,14 @@ const ActivitiesEdit = observer(() => {
           ))}
         </Select>
         </Form.Item>
-        <Form.Item<ActivityFormValues> label="Tarih" name="date" >
-          <Space size={'large'}>
-        <DatePicker format={'DD-MM-YYYY'} placeholder='Tarih seçiniz'/>
-        <TimePicker minuteStep={15} hourStep={1} showSecond={false} showNow={false} placeholder='Saat seçiniz'/>
-        </Space>
+        <Form.Item<ActivityFormValues> label="Tarih" name={"date"} >
+          <DatePicker
+            placeholder='Tarih seçiniz'
+            showTime={{ format: "HH:mm" , showSecond: false, minuteStep:15, hourStep:1}}
+            locale={dateLocale}
+            onChange={onChange}
+            showNow={false}
+          />
       </Form.Item>
       <Form.Item>
         <Button type="primary" size='large' htmlType='submit' loading={loading}>Kaydet</Button>

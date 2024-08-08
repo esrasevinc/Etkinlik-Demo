@@ -97,7 +97,7 @@ export default class CategoryStore {
           this.selectedCategory = updatedCategory as Category;
         }
         router.navigate("/etkinlik-turleri");
-        store.notificationStore.openNotification("success", "etkinlik türü başarıyla güncellendi.", "");
+        store.notificationStore.openNotification("success", "Etkinlik türü başarıyla güncellendi.", "");
         this.loading = false;
       });
     } catch (err) {

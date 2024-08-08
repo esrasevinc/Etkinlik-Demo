@@ -67,7 +67,7 @@ const ActivitiesEdit = observer(() => {
             <Select.Option value="FSM">FSM</Select.Option>
           </Select>
         </Form.Item>
-      <Form.Item label="Etkinlik Türü" name="category" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
+      <Form.Item label="Etkinlik Türü" name="category" >
           <Select placeholder='Etkinlik türü seçiniz'>
             <Select.Option value="tiyatro">Tiyatro</Select.Option>
             <Select.Option value="konser">Konser</Select.Option>

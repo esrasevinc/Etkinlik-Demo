@@ -8,11 +8,11 @@ namespace Application.Activities
     {
         public ActivityValidator()
         {
-            RuleFor(x => x.Name).NotEmpty();
-            RuleFor(x => x.Description).NotEmpty();
+            //RuleFor(x => x.Name).NotEmpty();
+            //RuleFor(x => x.Description).NotEmpty();
             //RuleFor(x => x.Date).NotEmpty();
             //RuleFor(x => x.Category).NotEmpty();
-            RuleFor(x => x.Location).NotEmpty();
+            //RuleFor(x => x.Location).NotEmpty();
         }
     }
 }

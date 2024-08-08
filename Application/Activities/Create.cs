@@ -39,8 +39,6 @@ namespace Application.Activities
         
             public async Task<Result<ActivityDTO>> Handle(Command request, CancellationToken cancellationToken)
             {
-
-               /* Set default values for created article */
                 var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == request.Activity.CategoryId);
                 var activity = new Activity
                 {

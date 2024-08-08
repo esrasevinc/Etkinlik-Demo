@@ -60,7 +60,7 @@ const ActivitiesEdit = observer(() => {
       <Form.Item<ActivityFormValues> label="Başlık" name="name" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
         <Input />
       </Form.Item>
-      <Form.Item<ActivityFormValues> label="Açıklama" name="description" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
+      <Form.Item<ActivityFormValues> label="Açıklama" name="description">
         <Input />
       </Form.Item>
       <Form.Item label="Etkinlik Yeri" name="location" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>

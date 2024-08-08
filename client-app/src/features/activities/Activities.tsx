@@ -33,6 +33,15 @@ const Activities = observer(() => {
       width: 200,
     },
     {
+      title: "Etkinlik Türü",
+      dataIndex: "category",
+      key: "category",
+      render: (category) => {
+        return category?.title ? <p>{category.title}</p> : <p>Kategori Yok</p>;
+      },
+      width: 200,
+    },
+    {
       title: "Tarih ve Saat",
       dataIndex: "date",
       key: "date",

@@ -31,6 +31,10 @@ export const items: MenuProps["items"] = [
         getItem(<NavLink to={"/etkinlikler"}>Tümünü Listele</NavLink>, "etkinlikler", null),
         getItem(<NavLink to={"/etkinlikler/yeni-ekle"}>Yeni Ekle</NavLink>, "etkinlikler/yeni-ekle", null),
       ]),
+      getItem("Etkinlik Türleri", "etkinlik-turleri", <ReadOutlined />, [
+        getItem(<NavLink to={"/etkinlik-turleri"}>Tümünü Listele</NavLink>, "etkinlik-turleri", null),
+        getItem(<NavLink to={"/etkinlik-turleri/yeni-ekle"}>Yeni Ekle</NavLink>, "etkinlik-turleri/yeni-ekle", null),
+      ]),
     ],
     "group"
   ),

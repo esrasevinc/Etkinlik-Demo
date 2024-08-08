@@ -1,4 +1,5 @@
 using Application.Core;
+using AutoMapper;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -11,9 +12,9 @@ namespace Application.Activities
     {
 
 
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<ActivityDTO>>
         {
-            public Activity Activity { get; set; }
+            public ActivityDTO Activity { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -24,26 +25,44 @@ namespace Application.Activities
                 }
             }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<ActivityDTO>>
         {
             private readonly DataContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(DataContext context)
+            public Handler(DataContext context, IMapper mapper)
             {
+                _mapper = mapper;
                 _context = context;
             }
 
         
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<ActivityDTO>> Handle(Command request, CancellationToken cancellationToken)
             {
 
-                _context.Activities.Add(request.Activity);
-
+               /* Set default values for created article */
+                var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == request.Activity.CategoryId);
+                var activity = new Activity
+                {
+                Name = request.Activity.Name,
+                Description = request.Activity.Description,
+                Location = request.Activity.Location,
+                Date = request.Activity.Date,
+                IsActive = request.Activity.IsActive,
+                IsDeleted = false,
+                IsCancelled = false,
+                Category = category,
+                };
+        
+                var savedActivity = await _context.Activities.AddAsync(activity);
+        
                 var result = await _context.SaveChangesAsync() > 0;
+        
+                var rActivity = _mapper.Map<ActivityDTO>(savedActivity.Entity);
 
-                if (!result) return Result<Unit>.Failure("Etkinlik oluşturulurken bir hata oluştu!");
+                if (!result) return Result<ActivityDTO>.Failure("Etkinlik oluşturulamadı.");
 
-                return Result<Unit>.Success(Unit.Value);
+                return Result<ActivityDTO>.Success(rActivity);
             }
         }
     }

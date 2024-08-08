@@ -12,18 +12,18 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")] //api/activities/id
-        public async Task<ActionResult<Activity>> GetSingleActivity(Guid id) {
+        public async Task<ActionResult<ActivityDTO>> GetSingleActivity(Guid id) {
             return await Mediator.Send(new Details.Query{ Id = id });
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateActivity(Activity activity) {
+        public async Task<ActionResult> CreateActivity(ActivityDTO activity) {
             await Mediator.Send(new Create.Command{ Activity = activity});
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> EditActivity(Guid id, Activity activity) {
+        public async Task<ActionResult> EditActivity(Guid id, ActivityDTO activity) {
             activity.Id = id;
             await Mediator.Send(new Edit.Command{ Activity = activity });
             return Ok();

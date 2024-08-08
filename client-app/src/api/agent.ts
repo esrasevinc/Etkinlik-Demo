@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { Activity } from '../models/activity';
+import { Category } from '../models/category';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -29,8 +30,17 @@ const Activities = {
     delete: (id: string) => requests.del<void>(`/activities/${id}`)
 }
 
+const Categories = {
+    list: () => requests.get<Category[]>("/categories"),
+    details: (id: string) => requests.get<Category>(`/categories/${id}`),
+    create: (category: Category) => requests.post<Category>("/categories", category),
+    update: (category: Category) => requests.put<void>(`/categories/${category.id}`, category),
+    delete: (id: string) => requests.del<void>(`/categories/${id}`),
+  };
+
 const agent = {
-    Activities
+    Activities,
+    Categories
 }
 
 export default agent;

@@ -1,3 +1,4 @@
+using Application.Activities;
 using Application.Core;
 using AutoMapper;
 using Domain;
@@ -11,17 +12,16 @@ namespace Application.Activities
   {
     public class Command : IRequest<Result<Unit>>
     {
-      public Activity Activity { get; set; }
+      public ActivityDTO Activity { get; set; }
     }
 
     public class CommandValidator : AbstractValidator<Command>
     {
-        public CommandValidator()
-        {
-            RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
-        }
+      public CommandValidator()
+      {
+        RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
+      }
     }
-
 
     public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Command, Result<Unit>>
     {
@@ -30,16 +30,32 @@ namespace Application.Activities
 
       public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
+        /* Search item in database */
         var activity = await _context.Activities.FindAsync(request.Activity.Id);
-        
+
+        /* Return null and handle it if not found */
         if (activity == null) return null;
 
+        /* Update fields based on given object */
+        
         _mapper.Map(request.Activity, activity);
+        
 
+        if (request.Activity.CategoryId.HasValue)
+        {
+          var category = await _context.Categories.FindAsync(request.Activity.CategoryId);
+          activity.Category = category;
+        }
+
+
+
+        /* Save updated item to database */
         var result = await _context.SaveChangesAsync() > 0;
 
-        if (!result) return Result<Unit>.Failure("Etkinlik güncellenirken bir hata oluştu!");
+        /* Handle if can't save to database */
+        if (!result) return Result<Unit>.Failure("Makale güncellenemedi.");
 
+        /* Done! */
         return Result<Unit>.Success(Unit.Value);
       }
     }

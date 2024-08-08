@@ -4,14 +4,14 @@ using FluentValidation;
 
 namespace Application.Activities
 {
-    public class ActivityValidator : AbstractValidator<Activity>
+    public class ActivityValidator : AbstractValidator<ActivityDTO>
     {
         public ActivityValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Description).NotEmpty();
             //RuleFor(x => x.Date).NotEmpty();
-            RuleFor(x => x.Category).NotEmpty();
+            //RuleFor(x => x.Category).NotEmpty();
             RuleFor(x => x.Location).NotEmpty();
         }
     }

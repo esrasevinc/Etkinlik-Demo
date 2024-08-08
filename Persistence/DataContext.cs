@@ -10,5 +10,16 @@ namespace Persistence
         }
 
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Category>()
+            .HasMany(x => x.Activities)
+            .WithOne(x => x.Category)
+            .OnDelete(DeleteBehavior.SetNull);
+            }
     }
 }

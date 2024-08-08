@@ -1,3 +1,5 @@
+using Application.Activities;
+using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
@@ -7,14 +9,14 @@ using Persistence;
 
 namespace Application.Categories
 {
-    public class Details
+  public class Details
   {
-    public class Query : IRequest<CategoryDTO>
+    public class Query : IRequest<Result<CategoryDTO>>
     {
       public Guid Id { get; set; }
     }
 
-    public class Handler : IRequestHandler<Query, CategoryDTO>
+    public class Handler : IRequestHandler<Query, Result<CategoryDTO>>
     {
       private readonly DataContext _context;
       private readonly IMapper _mapper;
@@ -24,10 +26,11 @@ namespace Application.Categories
         _context = context;
       }
 
-      public async Task<CategoryDTO> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<Result<CategoryDTO>> Handle(Query request, CancellationToken cancellationToken)
       {
-        return await _context.Categories.ProjectTo<CategoryDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(x => x.Id == request.Id);
-        
+        var category = await _context.Categories.ProjectTo<CategoryDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(x => x.Id == request.Id);
+
+        return Result<CategoryDTO>.Success(category);
       }
     }
   }

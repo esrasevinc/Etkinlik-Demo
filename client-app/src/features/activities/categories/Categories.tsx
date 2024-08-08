@@ -5,17 +5,18 @@ import { Link } from "react-router-dom";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
+import LoadingComponent from "../../../layout/LoadingComponent";
 
 const Categories = observer(() => {
   const { categoryStore } = useStore();
-  const { categories, deleteCategory, categoriesRegistry, loadCategories } = categoryStore;
+  const { categories, deleteCategory, loadCategories, loadingInitial } = categoryStore;
 
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
 
 
-  if (categoriesRegistry.size <= 0) return <div>Etkinlik türü bulunamadı.</div>;
+  if (loadingInitial) return <LoadingComponent />;
 
   const columns: TableProps<Category>["columns"] = [
     {

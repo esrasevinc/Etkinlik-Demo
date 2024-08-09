@@ -9,6 +9,7 @@ import {  ActivityFormValues } from '../../models/activity';
 import utc  from 'dayjs/plugin/utc';
 import timezone  from 'dayjs/plugin/timezone';
 import dayjs from 'dayjs';
+import locale from 'antd/es/date-picker/locale/tr_TR';
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -99,6 +100,7 @@ const ActivitiesEdit = observer(() => {
             showTime={{ showSecond: false, minuteStep:15, hourStep:1}}
             onChange={onChange}
             showNow={false}
+            locale={locale}
           />
       
       </Form.Item> 

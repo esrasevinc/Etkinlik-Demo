@@ -28,7 +28,7 @@ const ActivitiesEdit = observer(() => {
     loadCategories();
     if (id) {
       loadActivityById(id).then((activity) => {
-        form.setFieldsValue(activity);
+        form.setFieldsValue({ ...activity, date: dayjs.utc((activity?.date)).tz('Europe/Istanbul')});
       });
       
     } else {
@@ -51,7 +51,6 @@ const ActivitiesEdit = observer(() => {
   const onChange: DatePickerProps['onChange'] = (_) => {
     console.log(dayjs.utc(_).tz('Europe/Istanbul').format('DD.MM.YYYY HH:mm'))
   };
-
  
   return (
     <Form
@@ -73,9 +72,7 @@ const ActivitiesEdit = observer(() => {
       <Form.Item<ActivityFormValues> label="Başlık" name="name" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
         <Input />
       </Form.Item>
-      <Form.Item<ActivityFormValues> label="Açıklama" name="description">
-        <Input />
-      </Form.Item>
+      
       <Form.Item label="Etkinlik Yeri" name="location" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
           <Select>
             <Select.Option value="BAKSM">
@@ -92,7 +89,10 @@ const ActivitiesEdit = observer(() => {
           ))}
         </Select>
         </Form.Item>
-       <Form.Item<ActivityFormValues> label="Tarih" name={"date"}  >
+        <Form.Item<ActivityFormValues> label="Açıklama" name="description">
+        <Input />
+      </Form.Item>
+       <Form.Item<ActivityFormValues> label="Tarih" name={"date"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]} >
           <DatePicker
             format="DD.MM.YYYY HH:mm"
             placeholder='Tarih seçiniz'

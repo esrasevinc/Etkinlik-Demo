@@ -9,7 +9,7 @@ namespace Application.Activities
         public ActivityValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
-            //RuleFor(x => x.Date).NotEmpty();
+            RuleFor(x => x.Date).NotEmpty();
             RuleFor(x => x.Location).NotEmpty();
         }
     }

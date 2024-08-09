@@ -1,12 +1,12 @@
 import { useStore } from "../../stores/store"
 import { observer } from "mobx-react-lite";
-import { Button, Flex, message, Popconfirm, Table, TableProps, Tooltip, Typography } from "antd";
+import { Button, Flex, Popconfirm, Table, TableProps, Tooltip, Typography } from "antd";
 import { Activity } from "../../models/activity";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { router } from "../../routes/Routes";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-//import { format } from "date-fns";
+import dayjs from "dayjs";
 
 const Activities = observer(() => {
   const { activityStore } = useStore();
@@ -41,14 +41,15 @@ const Activities = observer(() => {
       },
       width: 200,
     },
-    {
-      title: "Tarih ve Saat",
-      dataIndex: "date",
-      key: "date",
-      //render: (text) => <p>{format(text as Date, "dd.MM.yyyy HH:mm")}</p>,
-      render: (text) => <p>{text}</p>,
-      width: 200,
-    },
+  {
+        title: "Tarih ve Saat",
+        dataIndex: "date",
+        key: "date",
+        render: (date) => {
+         return dayjs.utc((date)).tz('Europe/Istanbul').format('DD.MM.YYYY HH:mm')
+        },
+       width: 200,
+      }, 
     {
       title: "Durum",
       dataIndex: "isActive",
@@ -83,7 +84,7 @@ const Activities = observer(() => {
             description="Bu enkinliği silmek istediğinize emin misiniz?"
             onConfirm={() => {
               deleteActivity(record.id as string);
-              message.success("Etkinlik başarıyla silindi.");
+
             }}
             okText="Sil"
             cancelText="İptal"
@@ -116,7 +117,6 @@ const Activities = observer(() => {
       loading={loadingInitial}
       style={ { width : '100%' }}
     />
-    
     </Flex>
     </>
     

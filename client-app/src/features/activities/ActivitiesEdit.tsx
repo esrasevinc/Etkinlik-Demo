@@ -1,14 +1,17 @@
 
-import { Button, DatePicker, Divider, Form, Input, Select, Switch, FormProps } from 'antd';
+import { Button, Divider, Form, Input, Select, Switch, FormProps, DatePicker, DatePickerProps } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 import { useStore } from '../../stores/store';
-import { useEffect } from 'react';
+import { useEffect} from 'react';
 import LoadingComponent from '../../layout/LoadingComponent';
-import { Activity, ActivityFormValues } from '../../models/activity';
-import type { DatePickerProps } from 'antd';
-import tr from 'antd/es/date-picker/locale/tr_TR';
+import {  ActivityFormValues } from '../../models/activity';
+import utc  from 'dayjs/plugin/utc';
+import timezone  from 'dayjs/plugin/timezone';
+import dayjs from 'dayjs';
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 
 const ActivitiesEdit = observer(() => {
@@ -19,6 +22,7 @@ const ActivitiesEdit = observer(() => {
   const { activityStore, categoryStore } = useStore();
   const { loadActivityById, loadingInitial, updateActivity, createActivity, clearSelectedActivity, loading } = activityStore;
   const { categories, loadCategories } = categoryStore;
+
   
   useEffect(() => {
     loadCategories();
@@ -34,7 +38,7 @@ const ActivitiesEdit = observer(() => {
   }, [id, loadActivityById, clearSelectedActivity, form, loadCategories]);
 
 
-  const onFinish: FormProps<Activity>["onFinish"] = (values) => {
+  const onFinish: FormProps<ActivityFormValues>["onFinish"] = (values) => {
     if (id) {
       updateActivity(values);
     } else {
@@ -42,23 +46,13 @@ const ActivitiesEdit = observer(() => {
     }
   };
 
-  const dateLocale: typeof tr = {
-    ...tr,
-    lang: {
-      ...tr.lang,
-      fieldDateFormat: 'DD-MM-YYYY',
-      fieldDateTimeFormat: 'DD-MM-YYYY HH:mm',
-      yearFormat: 'YYYY',
-      cellYearFormat: 'YYYY',
-    },
-  };
-
   if (loadingInitial) return <LoadingComponent />;
 
-  const onChange: DatePickerProps['onChange'] = (_, dateStr) => {
-    console.log('onChange:', dateStr);
+  const onChange: DatePickerProps['onChange'] = (_) => {
+    console.log(dayjs.utc(_).tz('Europe/Istanbul').format('DD.MM.YYYY HH:mm'))
   };
 
+ 
   return (
     <Form
       layout='horizontal'
@@ -89,7 +83,7 @@ const ActivitiesEdit = observer(() => {
             </Select.Option>
           </Select>
         </Form.Item>
-      <Form.Item<ActivityFormValues> label="Etkinlik Türü" name={"categoryId"} >
+      <Form.Item<ActivityFormValues> label="Etkinlik Türü" name={"categoryId"}  >
       <Select>
           {categories.map((category) => (
             <Select.Option key={category.id} value={category.id}>
@@ -98,15 +92,16 @@ const ActivitiesEdit = observer(() => {
           ))}
         </Select>
         </Form.Item>
-        <Form.Item<ActivityFormValues> label="Tarih" name={"date"} >
+       <Form.Item<ActivityFormValues> label="Tarih" name={"date"}  >
           <DatePicker
+            format="DD.MM.YYYY HH:mm"
             placeholder='Tarih seçiniz'
-            showTime={{ format: "HH:mm" , showSecond: false, minuteStep:15, hourStep:1}}
-            locale={dateLocale}
+            showTime={{ showSecond: false, minuteStep:15, hourStep:1}}
             onChange={onChange}
             showNow={false}
           />
-      </Form.Item>
+      
+      </Form.Item> 
       <Form.Item>
         <Button type="primary" size='large' htmlType='submit' loading={loading}>Kaydet</Button>
       </Form.Item>

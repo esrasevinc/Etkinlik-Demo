@@ -5,7 +5,7 @@ export interface IActivity {
     name: string;
     categoryId: string;
     category: Category;
-    date: Date | undefined;
+    date: Date | null;
     location: string;
     description: string;
     isActive?: boolean;
@@ -28,7 +28,7 @@ export class Activity implements IActivity {
     id: string | undefined;
     name: string;
     description: string;
-    date: Date | undefined;
+    date: Date | null;
     location: string;
     isActive: boolean;
     isDeleted?: boolean;
@@ -42,7 +42,7 @@ export class Activity implements IActivity {
     name: string = "";
     description: string = "";
     location: string = "";
-    date: Date | undefined = undefined;
+    date: Date | null = null;
     isActive: boolean = true;
     isDeleted: boolean = false;
     isCancelled: boolean = false;
@@ -53,6 +53,7 @@ export class Activity implements IActivity {
       if (activity) {
         this.id = activity.id;
         this.name = activity.name;
+        this.date = activity.date;
         this.description = activity.description;
         this.location = activity.location;
         this.isActive = activity.isActive;

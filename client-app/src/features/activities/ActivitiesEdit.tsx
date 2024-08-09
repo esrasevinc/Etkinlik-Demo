@@ -85,7 +85,7 @@ const ActivitiesEdit = observer(() => {
       <Select>
           {categories.map((category) => (
             <Select.Option key={category.id} value={category.id}>
-              {category.title}
+              {category.title.charAt(0).toUpperCase() + category.title.slice(1)}
             </Select.Option>
           ))}
         </Select>

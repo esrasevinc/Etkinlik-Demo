@@ -10,12 +10,14 @@ import dayjs from "dayjs";
 import locale from 'antd/es/locale/tr_TR';
 
 const Activities = observer(() => {
-  const { activityStore } = useStore();
+  const { activityStore, categoryStore } = useStore();
   const { activitiesAll, deleteActivity, loadingInitial, loadActivities  } = activityStore;
+  const { categories, loadCategories } = categoryStore;
 
   useEffect(() => {
     loadActivities();
-  }, [loadActivities]);
+    loadCategories();
+  }, [loadActivities, loadCategories]);
 
 
   const columns: TableProps<Activity>["columns"] = [
@@ -39,9 +41,13 @@ const Activities = observer(() => {
       dataIndex: "category",
       key: "category",
       render: (category) => {
-        return category?.title ? <p>{category.title}</p> : <p>Kategori Yok</p>;
+        return category?.title && <p>{category.title.charAt(0).toUpperCase() + category.title.slice(1)}</p>
       },
-      
+      filters: categories.map(cat => ({
+        text: cat.title.charAt(0).toUpperCase() + cat.title.slice(1), 
+        value: cat.id,
+      })),
+      onFilter: (value: boolean | Key, record: Activity) => record.categoryId === value,
       width: 200,
     },
   {

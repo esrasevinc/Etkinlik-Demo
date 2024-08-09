@@ -1,16 +1,17 @@
 import { useStore } from "../../stores/store"
 import { observer } from "mobx-react-lite";
-import { Button, Flex, Popconfirm, Table, TableProps, Tooltip, Typography } from "antd";
+import { Button, ConfigProvider, Flex, Popconfirm, Table, TableProps, Tooltip, Typography } from "antd";
 import { Activity } from "../../models/activity";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { router } from "../../routes/Routes";
-import { useEffect } from "react";
+import { Key, useEffect } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import locale from 'antd/es/locale/tr_TR';
 
 const Activities = observer(() => {
   const { activityStore } = useStore();
-  const { activitiesAll, deleteActivity, loadingInitial, loadActivities } = activityStore;
+  const { activitiesAll, deleteActivity, loadingInitial, loadActivities  } = activityStore;
 
   useEffect(() => {
     loadActivities();
@@ -23,6 +24,7 @@ const Activities = observer(() => {
       dataIndex: "name",
       key: "name",
       render: (text) => <p>{text}</p>,
+      sorter: (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name),
       width: 250,
     },
     {
@@ -39,6 +41,7 @@ const Activities = observer(() => {
       render: (category) => {
         return category?.title ? <p>{category.title}</p> : <p>Kategori Yok</p>;
       },
+      
       width: 200,
     },
   {
@@ -48,7 +51,12 @@ const Activities = observer(() => {
         render: (date) => {
          return dayjs.utc((date)).tz('Europe/Istanbul').format('DD.MM.YYYY HH:mm')
         },
-       width: 200,
+        sorter: (a: Activity, b: Activity) => {
+          const dateA = dayjs.utc(a.date).tz('Europe/Istanbul');
+          const dateB = dayjs.utc(b.date).tz('Europe/Istanbul');
+          return dateA.isBefore(dateB) ? -1 : dateA.isAfter(dateB) ? 1 : 0;
+        },
+        width: 200,
       }, 
     {
       title: "Durum",
@@ -67,6 +75,12 @@ const Activities = observer(() => {
           )}
         </>
       ),
+      filters: [
+        { text: 'Aktif', value: true },
+        { text: 'Pasif', value: false },
+      ],
+      onFilter: (value: boolean | Key, record: Activity) => record.isActive === value,
+      
       width: 100,
     },
     {
@@ -109,6 +123,7 @@ const Activities = observer(() => {
     >
       Yeni Etkinlik Ekle
     </Button>
+    <ConfigProvider locale={locale}>
     <Table
       bordered
       scroll={{ x: 500 }}
@@ -117,6 +132,7 @@ const Activities = observer(() => {
       loading={loadingInitial}
       style={ { width : '100%' }}
     />
+    </ConfigProvider>
     </Flex>
     </>
     

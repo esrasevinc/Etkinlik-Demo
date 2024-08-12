@@ -57,8 +57,7 @@ body {
 .login-left {
   flex-grow: 1;
   height: 100vh;
-  background-color: #db0b32;
-
+  background-color: #001529;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -153,14 +152,14 @@ form button[type="submit"]#login-button {
 }
 
 .login-center-buttons button:nth-child(1) {
-  background-color: #db0b32;
+  background-color: #00437e;
   color: white;
-  border: 3px solid #db0b32;
+  border: 3px solid #00437e;
 }
 
 .login-center-buttons button:nth-child(1):hover {
   color: white;
-  background-color: #600114;
+  background-color: #001529;
 }
 
 .login-center-buttons button:nth-child(2) {

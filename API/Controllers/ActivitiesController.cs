@@ -7,13 +7,14 @@ namespace API.Controllers
 {
     public class ActivitiesController : BaseApiController
     {
+        [Authorize]
         [HttpGet] //api/activities
         public async Task<IActionResult> GetActivities() {
             return HandleResult(await Mediator.Send(new List.Query()));
         }
 
+        [Authorize]
         [HttpGet("{id}")] //api/activities/id
-        
         public async Task<IActionResult> GetSingleActivity(Guid id) {
             return HandleResult(await Mediator.Send(new Details.Query{ Id = id }));
         }

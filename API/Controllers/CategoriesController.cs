@@ -8,11 +8,14 @@ namespace API.Controllers
     public class CategoriesController : BaseApiController
     {
         [HttpGet] //api/categories
+        [Authorize]
         public async Task<IActionResult> GetCategories() {
              return HandleResult(await Mediator.Send(new List.Query {}));
         }
 
+
         [HttpGet("{id}")] //api/categories/id
+        [Authorize]
         public async Task<IActionResult> GetSingleCategory(Guid id) {
             return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
         }

@@ -18,7 +18,7 @@ const SiderContent = ({ collapseHandler }: Props) => {
     <SimpleBar style={{ height: "100%" }}>
       <div className="sider">
         <div className="sider-logo">
-          <img src="/assets/logo-light.png" alt="Beylikdüzü Belediyesi Logo" />
+          <img src="/assets/bb-logo.png" alt="Beylikdüzü Belediyesi Logo" width="250px"/>
           <Avatar
             className="avatar"
             size={80}

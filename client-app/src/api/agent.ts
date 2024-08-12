@@ -5,6 +5,7 @@ import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 import { router } from '../routes/Routes';
 import { message } from 'antd';
+import { Place } from '../models/place';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -87,16 +88,26 @@ const Categories = {
     delete: (id: string) => requests.del<void>(`/categories/${id}`),
 }
 
+const Places = {
+  list: () => requests.get<Place[]>("/places"),
+  details: (id: string) => requests.get<Category>(`/places/${id}`),
+  create: (place: Place) => requests.post<Category>("/places", place),
+  update: (place: Place) => requests.put<void>(`/places/${place.id}`, place),
+  delete: (id: string) => requests.del<void>(`/places/${id}`),
+}
+
 const Account = {
     current: () => requests.get<User>("/account"),
     login: (user: UserFormValues) => requests.post<User>("/account/login", user),
     refreshToken: () => requests.post<User>("/account/refreshToken", {}),
+    register: (user: UserFormValues) => requests.post<User>('/account/register', user)
   };
 
 const agent = {
     Activities,
     Categories,
-    Account
+    Places,
+    Account,
 }
 
 export default agent;

@@ -5,7 +5,6 @@ export interface User {
     role: string;
     displayName: string;
     userName: string;
-    image?: string;
   }
   
   export interface UserFormValues {

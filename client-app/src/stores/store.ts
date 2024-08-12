@@ -4,6 +4,7 @@ import ActivityStore from "./activityStore";
 import CategoriesStore from "./categoryStore";
 import UserStore from "./userStore";
 import CommonStore from "./commonStore";
+import PlaceStore from "./placeStore";
 
 
 interface Store {
@@ -11,6 +12,7 @@ interface Store {
   activityStore: ActivityStore;
   categoryStore: CategoriesStore;
   userStore: UserStore;
+  placeStore: PlaceStore;
   commonStore: CommonStore;
 }
 
@@ -19,6 +21,7 @@ export const store: Store = {
   activityStore: new ActivityStore(),
   categoryStore: new CategoriesStore(),
   userStore: new UserStore(),
+  placeStore: new PlaceStore(),
   commonStore: new CommonStore(),
 };
 

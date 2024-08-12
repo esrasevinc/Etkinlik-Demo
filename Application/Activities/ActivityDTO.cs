@@ -1,3 +1,5 @@
+using Domain;
+
 namespace Application.Activities
 {
     public class ActivityDTO
@@ -11,6 +13,8 @@ namespace Application.Activities
         public bool IsDeleted { get; set; }
         public bool IsCancelled { get; set; }
         public Guid? CategoryId { get; set; }
+        public Guid? PlaceId { get; set; }
         public CategoryDTO Category { get; set; }
+        public PlaceDTO Place{ get; set; }
     }
 }

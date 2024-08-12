@@ -10,7 +10,7 @@ namespace API.DTOs
     public string Email { get; set; }
 
     [Required]
-    [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$", ErrorMessage = "Şifre karmaşık olmalı.")]
+    //[RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$", ErrorMessage = "Şifre karmaşık olmalı.")]
     public string Password { get; set; }
 
     [Required]

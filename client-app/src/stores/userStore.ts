@@ -30,6 +30,18 @@ export default class UserStore {
     router.navigate("/giris");
   };
 
+
+register = async (creds: UserFormValues) => {
+  try {
+    const user = await agent.Account.register(creds);
+    store.commonStore.setToken(user.token);
+    runInAction(() => this.user = user);
+    router.navigate('/activities');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
   getUser = async () => {
     try {
       const user = await agent.Account.current();

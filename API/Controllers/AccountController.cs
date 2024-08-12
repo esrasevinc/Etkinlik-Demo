@@ -15,36 +15,31 @@ namespace API.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly TokenService _tokenService;
-        public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
+        private readonly SignInManager<AppUser> _signInManager;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService)
         {
-            _userManager = userManager;
+            _signInManager = signInManager;
             _tokenService = tokenService;
-
+            _userManager = userManager;
         }
-        
 
+   
         [HttpPost("login")]
-        public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO){
-            
-            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+        public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDto)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email);
 
             if (user == null) return Unauthorized();
 
-            var result = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (result) {
-                return new UserDTO
-                {
-                    DisplayName = user.DisplayName,
-                    Image = null,
-                    Token = _tokenService.CreateToken(user),
-                    Username = user.UserName,
-                };
-            }
-
-            return Unauthorized();
+            if (!result.Succeeded) return Unauthorized();
+           
+            return CreateUserObject(user);
+            
         }
 
+     
         [HttpPost("register")]
         public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDto)
         {
@@ -71,13 +66,7 @@ namespace API.Controllers
 
             if (result.Succeeded)
             {
-                return new UserDTO
-                {
-                    DisplayName = user.DisplayName,
-                    Image = null,
-                    Token = _tokenService.CreateToken(user),
-                    Username = user.UserName,
-                };
+                return CreateUserObject(user);
             }
 
             return BadRequest(result.Errors);
@@ -87,14 +76,19 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<UserDTO>> GetCurrentUser()
         {
-            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
+                
+            return CreateUserObject(user);
+        }
 
+        private UserDTO CreateUserObject(AppUser user)
+        {
             return new UserDTO
             {
                 DisplayName = user.DisplayName,
-                Image = null,
                 Token = _tokenService.CreateToken(user),
-                Username = user.UserName,
+                Username = user.UserName
             };
         }
     }

@@ -1,8 +1,9 @@
 import { Avatar, Button, Menu, Typography } from "antd";
-import { items } from "./MenuItems";
+import { useStore } from "../stores/store";
 import { LogoutOutlined } from "@ant-design/icons";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
+import { items } from "./MenuItems";
 
 const { Title } = Typography;
 
@@ -11,12 +12,13 @@ type Props = {
 };
 
 const SiderContent = ({ collapseHandler }: Props) => {
-
+  const { userStore } = useStore();
+  const { user } = userStore;
   return (
     <SimpleBar style={{ height: "100%" }}>
       <div className="sider">
         <div className="sider-logo">
-          <img src="/assets/bb-logo.png" alt="Beylikdüzü Belediyesi Logo" width={250}/>
+          <img src="/assets/logo-light.png" alt="Beylikdüzü Belediyesi Logo" />
           <Avatar
             className="avatar"
             size={80}
@@ -24,14 +26,15 @@ const SiderContent = ({ collapseHandler }: Props) => {
           />
         </div>
         <Title className="title" level={5}>
-          Esra SEVİNÇ
+          {user?.email}
         </Title>
         <Menu items={items} theme="dark" mode="inline" onClick={() => collapseHandler()} />
         <Button
           icon={<LogoutOutlined />}
           type="link"
           danger
-          style={{  display: "flex", marginLeft: "13px", alignItems: "center" }}
+          onClick={() => userStore.logout()}
+          style={{ display: "flex", marginLeft: "13px", alignItems: "center" }}
         >
           Çıkış Yap
         </Button>

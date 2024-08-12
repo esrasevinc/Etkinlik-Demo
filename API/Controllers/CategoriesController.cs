@@ -1,5 +1,6 @@
 using Application.Categories;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -17,17 +18,20 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateCategory(Category category) {
             return HandleResult(await Mediator.Send(new Create.Command { Category = category }));
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> EditCategory(Guid id, Category category) {
             category.Id = id;
             return HandleResult(await Mediator.Send(new Edit.Command { Category = category }));
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteCategory(Guid id) {
             return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
         }

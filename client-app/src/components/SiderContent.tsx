@@ -1,5 +1,6 @@
-import { Avatar, Menu, Typography } from "antd";
+import { Avatar, Button, Menu, Typography } from "antd";
 import { items } from "./MenuItems";
+import { LogoutOutlined } from "@ant-design/icons";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
@@ -26,15 +27,14 @@ const SiderContent = ({ collapseHandler }: Props) => {
           Esra SEVİNÇ
         </Title>
         <Menu items={items} theme="dark" mode="inline" onClick={() => collapseHandler()} />
-        {/* <Button
+        <Button
           icon={<LogoutOutlined />}
           type="link"
           danger
-          
-          style={{ width: "100%", display: "flex", marginLeft: "13px", alignItems: "center" }}
+          style={{  display: "flex", marginLeft: "13px", alignItems: "center" }}
         >
           Çıkış Yap
-        </Button> */}
+        </Button>
       </div>
     </SimpleBar>
   );

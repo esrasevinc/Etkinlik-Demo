@@ -1,8 +1,15 @@
+using System.Text;
+using API.Services;
 using Application.Activities;
 using Application.Core;
+using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +39,27 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Create>();
 
+builder.Services.AddIdentityCore<AppUser>(opt => {
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.User.RequireUniqueEmail = true;
+  }
+).AddEntityFrameworkStores<DataContext>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(opt =>
+        {
+          opt.TokenValidationParameters = new TokenValidationParameters
+          {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super key")),
+            ValidateIssuer = false,
+            ValidateAudience = false
+          };
+        });
+
+builder.Services.AddScoped<TokenService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,6 +73,8 @@ app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
@@ -55,6 +85,7 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
 } 
 catch (Exception ex)

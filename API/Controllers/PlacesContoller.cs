@@ -8,33 +8,33 @@ namespace API.Controllers
     public class PlacesController : BaseApiController
     {
         [HttpGet] //api/places
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetPlaces() {
              return HandleResult(await Mediator.Send(new List.Query {}));
         }
 
 
         [HttpGet("{id}")] //api/places/id
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetSinglePlace(Guid id) {
             return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
         }
 
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> CreatePlace(Place place) {
             return HandleResult(await Mediator.Send(new Create.Command { Place = place }));
         }
 
         [HttpPut("{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> EditPlace(Guid id, Place place) {
             place.Id = id;
             return HandleResult(await Mediator.Send(new Edit.Command { Place = place }));
         }
 
         [HttpDelete("{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> DeletePlace(Guid id) {
             return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
         }

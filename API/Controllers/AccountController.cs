@@ -76,8 +76,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<UserDTO>> GetCurrentUser()
         {
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
+            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
                 
             return CreateUserObject(user);
         }

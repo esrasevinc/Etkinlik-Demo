@@ -136,7 +136,7 @@ const Activities = observer(() => {
     onClick={() => router.navigate('/etkinlikler/yeni-ekle')}
     style={ { width : '25%' }}
     >
-      Yeni Etkinlik Ekle
+      Yeni Ekle
     </Button>
     <ConfigProvider locale={locale}>
     <Table

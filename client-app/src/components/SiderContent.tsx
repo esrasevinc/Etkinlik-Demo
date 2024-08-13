@@ -14,6 +14,7 @@ type Props = {
 const SiderContent = ({ collapseHandler }: Props) => {
   const { userStore } = useStore();
   const { user } = userStore;
+
   return (
     <SimpleBar style={{ height: "100%" }}>
       <div className="sider">
@@ -26,7 +27,7 @@ const SiderContent = ({ collapseHandler }: Props) => {
           />
         </div>
         <Title className="title" level={5}>
-          {user?.email}
+          {user?.displayName}
         </Title>
         <Menu items={items} theme="dark" mode="inline" onClick={() => collapseHandler()} />
         <Button

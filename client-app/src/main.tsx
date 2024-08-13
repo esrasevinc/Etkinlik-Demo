@@ -1,10 +1,12 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
-import { router } from './routes/Routes.tsx'
+import ReactDOM from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
+import "antd/dist/reset.css";
+import { store, StoreContext } from "./stores/store";
+import { router } from "./routes/Routes";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-     <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <StoreContext.Provider value={store}>
+    <RouterProvider router={router} />
+  </StoreContext.Provider>
+);

@@ -47,7 +47,11 @@ namespace Application.Activities
           activity.Category = category;
         }
 
-
+        if (request.Activity.PlaceId.HasValue)
+        {
+          var place = await _context.Places.FindAsync(request.Activity.PlaceId);
+          activity.Place = place;
+        }
 
         /* Save updated item to database */
         var result = await _context.SaveChangesAsync() > 0;

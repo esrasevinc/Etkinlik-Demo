@@ -39,11 +39,11 @@ const Login = observer(() => {
             <h2>Beylikdüzü Belediyesi Kültür İşleri Müdürlüğü</h2>
             <p>Etkinlik Yönetim Sistemi</p>
             <Form
+              autoComplete="on"
               name="basic"
               initialValues={{ remember: true }}
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
-              autoComplete="off"
               onValuesChange={() => setError("")}
             >
               <Form.Item<UserFormValues>

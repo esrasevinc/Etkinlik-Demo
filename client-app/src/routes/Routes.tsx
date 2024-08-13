@@ -1,14 +1,16 @@
 import { Navigate, RouteObject, createBrowserRouter } from "react-router-dom";
 import App from "../layout/App";
 import Login from "../features/login/Login";
+import RequireAuth from "./RequireAuth";
 import NotFound from "../layout/NotFound";
 import MainContent from "../layout/MainContent";
 import Activities from "../features/activities/Activities";
 import ActivitiesEdit from "../features/activities/ActivitiesEdit";
 import Categories from "../features/activities/categories/Categories";
 import CategoriesEdit from "../features/activities/categories/CategoriesEdit";
-import PlacesEdit from "../features/activities/places/PlacesEdit";
 import Places from "../features/activities/places/Places";
+import PlacesEdit from "../features/activities/places/PlacesEdit";
+
 
 export const routes: RouteObject[] = [
   {
@@ -16,6 +18,9 @@ export const routes: RouteObject[] = [
     element: <App />,
     children: [
       {
+        element: <RequireAuth />,
+        children: [
+          {
             path: "",
             element: <MainContent />,
             children: [
@@ -23,19 +28,15 @@ export const routes: RouteObject[] = [
               { path: "etkinlikler", element: <Activities /> },
               { path: "etkinlikler/duzenle", element: <ActivitiesEdit /> },
               { path: "etkinlikler/yeni-ekle", element: <ActivitiesEdit /> },
-              {
-                path: "etkinlik-turleri",
-                element: <Categories />,
-              },
+              { path: "etkinlik-turleri", element: <Categories /> },
               { path: "etkinlik-turleri/duzenle", element: <CategoriesEdit /> },
               { path: "etkinlik-turleri/yeni-ekle", element: <CategoriesEdit /> },
-              {
-                path: "etkinlik-yerleri",
-                element: <Places />,
-              },
+              { path: "etkinlik-yerleri", element: <Places /> },
               { path: "etkinlik-yerleri/duzenle", element: <PlacesEdit /> },
               { path: "etkinlik-yerleri/yeni-ekle", element: <PlacesEdit /> },
             ],
+          },
+        ],
       },
       { path: "not-found", element: <NotFound /> },
       { path: "/giris", element: <Login /> },

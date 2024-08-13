@@ -40,16 +40,17 @@ namespace Application.Activities
             public async Task<Result<ActivityDTO>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == request.Activity.CategoryId);
+                var place = await _context.Places.FirstOrDefaultAsync(x => x.Id == request.Activity.PlaceId);
                 var activity = new Activity
                 {
                 Name = request.Activity.Name,
                 Description = request.Activity.Description,
-                Location = request.Activity.Location,
                 Date = request.Activity.Date,
                 IsActive = request.Activity.IsActive,
                 IsDeleted = false,
                 IsCancelled = false,
                 Category = category,
+                Place= place,
                 };
         
                 var savedActivity = await _context.Activities.AddAsync(activity);

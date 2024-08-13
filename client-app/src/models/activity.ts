@@ -1,12 +1,14 @@
 import { Category } from "./category";
+import { Place } from "./place";
 
 export interface IActivity {
     id: string | undefined;
     name: string;
     categoryId: string;
     category: Category;
+    placeId: string;
+    place: Place;
     date: Date | null;
-    location: string;
     description: string;
     isActive?: boolean;
     isDeleted?: boolean;
@@ -19,17 +21,19 @@ export class Activity implements IActivity {
       this.name = init.name;
       this.description = init.description;
       this.date = init.date;
-      this.location = init.location;
       this.isActive = init.isActive;
       this.isDeleted = init.isDeleted;
       this.categoryId = init.categoryId;
       this.category = init.category;
+      this.placeId = init.placeId;
+      this.place = init.place;
     }
     id: string | undefined;
     name: string;
     description: string;
     date: Date | null;
-    location: string;
+    placeId: string;
+    place: Place = { id: "", title: "" };
     isActive: boolean;
     isDeleted?: boolean;
     isCancelled?: boolean;
@@ -41,7 +45,8 @@ export class Activity implements IActivity {
     id: string | undefined = undefined;
     name: string = "";
     description: string = "";
-    location: string = "";
+    placeId: string = "";
+    place: Place = { id: "", title: "" };
     date: Date | null = null;
     isActive: boolean = true;
     isDeleted: boolean = false;
@@ -55,7 +60,8 @@ export class Activity implements IActivity {
         this.name = activity.name;
         this.date = activity.date;
         this.description = activity.description;
-        this.location = activity.location;
+        this.placeId = activity.placeId;
+        this.place = activity.place;
         this.isActive = activity.isActive;
         this.isDeleted = activity.isDeleted;
         this.isCancelled = activity.isCancelled;

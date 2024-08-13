@@ -1,12 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { store } from "./store";
-import { Category } from "../models/category";
 import { router } from "../routes/Routes";
 import { Place } from "../models/place";
 
 export default class PlaceStore {
-  placesRegistry = new Map<string, Category>();
+  placesRegistry = new Map<string, Place>();
   selectedPlace: Place | undefined = undefined;
   loading = false;
   loadingInitial = false;

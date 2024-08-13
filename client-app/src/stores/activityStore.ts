@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { Activity } from "../models/activity";
+import { Activity, ActivityFormValues } from "../models/activity";
 import agent from "../api/agent";
 import { router } from "../routes/Routes";
 import { store } from "./store";
@@ -81,7 +81,7 @@ export default class ActivityStore {
 
     
 
-    createActivity = async (activity: Activity) => {
+    createActivity = async (activity: ActivityFormValues) => {
         this.loading = true
 
         try {
@@ -106,7 +106,7 @@ export default class ActivityStore {
           }
     }
 
-    updateActivity = async (activity: Activity) => {
+    updateActivity = async (activity: ActivityFormValues) => {
         this.loading = true
 
         try {

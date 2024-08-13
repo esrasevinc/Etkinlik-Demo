@@ -21,7 +21,7 @@ namespace API.Controllers
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateActivity(ActivityDTO activity) {
-            return HandleResult(await Mediator.Send(new Create.Command{ Activity = activity}));
+            return HandleResult(await Mediator.Send(new Create.Command{ Activity = activity }));
         }
 
         [HttpPut("{id}")]

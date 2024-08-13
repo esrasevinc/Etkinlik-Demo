@@ -20,13 +20,16 @@ const ActivitiesEdit = observer(() => {
   const params = new URLSearchParams(location.search);
   const id = params.get("activityId");
   const [form] = Form.useForm();
-  const { activityStore, categoryStore } = useStore();
+  const { activityStore, categoryStore, placeStore } = useStore();
   const { loadActivityById, loadingInitial, updateActivity, createActivity, clearSelectedActivity, loading } = activityStore;
   const { categories, loadCategories } = categoryStore;
+  const { places, loadPlaces } = placeStore;
+
 
   
   useEffect(() => {
     loadCategories();
+    loadPlaces();
     if (id) {
       loadActivityById(id).then((activity) => {
         form.setFieldsValue({ ...activity, date: dayjs.utc((activity?.date)).tz('Europe/Istanbul')});
@@ -36,7 +39,7 @@ const ActivitiesEdit = observer(() => {
       form.setFieldsValue({ isActive: true });
     }
     return () => clearSelectedActivity();
-  }, [id, loadActivityById, clearSelectedActivity, form, loadCategories]);
+  }, [id, loadActivityById, clearSelectedActivity, form, loadCategories, loadPlaces]);
 
 
   const onFinish: FormProps<ActivityFormValues>["onFinish"] = (values) => {
@@ -74,14 +77,16 @@ const ActivitiesEdit = observer(() => {
         <Input />
       </Form.Item>
       
-      <Form.Item label="Etkinlik Yeri" name="location" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
-          <Select>
-            <Select.Option value="BAKSM">
-              BAKSM
+      <Form.Item<ActivityFormValues> label="Etkinlik Yeri" name={"placeId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
+      <Select>
+          {places.map((pl) => (
+            <Select.Option key={pl.id} value={pl.id}>
+              {pl.title.charAt(0).toUpperCase() + pl.title.slice(1)}
             </Select.Option>
-          </Select>
+          ))}
+        </Select>
         </Form.Item>
-      <Form.Item<ActivityFormValues> label="Etkinlik Türü" name={"categoryId"}  >
+      <Form.Item<ActivityFormValues> label="Etkinlik Türü" name={"categoryId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]} >
       <Select>
           {categories.map((category) => (
             <Select.Option key={category.id} value={category.id}>

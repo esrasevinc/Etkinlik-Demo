@@ -24,7 +24,7 @@ namespace Application.Activities
 
             public async Task<Result<List<ActivityDTO>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activities = await _context.Activities.Where(x => !x.IsDeleted).Include(a => a.Category).OrderByDescending(d => d.Date).ProjectTo<ActivityDTO>(_mapper.ConfigurationProvider).ToListAsync();
+                var activities = await _context.Activities.Where(x => !x.IsDeleted).Include(a => a.Category).Include(x => x.Place).OrderByDescending(d => d.Date).ProjectTo<ActivityDTO>(_mapper.ConfigurationProvider).ToListAsync();
                 return Result<List<ActivityDTO>>.Success(activities);
             }
         }

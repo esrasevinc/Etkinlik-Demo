@@ -10,7 +10,8 @@ namespace Application.Activities
         {
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Date).NotEmpty();
-            RuleFor(x => x.Location).NotEmpty();
+            //RuleFor(x => x.PlaceId).NotEmpty();
+            //RuleFor(x => x.CategoryId).NotEmpty();
         }
     }
 }

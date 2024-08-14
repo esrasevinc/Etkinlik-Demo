@@ -20,7 +20,7 @@ const Places = observer(() => {
 
   const columns: TableProps<Place>["columns"] = [
     {
-      title: "Etlinlik Yeri",
+      title: "Etkinlik Yeri",
       dataIndex: "title",
       key: "title",
       render: (text) => <p>{text}</p>,

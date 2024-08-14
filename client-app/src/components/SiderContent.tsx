@@ -27,7 +27,7 @@ const SiderContent = ({ collapseHandler }: Props) => {
           />
         </div>
         <Title className="title" level={5}>
-          {user?.displayName}
+          {user?.displayName ? user.displayName : user?.email}
         </Title>
         <Menu items={items} theme="dark" mode="inline" onClick={() => collapseHandler()} />
         <Button

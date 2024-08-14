@@ -20,7 +20,7 @@ const Categories = observer(() => {
 
   const columns: TableProps<Category>["columns"] = [
     {
-      title: "Etlinlik Türü",
+      title: "Etkinlik Türü",
       dataIndex: "title",
       key: "title",
       render: (text) => <p>{text}</p>,

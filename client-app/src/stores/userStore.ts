@@ -7,10 +7,114 @@ import { router } from "../routes/Routes";
 export default class UserStore {
   user: User | null = null;
   refreshTokenTimeout?: number;
+  usersRegistry = new Map<string, User>();
+  selectedUser: User | undefined = undefined;
+  loading = false;
+  loadingInitial = false;
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  get usersAll() {
+    return Array.from(this.usersRegistry.values());
+  }
+
+  private setUser = (user: User) => {
+    this.usersRegistry.set(user.id!, user);
+  };
+
+  private getUser = (id: string) => {
+    return this.usersRegistry.get(id);
+  };
+
+  setLoadingInitial = (state: boolean) => {
+    this.loadingInitial = state;
+  };
+
+  loadUsers = async () => {
+    this.setLoadingInitial(true);
+    this.usersRegistry.clear();
+    try {
+      const users = await agent.Users.list();
+      users.forEach((user) => {
+        this.setUser(user);
+      });
+      this.setLoadingInitial(false);
+    } catch (err) {
+      console.log(err);
+      this.setLoadingInitial(false);
+    }
+  };
+
+  getUserById = async (id: string) => {
+    let user = this.getUser(id);
+    if (user) {
+      this.selectedUser = user;
+      return user;
+    } else {
+      this.setLoadingInitial(true);
+      try {
+        user = await agent.Users.details(id);
+        this.setUser(user);
+        runInAction(() => (this.selectedUser = user));
+
+        this.setLoadingInitial(false);
+        return user;
+      } catch (err) {
+        console.log(err);
+        this.setLoadingInitial(false);
+      }
+    }
+  };
+
+  updateUser = async (user: User) => {
+    try {
+      this.loading = true;
+      await agent.Users.update(user);
+      runInAction(() => {
+        if (user.id) {
+          const updatedUser = { ...this.getUser(user.id), ...user };
+          this.usersRegistry.set(user.id, updatedUser as User);
+          this.selectedUser = updatedUser as User;
+        }
+        router.navigate("/kullanicilar");
+        store.notificationStore.openNotification("success", "Kullanıcı başarıyla güncellendi.", "");
+        this.loading = false;
+      });
+    } catch (err) {
+      if (err instanceof Array) {
+        for (const error of err) {
+          store.notificationStore.openNotification("error", error, "");
+        }
+      } else store.notificationStore.openNotification("error", "Kullanıcı güncellenemedi.", "");
+      runInAction(() => {
+        this.loading = false;
+      });
+    }
+  };
+
+  deleteUser = async (id: string) => {
+    this.loading = true;
+    try {
+      await agent.Users.delete(id);
+      runInAction(() => {
+        this.usersRegistry.delete(id);
+        this.loading = false;
+        
+      });
+    } catch (err) {
+      console.log(err);
+      runInAction(() => {
+        this.loading = false;
+      });
+    }
+  };
+
+  clearSelectedUser = () => {
+    this.selectedUser = undefined;
+  };
+
 
   get isLoggedIn() {
     return !!this.user;
@@ -36,13 +140,13 @@ register = async (creds: UserFormValues) => {
     const user = await agent.Account.register(creds);
     store.commonStore.setToken(user.token);
     runInAction(() => this.user = user);
-    router.navigate('/activities');
+    router.navigate('/kullanicilar');
   } catch (error) {
     console.log(error);
   }
 };
 
-  getUser = async () => {
+  getCurrentUser = async () => {
     try {
       const user = await agent.Account.current();
       store.commonStore.setToken(user.token);

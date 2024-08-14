@@ -91,7 +91,7 @@ const Categories = {
     details: (id: string) => requests.get<Category>(`/categories/${id}`),
     create: (category: Category) => requests.post<Category>("/categories", category),
     update: (category: Category) => requests.put<void>(`/categories/${category.id}`, category),
-    delete: (id: string) => requests.del<void>(`/categories/${id}`),
+    delete: (id: string) => requests.del<void>(`/categories/${id}`)
 }
 
 const Places = {
@@ -99,7 +99,7 @@ const Places = {
   details: (id: string) => requests.get<Category>(`/places/${id}`),
   create: (place: Place) => requests.post<Category>("/places", place),
   update: (place: Place) => requests.put<void>(`/places/${place.id}`, place),
-  delete: (id: string) => requests.del<void>(`/places/${id}`),
+  delete: (id: string) => requests.del<void>(`/places/${id}`)
 }
 
 const Account = {
@@ -109,11 +109,19 @@ const Account = {
     register: (user: UserFormValues) => requests.post<User>('/account/register', user)
   };
 
+const Users = {
+    list: () => requests.get<User[]>("/users"),
+    details: (id: string) => requests.get<User>(`/users/${id}`),
+    update: (user: User) => requests.put<void>(`/users/${user.id}`, user),
+    delete: (id: string) => requests.del<void>(`/users/${id}`)
+  }
+
 const agent = {
     Activities,
     Categories,
     Places,
     Account,
+    Users
 }
 
 export default agent;

@@ -50,4 +50,16 @@ export const items: MenuProps["items"] = [
     ],
     "group"
   ),
+  getItem(
+    "YÖNETİCİ İŞLEMLERİ",
+    "yönetici işlemleri",
+    null,
+    [
+      getItem("Kullanıcılar", "kullanicilar", <ReadOutlined />, [
+        getItem(<NavLink to={"/kullanicilar"}>Tümünü Listele</NavLink>, "kullanicilar", null),
+        getItem(<NavLink to={"/kullanicilar/yeni-ekle"}>Yeni Ekle</NavLink>, "kullanicilar/yeni-ekle", null),
+      ]),
+    ],
+    "group"
+  ),
 ];

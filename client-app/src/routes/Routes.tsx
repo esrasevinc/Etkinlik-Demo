@@ -10,6 +10,8 @@ import Categories from "../features/activities/categories/Categories";
 import CategoriesEdit from "../features/activities/categories/CategoriesEdit";
 import Places from "../features/activities/places/Places";
 import PlacesEdit from "../features/activities/places/PlacesEdit";
+import Users from "../features/users/Users";
+import UsersEdit from "../features/users/UsersEdit";
 
 
 export const routes: RouteObject[] = [
@@ -34,6 +36,9 @@ export const routes: RouteObject[] = [
               { path: "etkinlik-yerleri", element: <Places /> },
               { path: "etkinlik-yerleri/duzenle", element: <PlacesEdit /> },
               { path: "etkinlik-yerleri/yeni-ekle", element: <PlacesEdit /> },
+              { path: "kullanicilar", element: <Users /> },
+              { path: "kullanicilar/yeni-ekle", element: <UsersEdit /> },
+              { path: "kullanicilar/duzenle", element: <UsersEdit /> }
             ],
           },
         ],

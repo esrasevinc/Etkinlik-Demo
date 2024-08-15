@@ -8,6 +8,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
 
@@ -42,8 +43,10 @@ builder.Services.AddIdentityCore<AppUser>(opt => {
     opt.Password.RequireNonAlphanumeric = false;
     opt.User.RequireUniqueEmail = true;
   }
-).AddEntityFrameworkStores<DataContext>()
+).AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<DataContext>()
 .AddSignInManager<SignInManager<AppUser>>()
+.AddRoleManager<RoleManager<IdentityRole>>()
 .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -87,7 +90,34 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     await context.Database.MigrateAsync();
+
+    var roles = new[] { "Admin", "User" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    var adminEmail = "ibs@beylikduzu.istanbul";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new AppUser { UserName = "ibs", Email = adminEmail, DisplayName = "İletişim Bilgi Sistemleri" };
+        var result = await userManager.CreateAsync(adminUser, "İbs12345");
+        if (result.Succeeded) {
+          await userManager.AddToRoleAsync(adminUser, "Admin");
+        } 
+    }
+    
+    var isAdmin = await userManager.IsInRoleAsync(adminUser, "Admin");
+    if (!isAdmin)
+    {
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
 } 
 catch (Exception ex)
 {

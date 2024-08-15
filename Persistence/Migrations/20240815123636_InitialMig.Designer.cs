@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240812133227_PlacesAdded")]
-    partial class PlacesAdded
+    [Migration("20240815123636_InitialMig")]
+    partial class InitialMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,9 +43,6 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");

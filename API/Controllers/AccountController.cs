@@ -62,15 +62,18 @@ namespace API.Controllers
                 UserName = registerDto.Username
             };
 
+
+
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if (result.Succeeded)
-            {
-                return CreateUserObject(user);
-            }
+            if (!result.Succeeded) return BadRequest(result.Errors);
+    
+            var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
-            return BadRequest(result.Errors);
-        }
+            if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
+    
+            return CreateUserObject(user);
+            }
 
         [Authorize]
         [HttpGet]

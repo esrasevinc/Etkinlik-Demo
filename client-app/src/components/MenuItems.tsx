@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
+
 function getItem(
   label: React.ReactNode,
   key: React.Key,
@@ -21,6 +22,7 @@ function getItem(
 }
 
 export const items: MenuProps["items"] = [
+
 
   getItem(
     "GENEL TANIMLAR",

@@ -1,10 +1,12 @@
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -65,7 +67,7 @@ namespace API.Controllers
             });
         }
 
-        [HttpPut("{id}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult> UpdateUser(string id, AppUser updatedUser)
     {
         var user = await _userManager.FindByIdAsync(id);

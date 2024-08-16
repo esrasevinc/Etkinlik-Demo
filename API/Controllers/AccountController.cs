@@ -91,11 +91,14 @@ namespace API.Controllers
 
         private async Task<UserDTO> CreateUserObject(AppUser user)
         {
+            var roles = await _userManager.GetRolesAsync(user);
+
             return new UserDTO
             {
                 DisplayName = user.DisplayName,
                 Token = await _tokenService.CreateToken(user),
-                Username = user.UserName
+                Username = user.UserName,
+                Roles = roles,
             };
         }
     }

@@ -3,7 +3,7 @@ import { useStore } from "../stores/store";
 import { LogoutOutlined } from "@ant-design/icons";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
-import { items } from "./MenuItems";
+import { MenuItems } from "./MenuItems";
 
 const { Title } = Typography;
 
@@ -14,6 +14,7 @@ type Props = {
 const SiderContent = ({ collapseHandler }: Props) => {
   const { userStore } = useStore();
   const { user } = userStore;
+  const items = MenuItems();
 
   return (
     <SimpleBar style={{ height: "100%" }}>

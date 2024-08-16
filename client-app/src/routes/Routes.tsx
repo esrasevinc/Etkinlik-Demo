@@ -12,6 +12,7 @@ import Places from "../features/activities/places/Places";
 import PlacesEdit from "../features/activities/places/PlacesEdit";
 import Users from "../features/users/Users";
 import UsersEdit from "../features/users/UsersEdit";
+import RequireAdmin from "./RequireAdmin";
 
 
 export const routes: RouteObject[] = [
@@ -36,9 +37,9 @@ export const routes: RouteObject[] = [
               { path: "etkinlik-yerleri", element: <Places /> },
               { path: "etkinlik-yerleri/duzenle", element: <PlacesEdit /> },
               { path: "etkinlik-yerleri/yeni-ekle", element: <PlacesEdit /> },
-              { path: "kullanicilar", element: <Users /> },
-              { path: "kullanicilar/yeni-ekle", element: <UsersEdit /> },
-              { path: "kullanicilar/duzenle", element: <UsersEdit /> }
+              { path: "kullanicilar", element: <RequireAdmin> <Users /> </RequireAdmin> },
+              { path: "kullanicilar/yeni-ekle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> },
+              { path: "kullanicilar/duzenle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> }
             ],
           },
         ],

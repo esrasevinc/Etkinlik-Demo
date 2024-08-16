@@ -193,6 +193,7 @@ form button[type="submit"]#login-button {
   text-decoration: underline;
 }
 
+
 @media (max-width: 900px) {
   .login-left {
     display: none;

@@ -22,6 +22,7 @@ namespace Application.Core
             CreateMap<Category, CategoryDTO>();
             CreateMap<Place, Place>();
             CreateMap<Place, PlaceDTO>();
+            CreateMap<EventHall, EventHall>();
         }
     }
 }

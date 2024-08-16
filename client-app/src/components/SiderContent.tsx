@@ -30,7 +30,7 @@ const SiderContent = ({ collapseHandler }: Props) => {
         <Title className="title" level={5}>
           {user?.displayName ? user.displayName : user?.email}
         </Title>
-        <Menu items={items} theme="dark" mode="inline" onClick={() => collapseHandler()} />
+        <Menu  items={items} theme="dark" mode="inline" onClick={() => collapseHandler()} />
         <Button
           icon={<LogoutOutlined />}
           type="link"

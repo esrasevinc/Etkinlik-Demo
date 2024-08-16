@@ -5,6 +5,11 @@ import  useAuth  from "../hooks/useAuth";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
+const menuItemGroupSpacing = {
+  marginBottom: "10px", 
+};
+
+
 function getItem(
   label: React.ReactNode,
   key: React.Key,
@@ -18,6 +23,7 @@ function getItem(
     children,
     label,
     type,
+    style: type === "group" ? menuItemGroupSpacing : undefined,
   } as MenuItem;
 }
 
@@ -58,6 +64,7 @@ export function MenuItems(): MenuProps["items"] {
       ],
       "group"
     ),
+    
     userRole === "Admin" ? getItem(
       "YÖNETİCİ İŞLEMLERİ",
       "yönetici işlemleri",

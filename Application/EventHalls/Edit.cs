@@ -5,16 +5,16 @@ using FluentValidation;
 using MediatR;
 using Persistence;
 
-namespace Application.Places
+namespace Application.EventHalls
 {
     public class Edit
     {
         public class Command : IRequest<Result<Unit>>
         {
-          public Place Place { get; set; }
+          public EventHall EventHall { get; set; }
         }
         
-        public class CommandValidator : AbstractValidator<Place>
+        public class CommandValidator : AbstractValidator<EventHall>
         {
             public CommandValidator()
             {
@@ -34,15 +34,15 @@ namespace Application.Places
 
       public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
-        var place = await _context.Places.FindAsync(request.Place.Id);
+        var hall = await _context.EventHalls.FindAsync(request.EventHall.Id);
 
-        if (place == null) return null;
+        if (hall == null) return null;
 
-        _mapper.Map(request.Place, place);
+        _mapper.Map(request.EventHall, hall);
 
         var result = await _context.SaveChangesAsync() > 0;
 
-        if (!result) return Result<Unit>.Failure("Gösteri merkezi güncellenemedi.");
+        if (!result) return Result<Unit>.Failure("Salon güncellenemedi.");
 
         return Result<Unit>.Success(Unit.Value);
       }

@@ -32,7 +32,7 @@ const Activities = observer(() => {
       width: 250,
     },
     {
-      title: "Etkinlik Yeri",
+      title: "Gösteri Merkezi",
       dataIndex: "place",
       key: "place",
       render: (place) => {

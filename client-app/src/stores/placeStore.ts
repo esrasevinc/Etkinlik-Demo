@@ -71,15 +71,15 @@ export default class PlaceStore {
       this.loading = true;
       const createdPlace = await agent.Places.create(place);
       this.setPlace(createdPlace);
-      router.navigate("/etkinlik-yerleri");
-      store.notificationStore.openNotification("success", "Etkinlik yeri başarıyla eklendi.", "");
+      router.navigate("/gosteri-merkezleri");
+      store.notificationStore.openNotification("success", "Gösteri merkezi başarıyla eklendi.", "");
       this.loading = false;
     } catch (err) {
       if (err instanceof Array) {
         for (const error of err) {
           store.notificationStore.openNotification("error", error, "");
         }
-      } else store.notificationStore.openNotification("error", "Etkinlik yeri eklenemedi.", "");
+      } else store.notificationStore.openNotification("error", "Gösteri merkezi eklenemedi.", "");
       runInAction(() => {
         this.loading = false;
       });
@@ -96,8 +96,8 @@ export default class PlaceStore {
           this.placesRegistry.set(place.id, updatedPlace as Place);
           this.selectedPlace = updatedPlace as Place;
         }
-        router.navigate("/etkinlik-yerleri");
-        store.notificationStore.openNotification("success", "Etkinlik yeri başarıyla güncellendi.", "");
+        router.navigate("/gosteri-merkezleri");
+        store.notificationStore.openNotification("success", "Gösteri merkezi başarıyla güncellendi.", "");
         this.loading = false;
       });
     } catch (err) {
@@ -105,7 +105,7 @@ export default class PlaceStore {
         for (const error of err) {
           store.notificationStore.openNotification("error", error, "");
         }
-      } else store.notificationStore.openNotification("error", "Etkinlik yeri güncellenemedi.", "");
+      } else store.notificationStore.openNotification("error", "Gösteri merkezi güncellenemedi.", "");
       runInAction(() => {
         this.loading = false;
       });

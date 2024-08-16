@@ -35,7 +35,7 @@ namespace Application.Places
       var savedPlace = await _context.Places.AddAsync(request.Place);
       var result = await _context.SaveChangesAsync() > 0;
 
-      if (!result) return Result<Place>.Failure("Etkinlik yeri oluşturulamadı.");
+      if (!result) return Result<Place>.Failure("Gösteri merkezi oluşturulamadı.");
 
       return Result<Place>.Success(savedPlace.Entity);
     }

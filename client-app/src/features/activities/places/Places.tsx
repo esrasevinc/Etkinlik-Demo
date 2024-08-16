@@ -20,7 +20,7 @@ const Places = observer(() => {
 
   const columns: TableProps<Place>["columns"] = [
     {
-      title: "Etkinlik Yeri",
+      title: "Gösteri Merkezi",
       dataIndex: "title",
       key: "title",
       render: (text) => <p>{text}</p>,
@@ -38,7 +38,7 @@ const Places = observer(() => {
             </Tooltip>
           </Link>
           <Popconfirm
-            title="Etkinlik yerini silmek istediğinize emin misiniz?"
+            title="Gösteri merkezini silmek istediğinize emin misiniz?"
             onConfirm={() => deletePlace(record.id!)}
             okText="Evet"
             cancelText="Hayır"

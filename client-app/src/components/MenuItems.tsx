@@ -31,14 +31,18 @@ export function MenuItems(): MenuProps["items"] {
       "genel tanımlar",
       null,
       [
+        getItem("Gösteri Merkezleri", "gosteri-merkezleri", <ReadOutlined />, [
+          getItem(<NavLink to={"/gosteri-merkezleri"}>Tümünü Listele</NavLink>, "gosteri-merkezleri", null),
+          getItem(<NavLink to={"/gosteri-merkezleri/yeni-ekle"}>Yeni Ekle</NavLink>, "gosteri-merkezleri/yeni-ekle", null),
+        ]),
+        getItem("Salonlar", "salonlar", <ReadOutlined />, [
+          getItem(<NavLink to={"/salonlar"}>Tümünü Listele</NavLink>, "salonlar", null),
+          getItem(<NavLink to={"/salonlar/yeni-ekle"}>Yeni Ekle</NavLink>, "salonlar/yeni-ekle", null),
+        ]),
         getItem("Etkinlik Türleri", "etkinlik-turleri", <ReadOutlined />, [
           getItem(<NavLink to={"/etkinlik-turleri"}>Tümünü Listele</NavLink>, "etkinlik-turleri", null),
           getItem(<NavLink to={"/etkinlik-turleri/yeni-ekle"}>Yeni Ekle</NavLink>, "etkinlik-turleri/yeni-ekle", null),
         ]),
-        getItem("Etkinlik Yerleri", "etkinlik-yerleri", <ReadOutlined />, [
-          getItem(<NavLink to={"/etkinlik-yerleri"}>Tümünü Listele</NavLink>, "etkinlik-yerleri", null),
-          getItem(<NavLink to={"/etkinlik-yerleri/yeni-ekle"}>Yeni Ekle</NavLink>, "etkinlik-yerleri/yeni-ekle", null),
-        ])
       ],
       "group"
     ),

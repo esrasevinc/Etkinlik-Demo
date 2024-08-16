@@ -13,6 +13,8 @@ import PlacesEdit from "../features/activities/places/PlacesEdit";
 import Users from "../features/users/Users";
 import UsersEdit from "../features/users/UsersEdit";
 import RequireAdmin from "./RequireAdmin";
+import EventHalls from "../features/activities/event-halls/EventHalls";
+import EventHallsEdit from "../features/activities/event-halls/EventHallsEdit";
 
 
 export const routes: RouteObject[] = [
@@ -34,9 +36,12 @@ export const routes: RouteObject[] = [
               { path: "etkinlik-turleri", element: <Categories /> },
               { path: "etkinlik-turleri/duzenle", element: <CategoriesEdit /> },
               { path: "etkinlik-turleri/yeni-ekle", element: <CategoriesEdit /> },
-              { path: "etkinlik-yerleri", element: <Places /> },
-              { path: "etkinlik-yerleri/duzenle", element: <PlacesEdit /> },
-              { path: "etkinlik-yerleri/yeni-ekle", element: <PlacesEdit /> },
+              { path: "gosteri-merkezleri", element: <Places /> },
+              { path: "gosteri-merkezleri/duzenle", element: <PlacesEdit /> },
+              { path: "gosteri-merkezleri/yeni-ekle", element: <PlacesEdit /> },
+              { path: "salonlar", element: <EventHalls /> },
+              { path: "salonlar/duzenle", element: <EventHallsEdit /> },
+              { path: "salonlar/yeni-ekle", element: <EventHallsEdit /> },
               { path: "kullanicilar", element: <RequireAdmin> <Users /> </RequireAdmin> },
               { path: "kullanicilar/yeni-ekle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> },
               { path: "kullanicilar/duzenle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> }

@@ -60,7 +60,7 @@ const PlacesEdit = observer(() => {
             <Input type="hidden" />
           </Form.Item>
           <Form.Item
-            label="Etkinlik Yeri"
+            label="Gösteri Merkezi"
             name="title"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >

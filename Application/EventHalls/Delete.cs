@@ -2,7 +2,7 @@ using Application.Core;
 using MediatR;
 using Persistence;
 
-namespace Application.Places
+namespace Application.EventHalls
 {
     public class Delete
   {
@@ -21,15 +21,15 @@ namespace Application.Places
 
       public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
-        var place = await _context.Places.FindAsync(request.Id);
+        var hall = await _context.EventHalls.FindAsync(request.Id);
 
-        if (place == null) return null;
+        if (hall == null) return null;
 
-        _context.Places.Remove(place);
+        _context.EventHalls.Remove(hall);
 
         var result = await _context.SaveChangesAsync() > 0;
 
-        if (!result) return Result<Unit>.Failure("Gösteri merkezi silinemedi.");
+        if (!result) return Result<Unit>.Failure("Salon silinemedi.");
 
         return Result<Unit>.Success(Unit.Value);
       }

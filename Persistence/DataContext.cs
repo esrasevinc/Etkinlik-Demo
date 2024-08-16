@@ -14,6 +14,7 @@ namespace Persistence
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Place> Places { get; set; }
+        public DbSet<EventHall> EventHalls { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +27,11 @@ namespace Persistence
 
             modelBuilder.Entity<Place>()
             .HasMany(x => x.Activities)
+            .WithOne(x => x.Place)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Place>()
+            .HasMany(x => x.EventHalls)
             .WithOne(x => x.Place)
             .OnDelete(DeleteBehavior.SetNull);
 

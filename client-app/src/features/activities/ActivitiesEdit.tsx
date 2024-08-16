@@ -62,7 +62,7 @@ const ActivitiesEdit = observer(() => {
       form={form}
       onFinish={onFinish}
       initialValues={{ layout: 'horizontal' }}
-      style={{ maxWidth: 600 }}
+      style={{ maxWidth: 800 }}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 20 }}
     >
@@ -77,7 +77,7 @@ const ActivitiesEdit = observer(() => {
         <Input />
       </Form.Item>
       
-      <Form.Item<ActivityFormValues> label="Etkinlik Yeri" name={"placeId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
+      <Form.Item<ActivityFormValues> label="Gösteri Merkezi" name={"placeId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
       <Select>
           {places.map((pl) => (
             <Select.Option key={pl.id} value={pl.id}>

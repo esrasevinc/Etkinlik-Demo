@@ -35,7 +35,7 @@ namespace API.Controllers
 
             if (!result.Succeeded) return Unauthorized();
            
-            return CreateUserObject(user);
+            return await CreateUserObject(user);
             
         }
 
@@ -68,12 +68,17 @@ namespace API.Controllers
 
             if (!result.Succeeded) return BadRequest(result.Errors);
     
-            var roleResult = await _userManager.AddToRoleAsync(user, "User");
+             string roleToAssign = string.IsNullOrEmpty(registerDto.Role) ? "User" : registerDto.Role;
+             var roleResult = await _userManager.AddToRoleAsync(user, roleToAssign);
 
-            if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
+            if (!roleResult.Succeeded)
+            {
+                roleResult = await _userManager.AddToRoleAsync(user, "User");
+                if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
+                }
     
-            return CreateUserObject(user);
-            }
+                    return await CreateUserObject(user);
+        }
 
         [Authorize]
         [HttpGet]
@@ -81,15 +86,15 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
                 
-            return CreateUserObject(user);
+            return await CreateUserObject(user);
         }
 
-        private UserDTO CreateUserObject(AppUser user)
+        private async Task<UserDTO> CreateUserObject(AppUser user)
         {
             return new UserDTO
             {
                 DisplayName = user.DisplayName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 Username = user.UserName
             };
         }

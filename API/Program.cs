@@ -101,23 +101,6 @@ try
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
-
-    var adminEmail = "ibs@beylikduzu.istanbul";
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-    if (adminUser == null)
-    {
-        adminUser = new AppUser { UserName = "ibs", Email = adminEmail, DisplayName = "İletişim Bilgi Sistemleri" };
-        var result = await userManager.CreateAsync(adminUser, "İbs12345");
-        if (result.Succeeded) {
-          await userManager.AddToRoleAsync(adminUser, "Admin");
-        } 
-    }
-    
-    var isAdmin = await userManager.IsInRoleAsync(adminUser, "Admin");
-    if (!isAdmin)
-    {
-        await userManager.AddToRoleAsync(adminUser, "Admin");
-    }
 } 
 catch (Exception ex)
 {

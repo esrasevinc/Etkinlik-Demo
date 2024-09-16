@@ -15,6 +15,7 @@ namespace Persistence
         public DbSet<Category> Categories { get; set; }
         public DbSet<Place> Places { get; set; }
         public DbSet<EventHall> EventHalls { get; set; }
+        public DbSet<Seat> Seats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,3 +1,4 @@
+using System.Data;
 using Application.Core;
 using Domain;
 using FluentValidation;
@@ -19,6 +20,9 @@ namespace Application.EventHalls
     public CommandValidator()
     {
       RuleFor(x => x.Title).NotEmpty();
+      RuleFor(x => x.Rows).NotEmpty();
+      RuleFor(x => x.Columns).NotEmpty();
+      RuleFor(x => x.Place).NotEmpty();
     }
   }
 

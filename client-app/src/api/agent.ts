@@ -6,6 +6,7 @@ import { store } from '../stores/store';
 import { router } from '../routes/Routes';
 import { message } from 'antd';
 import { Place } from '../models/place';
+import { EventHall } from '../models/eventHall';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -96,10 +97,18 @@ const Categories = {
 
 const Places = {
   list: () => requests.get<Place[]>("/places"),
-  details: (id: string) => requests.get<Category>(`/places/${id}`),
-  create: (place: Place) => requests.post<Category>("/places", place),
+  details: (id: string) => requests.get<Place>(`/places/${id}`),
+  create: (place: Place) => requests.post<Place>("/places", place),
   update: (place: Place) => requests.put<void>(`/places/${place.id}`, place),
   delete: (id: string) => requests.del<void>(`/places/${id}`)
+}
+
+const EventHalls = {
+  list: () => requests.get<EventHall[]>("/eventhalls"),
+  details: (id: string) => requests.get<EventHall>(`/eventhalls/${id}`),
+  create: (eventHall: EventHall) => requests.post<EventHall>("/eventhalls", eventHall),
+  update: (eventHall: EventHall) => requests.put<void>(`/eventhalls/${eventHall.id}`, eventHall),
+  delete: (id: string) => requests.del<void>(`/eventhalls/${id}`)
 }
 
 const Account = {
@@ -120,6 +129,7 @@ const agent = {
     Activities,
     Categories,
     Places,
+    EventHalls,
     Account,
     Users
 }

@@ -1,23 +1,57 @@
-import  { useEffect } from 'react'
-import { Button, Col, Form, Input, Row, Select } from "antd";
+import  { useEffect, useState } from 'react'
+import { Button, Col, Form, FormProps, Input,  Row, Select } from "antd";
 import { ActivityFormValues } from '../../../models/activity';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../../stores/store';
+import LoadingComponent from '../../../layout/LoadingComponent';
+import { useLocation } from 'react-router';
+import { EventHall } from '../../../models/eventHall';
 
 const EventHallsEdit = observer(() => {
-
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
   const [form] = Form.useForm();
-  const { placeStore } = useStore();
+
+  const { eventHallStore, placeStore } = useStore();
   const { places, loadPlaces } = placeStore;
-  
+  const {
+    loadEventHallById,
+    loadingInitial,
+    updateEventHall,
+    createEventHall,
+    clearSelectedEventHall,
+  } = eventHallStore;
+
+  const [eventHall, setEventHall] = useState<EventHall>();
+
   useEffect(() => {
     loadPlaces();
-    
-  }, [ form, loadPlaces]);
+    if (id) {
+      loadEventHallById(id).then((eventHall) => {
+        form.setFieldsValue(eventHall);
+        setEventHall(eventHall);
+      });
+    }
+
+    return () => clearSelectedEventHall();
+  }, [id, loadEventHallById, clearSelectedEventHall, form, loadPlaces]);
+
+  const onFinish: FormProps["onFinish"] = (values) => {
+    if (id) {
+      updateEventHall(values);
+    } else {
+      createEventHall(values);
+    }
+  };
+
+  if (loadingInitial) return <LoadingComponent />;
 
   return (
     <Form
       form={form}
+      initialValues={eventHall}
+      onFinish={onFinish}
       layout="vertical"
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 20 }}
@@ -48,14 +82,14 @@ const EventHallsEdit = observer(() => {
             name="rows"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >
-            <Input type='number'/>
+             <Input type='number' min={1} />
           </Form.Item>
           <Form.Item
             label="Genişlik"
             name="columns"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >
-            <Input type='number'/>
+             <Input type='number' min={1} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" >

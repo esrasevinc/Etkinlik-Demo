@@ -1,4 +1,3 @@
-using Application.Activities;
 using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -9,7 +8,7 @@ using Persistence;
 
 namespace Application.EventHalls
 {
-  public class Details
+    public class Details
   {
     public class Query : IRequest<Result<EventHall>>
     {

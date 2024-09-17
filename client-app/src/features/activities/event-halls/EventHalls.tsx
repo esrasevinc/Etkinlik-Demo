@@ -66,7 +66,7 @@ const EventHalls = observer(() => {
             </Tooltip>
             </Link>
           <Popconfirm
-            title="Etlikliği sil"
+            title="Salonu sil"
             description="Bu salonu silmek istediğinize emin misiniz?"
             onConfirm={() => {
               deleteEventHall(record.id as string);

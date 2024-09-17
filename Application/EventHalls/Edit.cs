@@ -1,6 +1,6 @@
 using Application.Core;
+using Application.DTOs;
 using AutoMapper;
-using Domain;
 using FluentValidation;
 using MediatR;
 using Persistence;
@@ -8,45 +8,53 @@ using Persistence;
 namespace Application.EventHalls
 {
     public class Edit
+  {
+    public class Command : IRequest<Result<Unit>>
     {
-        public class Command : IRequest<Result<Unit>>
-        {
-          public EventHall EventHall { get; set; }
-        }
-        
-        public class CommandValidator : AbstractValidator<EventHall>
-        {
-            public CommandValidator()
-            {
-                RuleFor(x => x.Title).NotEmpty();
-                RuleFor(x => x.Rows).NotEmpty();
-                RuleFor(x => x.Columns).NotEmpty();
-                RuleFor(x => x.Place).NotEmpty();
-            }
-        }
+      public EventHallDTO EventHall { get; set; }
+    }
 
-    public class Handler : IRequestHandler<Command, Result<Unit>>
+    public class CommandValidator : AbstractValidator<EventHallDTO>
     {
-    private readonly DataContext _context;
-    private readonly IMapper _mapper;
-      public Handler(DataContext context, IMapper mapper)
+      public CommandValidator()
       {
-      _mapper = mapper;
-      _context = context;
+        RuleFor(x => x.Title).NotEmpty();
+        RuleFor(x => x.PlaceId).NotEmpty();
+        RuleFor(x => x.Rows).NotEmpty();
+        RuleFor(x => x.Columns).NotEmpty();
       }
+    }
+
+    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Command, Result<Unit>>
+    {
+      private readonly IMapper _mapper = mapper;
+      private readonly DataContext _context = context;
 
       public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
-        var hall = await _context.EventHalls.FindAsync(request.EventHall.Id);
+        /* Search item in database */
+        var eventHall = await _context.EventHalls.FindAsync(request.EventHall.Id);
 
-        if (hall == null) return null;
+        /* Return null and handle it if not found */
+        if (eventHall == null) return null;
 
-        _mapper.Map(request.EventHall, hall);
+        /* Update fields based on given object */
+        
+        _mapper.Map(request.EventHall, eventHall);
 
+        if (request.EventHall.PlaceId.HasValue)
+        {
+          var place = await _context.Places.FindAsync(request.EventHall.PlaceId);
+          eventHall.Place = place;
+        }
+
+        /* Save updated item to database */
         var result = await _context.SaveChangesAsync() > 0;
 
+        /* Handle if can't save to database */
         if (!result) return Result<Unit>.Failure("Salon güncellenemedi.");
 
+        /* Done! */
         return Result<Unit>.Success(Unit.Value);
       }
     }

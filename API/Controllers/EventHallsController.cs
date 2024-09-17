@@ -1,6 +1,5 @@
 using Application.DTOs;
 using Application.EventHalls;
-using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +28,7 @@ namespace API.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> EditEventHall(Guid id, EventHall eventHall) {
+        public async Task<IActionResult> EditEventHall(Guid id, EventHallDTO eventHall) {
             eventHall.Id = id;
             return HandleResult(await Mediator.Send(new Edit.Command { EventHall = eventHall }));
         }

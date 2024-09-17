@@ -109,7 +109,7 @@ const Activities = observer(() => {
             </Tooltip>
             </Link>
           <Popconfirm
-            title="Etlikliği sil"
+            title="Etkinliği sil"
             description="Bu etkinliği silmek istediğinize emin misiniz?"
             onConfirm={() => {
               deleteActivity(record.id as string);

@@ -1,15 +1,13 @@
-using Application.Activities;
 using Application.Core;
 using Application.DTOs;
 using AutoMapper;
-using Domain;
 using FluentValidation;
 using MediatR;
 using Persistence;
 
 namespace Application.Activities
 {
-  public class Edit
+    public class Edit
   {
     public class Command : IRequest<Result<Unit>>
     {
@@ -58,7 +56,7 @@ namespace Application.Activities
         var result = await _context.SaveChangesAsync() > 0;
 
         /* Handle if can't save to database */
-        if (!result) return Result<Unit>.Failure("Makale güncellenemedi.");
+        if (!result) return Result<Unit>.Failure("Etkinlik güncellenemedi.");
 
         /* Done! */
         return Result<Unit>.Success(Unit.Value);

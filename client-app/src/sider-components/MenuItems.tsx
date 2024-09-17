@@ -45,6 +45,7 @@ export function MenuItems(): MenuProps["items"] {
           getItem(<NavLink to={"/salonlar"}>Tümünü Listele</NavLink>, "salonlar", null),
           getItem(<NavLink to={"/salonlar/yeni-ekle"}>Yeni Ekle</NavLink>, "salonlar/yeni-ekle", null),
         ]),
+        getItem(<NavLink to={"/salon-tasarimlari"}>Salon Tasarımları</NavLink>, "salon-tasarimlari", <ReadOutlined />),
         getItem("Etkinlik Türleri", "etkinlik-turleri", <ReadOutlined />, [
           getItem(<NavLink to={"/etkinlik-turleri"}>Tümünü Listele</NavLink>, "etkinlik-turleri", null),
           getItem(<NavLink to={"/etkinlik-turleri/yeni-ekle"}>Yeni Ekle</NavLink>, "etkinlik-turleri/yeni-ekle", null),

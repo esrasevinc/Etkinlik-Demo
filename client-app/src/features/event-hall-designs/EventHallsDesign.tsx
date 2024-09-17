@@ -1,17 +1,16 @@
 
 import { observer } from "mobx-react-lite";
-import { Button, ConfigProvider, Flex, Popconfirm, Table, TableProps, Tooltip } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, ConfigProvider, Flex, Table, TableProps, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import { Key, useEffect } from "react";
 import { Link } from "react-router-dom";
 import locale from 'antd/es/locale/tr_TR';
-import { useStore } from "../../../stores/store";
-import { EventHall } from "../../../models/eventHall";
-import { router } from "../../../routes/Routes";
+import { useStore } from "../../stores/store";
+import { EventHall } from "../../models/eventHall";
 
-const EventHalls = observer(() => {
+const EventHallsDesign = observer(() => {
   const { eventHallStore, placeStore } = useStore();
-  const { eventHalls, loadEventHalls, deleteEventHall, loadingInitial } = eventHallStore;
+  const { eventHalls, loadEventHalls, loadingInitial } = eventHallStore;
   const { places, loadPlaces } = placeStore;
 
   useEffect(() => {
@@ -56,29 +55,15 @@ const EventHalls = observer(() => {
       width: 100,
     },
     {
-      title: "İşlemler",
+      title: "Tasarla",
       dataIndex: "actions",
       render: (_, record) => (
         <Flex wrap="wrap" gap="small">
-          <Link to={`duzenle?id=${record.id}`}>
-            <Tooltip title="Düzenle">
+          <Link to={`tasarla?id=${record.id}`}>
+            <Tooltip title="Tasarla">
               <Button type="primary" shape="circle" icon={<EditOutlined />} />
             </Tooltip>
             </Link>
-          <Popconfirm
-            title="Salonu sil"
-            description="Bu salonu silmek istediğinize emin misiniz?"
-            onConfirm={() => {
-              deleteEventHall(record.id as string);
-
-            }}
-            okText="Sil"
-            cancelText="İptal"
-          >
-            <Tooltip title="Sil">
-            <Button type="primary" danger shape="circle" icon={<DeleteOutlined />} />
-            </Tooltip>
-          </Popconfirm>
         </Flex>
       ),
       width: 200,
@@ -87,14 +72,6 @@ const EventHalls = observer(() => {
   return (
     <>
     <Flex wrap gap='large' vertical align="end">
-    <Button 
-    type="primary" 
-    size="large" 
-    onClick={() => router.navigate('/salonlar/yeni-ekle')}
-    style={ { width : '25%' }}
-    >
-      Yeni Ekle
-    </Button>
     <ConfigProvider locale={locale}>
     <Table
       bordered
@@ -111,4 +88,4 @@ const EventHalls = observer(() => {
   );
 });
 
-export default EventHalls;
+export default EventHallsDesign;

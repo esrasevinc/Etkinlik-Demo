@@ -1,26 +1,26 @@
 import { Button, Flex, Popconfirm, Table, TableProps, Tooltip } from "antd";
-import { useStore } from "../../../stores/store";
-import { Category } from "../../../models/category";
+import { useStore } from "../../stores/store";
 import { Link } from "react-router-dom";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import LoadingComponent from "../../../layout/LoadingComponent";
+import LoadingComponent from "../../layout/LoadingComponent";
+import { Place } from "../../models/place";
 
-const Categories = observer(() => {
-  const { categoryStore } = useStore();
-  const { categories, deleteCategory, loadCategories, loadingInitial } = categoryStore;
+const Places = observer(() => {
+  const { placeStore } = useStore();
+  const { places, deletePlace, loadPlaces, loadingInitial } = placeStore;
 
   useEffect(() => {
-    loadCategories();
-  }, [loadCategories]);
+    loadPlaces();
+  }, [loadPlaces]);
 
 
   if (loadingInitial) return <LoadingComponent />;
 
-  const columns: TableProps<Category>["columns"] = [
+  const columns: TableProps<Place>["columns"] = [
     {
-      title: "Etkinlik Türü",
+      title: "Gösteri Merkezi",
       dataIndex: "title",
       key: "title",
       render: (text) => <p>{text}</p>,
@@ -32,14 +32,14 @@ const Categories = observer(() => {
       dataIndex: "actions",
       render: (_, record) => (
         <Flex wrap="wrap" gap="small">
-          <Link to={`duzenle?categoryId=${record.id}`}>
+          <Link to={`duzenle?placeId=${record.id}`}>
             <Tooltip title="Düzenle">
               <Button type="primary" shape="circle" icon={<EditOutlined />} />
             </Tooltip>
           </Link>
           <Popconfirm
-            title="Kategoriyi silmek istediğinize emin misiniz?"
-            onConfirm={() => deleteCategory(record.id!)}
+            title="Gösteri merkezini silmek istediğinize emin misiniz?"
+            onConfirm={() => deletePlace(record.id!)}
             okText="Evet"
             cancelText="Hayır"
           >
@@ -55,9 +55,9 @@ const Categories = observer(() => {
     <Table
       columns={columns}
       scroll={{ x: 500 }}
-      dataSource={categories}
+      dataSource={places}
     />
   );
 });
 
-export default Categories;
+export default Places;

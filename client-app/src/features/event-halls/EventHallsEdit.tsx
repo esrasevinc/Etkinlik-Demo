@@ -1,10 +1,11 @@
 import  { useEffect, useState } from 'react'
 import { Button, Col, Form, FormProps, Input,  Row, Select } from "antd";
 import { observer } from 'mobx-react-lite';
-import { useStore } from '../../../stores/store';
-import LoadingComponent from '../../../layout/LoadingComponent';
 import { useLocation } from 'react-router';
-import { EventHall, EventHallFormValues } from '../../../models/eventHall';
+import { useStore } from '../../stores/store';
+import { EventHall, EventHallFormValues } from '../../models/eventHall';
+import LoadingComponent from '../../layout/LoadingComponent';
+
 
 const EventHallsEdit = observer(() => {
   const location = useLocation();

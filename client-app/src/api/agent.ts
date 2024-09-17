@@ -7,6 +7,7 @@ import { router } from '../routes/Routes';
 import { message } from 'antd';
 import { Place } from '../models/place';
 import { EventHall } from '../models/eventHall';
+import { Seat } from '../models/seat';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -111,6 +112,14 @@ const EventHalls = {
   delete: (id: string) => requests.del<void>(`/eventhalls/${id}`)
 }
 
+const Seats = {
+  list: () => requests.get<Seat[]>("/seats"),
+  details: (id: string) => requests.get<Seat>(`/seats/${id}`),
+  create: (seat: Seat) => requests.post<EventHall>("/seats", seat),
+  update: (seat: Seat) => requests.put<void>(`/seats/${seat.id}`, seat),
+  delete: (id: string) => requests.del<void>(`/seats/${id}`)
+}
+
 const Account = {
     current: () => requests.get<User>("/account"),
     login: (user: UserFormValues) => requests.post<User>("/account/login", user),
@@ -130,6 +139,7 @@ const agent = {
     Categories,
     Places,
     EventHalls,
+    Seats,
     Account,
     Users
 }

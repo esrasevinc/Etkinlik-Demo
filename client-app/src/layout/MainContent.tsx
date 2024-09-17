@@ -6,7 +6,7 @@ const { Header, Content, Footer, Sider } = Layout;
 import { observer } from "mobx-react-lite";
 import "./styles.css";
 import { useState } from "react";
-import SiderContent from "../components/SiderContent";
+import SiderContent from "../sider-components/SiderContent";
 
 const MainContent = () => {
   const [collapsed, setCollapsed] = useState(true);

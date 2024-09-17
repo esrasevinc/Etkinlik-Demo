@@ -6,15 +6,18 @@ import NotFound from "../layout/NotFound";
 import MainContent from "../layout/MainContent";
 import Activities from "../features/activities/Activities";
 import ActivitiesEdit from "../features/activities/ActivitiesEdit";
-import Categories from "../features/activities/categories/Categories";
-import CategoriesEdit from "../features/activities/categories/CategoriesEdit";
-import Places from "../features/activities/places/Places";
-import PlacesEdit from "../features/activities/places/PlacesEdit";
 import Users from "../features/users/Users";
 import UsersEdit from "../features/users/UsersEdit";
 import RequireAdmin from "./RequireAdmin";
-import EventHalls from "../features/activities/event-halls/EventHalls";
-import EventHallsEdit from "../features/activities/event-halls/EventHallsEdit";
+import Categories from "../features/categories/Categories";
+import CategoriesEdit from "../features/categories/CategoriesEdit";
+import Places from "../features/places/Places";
+import PlacesEdit from "../features/places/PlacesEdit";
+import EventHalls from "../features/event-halls/EventHalls";
+import EventHallsEdit from "../features/event-halls/EventHallsEdit";
+import Design from "../features/event-hall-designs/Design";
+import EventHallsDesign from "../features/event-hall-designs/EventHallsDesign";
+
 
 
 export const routes: RouteObject[] = [
@@ -42,6 +45,8 @@ export const routes: RouteObject[] = [
               { path: "salonlar", element: <EventHalls /> },
               { path: "salonlar/duzenle", element: <EventHallsEdit /> },
               { path: "salonlar/yeni-ekle", element: <EventHallsEdit /> },
+              { path: "salon-tasarimlari", element: <EventHallsDesign /> },
+              { path: "salon-tasarimlari/tasarla", element: <Design /> },
               { path: "kullanicilar", element: <RequireAdmin> <Users /> </RequireAdmin> },
               { path: "kullanicilar/yeni-ekle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> },
               { path: "kullanicilar/duzenle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> }

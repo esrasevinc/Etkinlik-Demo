@@ -1,45 +1,45 @@
 import { useLocation } from "react-router-dom";
-import { useStore } from "../../../stores/store";
+import { useStore } from "../../stores/store";
 import { useEffect, useState } from "react";
-import { Category } from "../../../models/category";
 import { Button, Col, Form, FormProps, Input, Row } from "antd";
-import LoadingComponent from "../../../layout/LoadingComponent";
+import LoadingComponent from "../../layout/LoadingComponent";
 import { observer } from "mobx-react-lite";
+import { Place } from "../../models/place";
 
-const CategoriesEdit = observer(() => {
+const PlacesEdit = observer(() => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const categoryID = params.get("categoryId");
+  const placeID = params.get("placeId");
   const [form] = Form.useForm();
 
-  const { categoryStore } = useStore();
+  const { placeStore } = useStore();
   const {
-    loadCategoryById,
+    loadPlaceById,
     loadingInitial,
     loading,
-    updateCategory,
-    createCategory,
-    clearSelectedCategory,
-  } = categoryStore;
+    updatePlace,
+    createPlace,
+    clearSelectedPlace,
+  } = placeStore;
 
-  const [category, setCategory] = useState<Category>();
+  const [place, setPlace] = useState<Place>();
 
   useEffect(() => {
-    if (categoryID) {
-      loadCategoryById(categoryID).then((category) => {
-        form.setFieldsValue(category);
-        setCategory(category);
+    if (placeID) {
+      loadPlaceById(placeID).then((place) => {
+        form.setFieldsValue(place);
+        setPlace(place);
       });
     }
 
-    return () => clearSelectedCategory();
-  }, [categoryID, loadCategoryById, clearSelectedCategory, form]);
+    return () => clearSelectedPlace();
+  }, [placeID, loadPlaceById, clearSelectedPlace, form]);
 
   const onFinish: FormProps["onFinish"] = (values) => {
-    if (categoryID) {
-      updateCategory(values);
+    if (placeID) {
+      updatePlace(values);
     } else {
-      createCategory(values);
+      createPlace(values);
     }
   };
 
@@ -47,7 +47,7 @@ const CategoriesEdit = observer(() => {
 
   return (
     <Form
-      initialValues={category}
+      initialValues={place}
       form={form}
       layout="vertical"
       onFinish={onFinish}
@@ -60,7 +60,7 @@ const CategoriesEdit = observer(() => {
             <Input type="hidden" />
           </Form.Item>
           <Form.Item
-            label="Etkinlik Türü"
+            label="Gösteri Merkezi"
             name="title"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >
@@ -77,4 +77,4 @@ const CategoriesEdit = observer(() => {
   );
 });
 
-export default CategoriesEdit;
+export default PlacesEdit;

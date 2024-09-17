@@ -1,4 +1,5 @@
 using Application.Activities;
+using Application.DTOs;
 using AutoMapper;
 using Domain;
 
@@ -23,6 +24,11 @@ namespace Application.Core
             CreateMap<Place, Place>();
             CreateMap<Place, PlaceDTO>();
             CreateMap<EventHall, EventHall>();
+            CreateMap<EventHallDTO, EventHall>();
+            CreateMap<EventHall, EventHallDTO>()
+            .ForMember(x => x.Place, o => o.MapFrom(s => s.Place ?? null))
+            .ForMember(x => x.PlaceId, o => o.MapFrom(s => s.Place.Id))
+            .ForMember(x => x.Id, o => o.MapFrom(s => s.Id));
         }
     }
 }

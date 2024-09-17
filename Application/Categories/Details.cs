@@ -1,15 +1,14 @@
-using Application.Activities;
 using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Application.DTOs;
 
 namespace Application.Categories
 {
-  public class Details
+    public class Details
   {
     public class Query : IRequest<Result<CategoryDTO>>
     {

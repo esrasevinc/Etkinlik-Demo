@@ -1,6 +1,4 @@
-using Domain;
-
-namespace Application.Activities
+namespace Application.DTOs
 {
     public class ActivityDTO
     {

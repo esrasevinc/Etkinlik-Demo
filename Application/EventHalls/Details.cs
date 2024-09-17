@@ -1,4 +1,5 @@
 using Application.Core;
+using Application.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
@@ -10,12 +11,12 @@ namespace Application.EventHalls
 {
     public class Details
   {
-    public class Query : IRequest<Result<EventHall>>
+    public class Query : IRequest<Result<EventHallDTO>>
     {
       public Guid Id { get; set; }
     }
 
-    public class Handler : IRequestHandler<Query, Result<EventHall>>
+    public class Handler : IRequestHandler<Query, Result<EventHallDTO>>
     {
       private readonly DataContext _context;
       private readonly IMapper _mapper;
@@ -25,11 +26,11 @@ namespace Application.EventHalls
         _context = context;
       }
 
-      public async Task<Result<EventHall>> Handle(Query request, CancellationToken cancellationToken)
+      public async Task<Result<EventHallDTO>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var hall = await _context.EventHalls.ProjectTo<EventHall>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(x => x.Id == request.Id);
+        var hall = await _context.EventHalls.ProjectTo<EventHallDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(x => x.Id == request.Id);
 
-        return Result<EventHall>.Success(hall);
+        return Result<EventHallDTO>.Success(hall);
       }
     }
   }

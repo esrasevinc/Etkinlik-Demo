@@ -1,5 +1,6 @@
 using Application.Activities;
 using Application.Core;
+using Application.DTOs;
 using AutoMapper;
 using Domain;
 using FluentValidation;

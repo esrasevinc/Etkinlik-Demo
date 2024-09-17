@@ -14,7 +14,7 @@ export default class EventHallStore {
     makeAutoObservable(this);
   }
 
-  get categories() {
+  get eventHalls() {
     return Array.from(this.eventHallsRegistry.values());
   }
 

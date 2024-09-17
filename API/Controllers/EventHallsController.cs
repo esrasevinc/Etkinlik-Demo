@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Application.EventHalls;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateEventHall(EventHall eventHall) {
+        public async Task<IActionResult> CreateEventHall(EventHallDTO eventHall) {
             return HandleResult(await Mediator.Send(new Create.Command { EventHall = eventHall }));
         }
 

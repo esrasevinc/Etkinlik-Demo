@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,9 +11,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240917064207_EventHallsMig")]
+    partial class EventHallsMig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -185,7 +188,10 @@ namespace Persistence.Migrations
                     b.Property<int>("Column")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("EventHallId")
+                    b.Property<int>("EventHallId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("EventHallId1")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Label")
@@ -199,7 +205,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventHallId");
+                    b.HasIndex("EventHallId1");
 
                     b.ToTable("Seats");
                 });
@@ -363,9 +369,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.EventHall", null)
                         .WithMany("Seats")
-                        .HasForeignKey("EventHallId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EventHallId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

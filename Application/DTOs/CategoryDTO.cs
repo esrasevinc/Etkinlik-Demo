@@ -1,6 +1,6 @@
-namespace Application.Activities
+namespace Application.DTOs
 {
-    public class PlaceDTO
+    public class CategoryDTO
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

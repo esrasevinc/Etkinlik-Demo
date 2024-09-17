@@ -1,11 +1,10 @@
 import  { useEffect, useState } from 'react'
 import { Button, Col, Form, FormProps, Input,  Row, Select } from "antd";
-import { ActivityFormValues } from '../../../models/activity';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../../stores/store';
 import LoadingComponent from '../../../layout/LoadingComponent';
 import { useLocation } from 'react-router';
-import { EventHall } from '../../../models/eventHall';
+import { EventHall, EventHallFormValues } from '../../../models/eventHall';
 
 const EventHallsEdit = observer(() => {
   const location = useLocation();
@@ -61,14 +60,14 @@ const EventHallsEdit = observer(() => {
           <Form.Item name={"id"} noStyle>
             <Input type="hidden" />
           </Form.Item>
-          <Form.Item
+          <Form.Item<EventHallFormValues>
             label="Salon Adı"
             name="title"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item<ActivityFormValues> label="Gösteri Merkezi" name={"placeId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
+          <Form.Item<EventHallFormValues> label="Gösteri Merkezi" name={"placeId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
         <Select>
           {places.map((pl) => (
             <Select.Option key={pl.id} value={pl.id}>
@@ -77,14 +76,14 @@ const EventHallsEdit = observer(() => {
           ))}
         </Select>
         </Form.Item>
-        <Form.Item
+        <Form.Item<EventHallFormValues>
             label="Yükseklik"
             name="rows"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >
              <Input type='number' min={1} />
           </Form.Item>
-          <Form.Item
+          <Form.Item<EventHallFormValues>
             label="Genişlik"
             name="columns"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
@@ -103,4 +102,3 @@ const EventHallsEdit = observer(() => {
 });
 
 export default EventHallsEdit
-

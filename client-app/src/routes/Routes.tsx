@@ -16,7 +16,7 @@ import PlacesEdit from "../features/places/PlacesEdit";
 import EventHalls from "../features/event-halls/EventHalls";
 import EventHallsEdit from "../features/event-halls/EventHallsEdit";
 import Design from "../features/event-hall-designs/Design";
-import EventHallsDesign from "../features/event-hall-designs/EventHallsDesign";
+import EventHallsDesign from "../features/event-hall-designs/EventHallsList";
 
 
 

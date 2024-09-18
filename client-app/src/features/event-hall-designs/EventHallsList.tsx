@@ -8,7 +8,7 @@ import locale from 'antd/es/locale/tr_TR';
 import { useStore } from "../../stores/store";
 import { EventHall } from "../../models/eventHall";
 
-const EventHallsDesign = observer(() => {
+const EventHallsList = observer(() => {
   const { eventHallStore, placeStore } = useStore();
   const { eventHalls, loadEventHalls, loadingInitial } = eventHallStore;
   const { places, loadPlaces } = placeStore;
@@ -88,4 +88,4 @@ const EventHallsDesign = observer(() => {
   );
 });
 
-export default EventHallsDesign;
+export default EventHallsList;

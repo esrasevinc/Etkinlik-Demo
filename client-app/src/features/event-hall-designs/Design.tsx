@@ -3,12 +3,7 @@ import { Button, Form, Input } from "antd";
 import { useStore } from "../../stores/store"; // MobX store'u kullanıyoruz
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router";
-
-interface Seat {
-  row: number;
-  column: number;
-  name: string;
-}
+import { Seat } from "../../models/seat";
 
 const Design = () => {
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
@@ -30,19 +25,33 @@ const Design = () => {
 
   const handleSeatClick = (row: number, column: number) => {
     const existingSeat = seats.find((seat) => seat.row === row && seat.column === column);
-
-    // Eğer koltuk mevcutsa ve bir isim atanmışsa, boş koltuk yap
-    if (existingSeat && existingSeat.name) {
-      const updatedSeats = seats.filter((seat) => !(seat.row === row && seat.column === column)); // Koltuğu sil
+  
+    if (existingSeat && existingSeat.label) {
+      const updatedSeats = seats.map((seat) => 
+        seat.row === row && seat.column === column
+          ? { ...seat, label: "", status: "Available" } // Koltuk adı ve durumu sıfırlanıyor
+          : seat
+      );
       setSeats(updatedSeats);
-      form.resetFields(); // Formu sıfırla
+      form.resetFields(); 
     } else {
-      // Koltuk boşsa ya da seçilmemişse, koltuk seçimini yap
-      setSelectedSeat(existingSeat || { row, column, name: "" });
-      form.setFieldsValue(existingSeat || { row, column, name: "" });
+      setSelectedSeat(
+        existingSeat || {
+          id: '', 
+          eventHallId: id, 
+          row,
+          column,
+          label: "",
+          status: "Available",
+        }
+      );
+      form.setFieldsValue(
+        existingSeat || { row, column, label: "", status: "Available" }
+      );
     }
   };
-
+  
+  // onFinish fonksiyonunda status "Booked" yapılıyor
   const onFinish = (values: Seat) => {
     const existingSeatIndex = seats.findIndex(
       (seat) => seat.row === values.row && seat.column === values.column
@@ -50,9 +59,9 @@ const Design = () => {
 
     const updatedSeats = [...seats];
     if (existingSeatIndex > -1) {
-      updatedSeats[existingSeatIndex] = values;
+      updatedSeats[existingSeatIndex] = { ...values, status: "Booked" }; // Status "Booked" yapılıyor
     } else {
-      updatedSeats.push(values);
+      updatedSeats.push({ ...values, status: "Booked" }); // Yeni eklenen koltukta da "Booked" yapılıyor
     }
 
     setSeats(updatedSeats);
@@ -70,11 +79,11 @@ const Design = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${selectedEventHall.columns}, 1fr)`, // Kolonlar eşit genişlikte olur
-          gap: "5px", // Hücreler arasında boşluk
-          width: "100%", // Grid'in genişliği ekran genişliğine göre ayarlanır
-          maxWidth: "1000px", // Maksimum genişlik sınırlaması, ekran genişliğini taşmasın
-          margin: "0 auto", // Ortalıyoruz
+          gridTemplateColumns: `repeat(${selectedEventHall.columns}, 1fr)`, 
+          gap: "5px", 
+          width: "100%", 
+          maxWidth: "1000px",
+          margin: "0 auto",
         }}
       >
         {Array.from({ length: selectedEventHall.rows }).map((_, rowIndex) =>
@@ -89,29 +98,33 @@ const Design = () => {
               <div
                 key={`${rowIndex}-${columnIndex}`}
                 style={{
-                  width: "100%", // Koltuğun genişliği hücre sayısına göre esneklik sağlar
-                  height: "0", // Yüksekliği padding ile ayarlayacağız
-                  paddingBottom: "100%", // Kare şeklinde hücreler yaratır
+                  width: "100%", 
+                  height: "0",
+                  paddingBottom: "100%", 
                   border: "0.5px solid lightgray",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: isSelected ? "lightblue" : seat ? "lightgreen" : "white",
+                  backgroundColor: isSelected
+                    ? "lightblue" // Seçilen koltuk
+                    : seat?.status === "Booked"
+                    ? "lightgreen" // Rezerve edilmiş koltuk
+                    : "white", // Boş koltuk
                   cursor: "pointer",
-                  position: "relative", // Pozisyonu relative yapıyoruz
+                  position: "relative", 
                 }}
                 onClick={() => handleSeatClick(rowIndex, columnIndex)}
               >
                 <span
                   style={{
-                    position: "absolute", // Tam ortalamak için absolute pozisyon
-                    top: "50%", // Yükseklik ortalaması
-                    left: "50%", // Yatay ortalaması
-                    transform: "translate(-50%, -50%)", // Merkezleme
+                    position: "absolute", 
+                    top: "50%", 
+                    left: "50%",
+                    transform: "translate(-50%, -50%)", 
                     textAlign: "center",
                   }}
                 >
-                  {seat?.name || ""}
+                  {seat?.label || ""}
                 </span>
               </div>
             );
@@ -129,7 +142,7 @@ const Design = () => {
           </Form.Item>
           <Form.Item
             label="Koltuk Adı"
-            name="name"
+            name="label"  // 'label' form alanı
             rules={[{ required: true, message: "Koltuk adı giriniz!" }]}
           >
             <Input />
@@ -147,9 +160,11 @@ const Design = () => {
         {seats.length > 0 ? (
           <ul>
             {seats.map((seat, index) => (
+               seat.status == "Booked" && 
               <li key={index}>
-                {`Koltuk: ${seat.name}`}
+                {`Koltuk: ${seat.label}, Satır: ${(seat.row) + 1}, Sütun: ${(seat.column) + 1}`}
               </li>
+              
             ))}
           </ul>
         ) : (

@@ -31,11 +31,12 @@ const Design = () => {
       const response = await axios.get(`/seats/${eventHallId}`);
       const fetchedSeats = response.data;
   
-      if (fetchedSeats.length === 0) {
+      if (Array.isArray(fetchedSeats) && fetchedSeats.length === 0) {
+        // Eğer koltuk verisi boşsa, varsayılan olarak boş bir grid oluştur
         const defaultSeats = Array.from({ length: selectedEventHall?.rows || 0 }, (_, rowIndex) =>
           Array.from({ length: selectedEventHall?.columns || 0 }, (_, columnIndex) => ({
-            id: '', 
-            eventHallId: eventHallId, 
+            id: '', // Varsayılan id, boş bir string ya da null da olabilir
+            eventHallId: eventHallId, // Varsayılan eventHallId
             row: rowIndex,
             column: columnIndex,
             label: "",
@@ -48,6 +49,8 @@ const Design = () => {
       }
     } catch (error) {
       console.error('Koltukları yükleme hatası:', error);
+      // Hata durumunda boş bir dizi set edebilir veya kullanıcıya bir hata mesajı gösterebilirsiniz
+      setSeats([]);
     }
   };
   

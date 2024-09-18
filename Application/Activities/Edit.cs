@@ -52,6 +52,12 @@ namespace Application.Activities
           activity.Place = place;
         }
 
+        if (request.Activity.EventHallId.HasValue)
+        {
+          var eventHall = await _context.EventHalls.FindAsync(request.Activity.EventHallId);
+          activity.EventHall = eventHall;
+        }
+
         /* Save updated item to database */
         var result = await _context.SaveChangesAsync() > 0;
 

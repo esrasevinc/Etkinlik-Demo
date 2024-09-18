@@ -31,6 +31,11 @@ namespace Persistence
             .WithOne(x => x.Place)
             .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<EventHall>()
+            .HasMany(x => x.Activities)
+            .WithOne(x => x.EventHall)
+            .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<Place>()
             .HasMany(x => x.EventHalls)
             .WithOne(x => x.Place)

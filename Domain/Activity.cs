@@ -11,5 +11,6 @@ namespace Domain
         public bool IsCancelled { get; set; }
         public Category Category { get; set; }
         public Place Place { get; set; }
+        public EventHall EventHall { get; set; }
     }
 }

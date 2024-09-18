@@ -8,5 +8,6 @@ namespace Domain
         public int Rows { get; set; }
         public int Columns { get; set; }
         public List<Seat> Seats { get; set; }
+        public ICollection<Activity> Activities { get; set; }
     }    
 }

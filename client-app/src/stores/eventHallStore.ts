@@ -9,6 +9,7 @@ export default class EventHallStore {
   selectedEventHall: EventHall | undefined = undefined;
   loading = false;
   loadingInitial = false;
+  eventHallsByPlaceId: Map<string, EventHall[]> = new Map();
 
   constructor() {
     makeAutoObservable(this);
@@ -17,6 +18,28 @@ export default class EventHallStore {
   get eventHalls() {
     return Array.from(this.eventHallsRegistry.values());
   }
+
+  getEventHallsByPlaceId = async (placeId: string) => {
+    if (this.eventHallsByPlaceId.has(placeId)) {
+      return this.eventHallsByPlaceId.get(placeId) || [];
+    } else {
+      this.loading = true;
+      try {
+        const eventHalls = await agent.EventHalls.listByPlaceId(placeId);
+        runInAction(() => {
+          this.eventHallsByPlaceId.set(placeId, eventHalls);
+          this.loading = false;
+        });
+        return eventHalls;
+      } catch (err) {
+        console.log(err);
+        runInAction(() => {
+          this.loading = false;
+        });
+        return [];
+      }
+    }
+  };
 
   private setEventHall = (eventHall: EventHall) => {
     this.eventHallsRegistry.set(eventHall.id!, eventHall);
@@ -131,4 +154,5 @@ export default class EventHallStore {
   clearSelectedEventHall = () => {
     this.selectedEventHall = undefined;
   };
+
 }

@@ -13,6 +13,7 @@ const Design = () => {
   const [form] = Form.useForm();
   const [rows, setRows] = useState<number>(10); 
   const [columns, setColumns] = useState<number>(10); 
+  const [hallName, setHallName] = useState<string>(""); 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const id = params.get("id") || "";
@@ -24,6 +25,7 @@ const Design = () => {
         const eventHall = response.data;
         setRows(eventHall.rows);
         setColumns(eventHall.columns);
+        setHallName(eventHall.title); 
       } catch (error) {
         console.error('Salon bilgilerini yükleme hatası:', error);
       }
@@ -37,7 +39,7 @@ const Design = () => {
         if (Array.isArray(fetchedSeats)) {
           setSeats(fetchedSeats.map(seat => ({
             ...seat,
-            status: seat.status || "Boşluk"  
+            status: seat.status || "Boşluk"
           })));
         } else {
           console.error('Geçersiz koltuk verisi alındı:', fetchedSeats);
@@ -133,8 +135,8 @@ const Design = () => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 className="text-xs">Koltuk Düzeni</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px"}}>
+        <h2 style={{ fontSize: "18px" }}>{hallName} Koltuk Düzeni</h2> 
         <Button type="primary" onClick={saveLayout} size="large"  
           style={{
             padding: "10px 20px",  
@@ -194,7 +196,7 @@ const Design = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   backgroundColor: seat?.status === "Koltuk"
-                    ? "lightgreen" 
+                    ? "lightgreen"
                     : (selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex ? "lightblue" : "white"),
                   cursor: "pointer",
                   position: "relative",

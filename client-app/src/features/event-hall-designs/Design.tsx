@@ -4,6 +4,7 @@ import { useStore } from "../../stores/store"; // MobX store'u kullanıyoruz
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router";
 import { Seat } from "../../models/seat";
+import axios from "axios"; // API çağrıları için axios
 
 const Design = () => {
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
@@ -50,8 +51,7 @@ const Design = () => {
       );
     }
   };
-  
-  // onFinish fonksiyonunda status "Booked" yapılıyor
+
   const onFinish = (values: Seat) => {
     const existingSeatIndex = seats.findIndex(
       (seat) => seat.row === values.row && seat.column === values.column
@@ -69,6 +69,23 @@ const Design = () => {
     form.resetFields();
   };
 
+  const saveLayout = async () => {
+    try {
+      await axios.post('/seats/save', {
+        eventHallId: id,
+        seats: seats.map(seat => ({
+          row: seat.row,
+          column: seat.column,
+          label: seat.label,
+          status: seat.status
+        }))
+      });
+      alert('Koltuk düzeni kaydedildi.');
+    } catch (error) {
+      console.error('Koltuk düzeni kaydetme hatası:', error);
+    }
+  };
+
   if (!selectedEventHall) {
     return <div>Salon bilgileri yükleniyor...</div>;
   }
@@ -76,6 +93,30 @@ const Design = () => {
   return (
     <div>
       <h2 className="text-xs">{selectedEventHall.title} Koltuk Düzeni</h2>
+
+      {selectedSeat && (
+        <Form form={form} onFinish={onFinish} layout="inline" style={{ marginBottom: 20 }}>
+          <Form.Item name="row">
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item name="column">
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item
+            label="Koltuk Adı"
+            name="label"  // 'label' form alanı
+            rules={[{ required: true, message: "Koltuk adı giriniz!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Kaydet
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+
       <div
         style={{
           display: "grid",
@@ -132,35 +173,13 @@ const Design = () => {
         )}
       </div>
 
-      {selectedSeat && (
-        <Form form={form} onFinish={onFinish} layout="inline" style={{ marginTop: 20 }}>
-          <Form.Item name="row">
-            <Input type="hidden" />
-          </Form.Item>
-          <Form.Item name="column">
-            <Input type="hidden" />
-          </Form.Item>
-          <Form.Item
-            label="Koltuk Adı"
-            name="label"  // 'label' form alanı
-            rules={[{ required: true, message: "Koltuk adı giriniz!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Kaydet
-            </Button>
-          </Form.Item>
-        </Form>
-      )}
-
       <div style={{ marginTop: 20 }}>
-        <h3>Koltuklar</h3>
+        
+
         {seats.length > 0 ? (
           <ul>
             {seats.map((seat, index) => (
-               seat.status == "Booked" && 
+               seat.status === "Booked" && 
               <li key={index}>
                 {`Koltuk: ${seat.label}, Satır: ${(seat.row) + 1}, Sütun: ${(seat.column) + 1}`}
               </li>
@@ -170,6 +189,9 @@ const Design = () => {
         ) : (
           <p>Henüz koltuk seçilmedi.</p>
         )}
+        <Button type="primary" onClick={saveLayout}>
+          Düzeni Kaydet
+        </Button>
       </div>
     </div>
   );

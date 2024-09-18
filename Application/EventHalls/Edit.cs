@@ -32,13 +32,9 @@ namespace Application.EventHalls
 
       public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
-        /* Search item in database */
         var eventHall = await _context.EventHalls.FindAsync(request.EventHall.Id);
 
-        /* Return null and handle it if not found */
         if (eventHall == null) return null;
-
-        /* Update fields based on given object */
         
         _mapper.Map(request.EventHall, eventHall);
 
@@ -48,13 +44,10 @@ namespace Application.EventHalls
           eventHall.Place = place;
         }
 
-        /* Save updated item to database */
         var result = await _context.SaveChangesAsync() > 0;
 
-        /* Handle if can't save to database */
         if (!result) return Result<Unit>.Failure("Salon güncellenemedi.");
 
-        /* Done! */
         return Result<Unit>.Success(Unit.Value);
       }
     }

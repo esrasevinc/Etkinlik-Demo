@@ -62,16 +62,15 @@ namespace Application.EventHalls
                     {
                         seats.Add(new Seat
                         {
-                            EventHallId = eventHall.Id, // Yeni oluşturulan salonun ID'si
+                            EventHallId = eventHall.Id, 
                             Row = row,
                             Column = col,
-                            Label = "", // Varsayılan olarak boş etiket
-                            Status = "Available" // Varsayılan olarak Available
+                            Label = "",
+                            Status = "Boşluk" 
                         });
                     }
                 }
 
-                // Koltuklar veritabanına kaydediliyor
                 await _context.Seats.AddRangeAsync(seats);
                 var seatResult = await _context.SaveChangesAsync() > 0;
 

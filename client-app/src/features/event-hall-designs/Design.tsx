@@ -34,20 +34,13 @@ const Design = () => {
         const response = await axios.get(`/seats/${eventHallId}`);
         const fetchedSeats = response.data;
 
-        if (Array.isArray(fetchedSeats) && fetchedSeats.length === 0) {
-          const defaultSeats = Array.from({ length: rows }, (_, rowIndex) =>
-            Array.from({ length: columns }, (_, columnIndex) => ({
-              id: '',
-              eventHallId: eventHallId,
-              row: rowIndex,
-              column: columnIndex,
-              label: "",
-              status: "Available"
-            }))
-          ).flat();
-          setSeats(defaultSeats);
+        if (Array.isArray(fetchedSeats)) {
+          setSeats(fetchedSeats.map(seat => ({
+            ...seat,
+            status: seat.status || "Boşluk"  
+          })));
         } else {
-          setSeats(fetchedSeats);
+          console.error('Geçersiz koltuk verisi alındı:', fetchedSeats);
         }
       } catch (error) {
         console.error('Koltukları yükleme hatası:', error);
@@ -57,16 +50,16 @@ const Design = () => {
 
     fetchEventHall(id);
     fetchSeats(id);
-  }, [id, rows, columns]);
+  }, [id]);
 
   const handleSeatClick = (row: number, column: number) => {
     const existingSeat = seats.find(seat => seat.row === row && seat.column === column);
 
     if (existingSeat) {
-      if (existingSeat.status === "Booked") {
+      if (existingSeat.status === "Koltuk") {
         const updatedSeats = seats.map(seat =>
           seat.row === row && seat.column === column
-            ? { ...seat, label: "", status: "Available" }
+            ? { ...seat, label: "", status: "Boşluk" }
             : seat
         );
         setSeats(updatedSeats);
@@ -83,7 +76,7 @@ const Design = () => {
         row,
         column,
         label: "",
-        status: "Available",
+        status: "Boşluk",
       };
       setSelectedSeat(newSeat);
       form.setFieldsValue(newSeat);
@@ -95,9 +88,9 @@ const Design = () => {
 
     const updatedSeats = [...seats];
     if (existingSeatIndex > -1) {
-      updatedSeats[existingSeatIndex] = { ...values, status: "Booked" };
+      updatedSeats[existingSeatIndex] = { ...values, status: "Koltuk" };
     } else {
-      updatedSeats.push({ ...values, status: "Booked" }); 
+      updatedSeats.push({ ...values, status: "Koltuk" }); 
     }
 
     setSeats(updatedSeats);
@@ -200,8 +193,8 @@ const Design = () => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: seat?.status === "Booked"
-                    ? "lightgreen"
+                  backgroundColor: seat?.status === "Koltuk"
+                    ? "lightgreen" 
                     : (selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex ? "lightblue" : "white"),
                   cursor: "pointer",
                   position: "relative",
@@ -229,7 +222,7 @@ const Design = () => {
         {seats.length > 0 ? (
           <ul>
             {seats.map((seat, index) =>
-              seat.status === "Booked" && (
+              seat.status === "Koltuk" && (
                 <li key={index}>
                   {`Koltuk: ${seat.label}, Satır: ${(seat.row) + 1}, Sütun: ${(seat.column) + 1}`}
                 </li>

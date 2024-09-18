@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Input } from "antd";
-import { useStore } from "../../stores/store"; // MobX store'u kullanıyoruz
+import { store, useStore } from "../../stores/store";
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router";
 import { Seat } from "../../models/seat";
-import axios from "axios"; // API çağrıları için axios
+import axios from "axios";
+import { router } from "../../routes/Routes";
 
 const Design = () => {
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
@@ -17,12 +18,39 @@ const Design = () => {
   const id = params.get("id") || "";
 
   useEffect(() => {
-    const fetchEventHall = async () => {
-      await loadEventHallById(id);
+    const fetchEventHallAndSeats = async () => {
+      await loadEventHallById(id); 
+      fetchSeats(id); 
     };
 
-    fetchEventHall();
+    fetchEventHallAndSeats();
   }, [loadEventHallById, id]);
+
+  const fetchSeats = async (eventHallId: string) => {
+    try {
+      const response = await axios.get(`/seats/${eventHallId}`);
+      const fetchedSeats = response.data;
+  
+      if (fetchedSeats.length === 0) {
+        const defaultSeats = Array.from({ length: selectedEventHall?.rows || 0 }, (_, rowIndex) =>
+          Array.from({ length: selectedEventHall?.columns || 0 }, (_, columnIndex) => ({
+            id: '', 
+            eventHallId: eventHallId, 
+            row: rowIndex,
+            column: columnIndex,
+            label: "",
+            status: "Available"
+          }))
+        ).flat();
+        setSeats(defaultSeats);
+      } else {
+        setSeats(fetchedSeats);
+      }
+    } catch (error) {
+      console.error('Koltukları yükleme hatası:', error);
+    }
+  };
+  
 
   const handleSeatClick = (row: number, column: number) => {
     const existingSeat = seats.find((seat) => seat.row === row && seat.column === column);
@@ -30,7 +58,7 @@ const Design = () => {
     if (existingSeat && existingSeat.label) {
       const updatedSeats = seats.map((seat) => 
         seat.row === row && seat.column === column
-          ? { ...seat, label: "", status: "Available" } // Koltuk adı ve durumu sıfırlanıyor
+          ? { ...seat, label: "", status: "Available" } 
           : seat
       );
       setSeats(updatedSeats);
@@ -59,9 +87,9 @@ const Design = () => {
 
     const updatedSeats = [...seats];
     if (existingSeatIndex > -1) {
-      updatedSeats[existingSeatIndex] = { ...values, status: "Booked" }; // Status "Booked" yapılıyor
+      updatedSeats[existingSeatIndex] = { ...values, status: "Booked" }; 
     } else {
-      updatedSeats.push({ ...values, status: "Booked" }); // Yeni eklenen koltukta da "Booked" yapılıyor
+      updatedSeats.push({ ...values, status: "Booked" }); 
     }
 
     setSeats(updatedSeats);
@@ -80,7 +108,8 @@ const Design = () => {
           status: seat.status
         }))
       });
-      alert('Koltuk düzeni kaydedildi.');
+      store.notificationStore.openNotification("success", "Salon düzeni başarıyla oluşturuldu!", "");
+      router.navigate("/salon-tasarimlari");
     } catch (error) {
       console.error('Koltuk düzeni kaydetme hatası:', error);
     }
@@ -104,7 +133,7 @@ const Design = () => {
           </Form.Item>
           <Form.Item
             label="Koltuk Adı"
-            name="label"  // 'label' form alanı
+            name="label" 
             rules={[{ required: true, message: "Koltuk adı giriniz!" }]}
           >
             <Input />
@@ -147,10 +176,10 @@ const Design = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   backgroundColor: isSelected
-                    ? "lightblue" // Seçilen koltuk
+                    ? "lightblue" 
                     : seat?.status === "Booked"
-                    ? "lightgreen" // Rezerve edilmiş koltuk
-                    : "white", // Boş koltuk
+                    ? "lightgreen" 
+                    : "white", 
                   cursor: "pointer",
                   position: "relative", 
                 }}
@@ -174,16 +203,13 @@ const Design = () => {
       </div>
 
       <div style={{ marginTop: 20 }}>
-        
-
         {seats.length > 0 ? (
           <ul>
             {seats.map((seat, index) => (
-               seat.status === "Booked" && 
+              seat.status === "Booked" && 
               <li key={index}>
                 {`Koltuk: ${seat.label}, Satır: ${(seat.row) + 1}, Sütun: ${(seat.column) + 1}`}
               </li>
-              
             ))}
           </ul>
         ) : (

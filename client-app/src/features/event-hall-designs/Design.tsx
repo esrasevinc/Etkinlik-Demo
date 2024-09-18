@@ -1,96 +1,101 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Input } from "antd";
-import { store, useStore } from "../../stores/store";
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router";
 import { Seat } from "../../models/seat";
 import axios from "axios";
 import { router } from "../../routes/Routes";
+import { store } from "../../stores/store";
 
 const Design = () => {
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const [seats, setSeats] = useState<Seat[]>([]);
   const [form] = Form.useForm();
-  const { eventHallStore } = useStore();
-  const { selectedEventHall, loadEventHallById } = eventHallStore;
+  const [rows, setRows] = useState<number>(10); 
+  const [columns, setColumns] = useState<number>(10); 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const id = params.get("id") || "";
 
   useEffect(() => {
-    const fetchEventHallAndSeats = async () => {
-      await loadEventHallById(id); 
-      fetchSeats(id); 
+    const fetchEventHall = async (eventHallId: string) => {
+      try {
+        const response = await axios.get(`/eventhalls/${eventHallId}`);
+        const eventHall = response.data;
+        setRows(eventHall.rows);
+        setColumns(eventHall.columns);
+      } catch (error) {
+        console.error('Salon bilgilerini yükleme hatası:', error);
+      }
     };
 
-    fetchEventHallAndSeats();
-  }, [loadEventHallById, id]);
+    const fetchSeats = async (eventHallId: string) => {
+      try {
+        const response = await axios.get(`/seats/${eventHallId}`);
+        const fetchedSeats = response.data;
 
-  const fetchSeats = async (eventHallId: string) => {
-    try {
-      const response = await axios.get(`/seats/${eventHallId}`);
-      const fetchedSeats = response.data;
-  
-      if (Array.isArray(fetchedSeats) && fetchedSeats.length === 0) {
-        // Eğer koltuk verisi boşsa, varsayılan olarak boş bir grid oluştur
-        const defaultSeats = Array.from({ length: selectedEventHall?.rows || 0 }, (_, rowIndex) =>
-          Array.from({ length: selectedEventHall?.columns || 0 }, (_, columnIndex) => ({
-            id: '', // Varsayılan id, boş bir string ya da null da olabilir
-            eventHallId: eventHallId, // Varsayılan eventHallId
-            row: rowIndex,
-            column: columnIndex,
-            label: "",
-            status: "Available"
-          }))
-        ).flat();
-        setSeats(defaultSeats);
-      } else {
-        setSeats(fetchedSeats);
+        if (Array.isArray(fetchedSeats) && fetchedSeats.length === 0) {
+          const defaultSeats = Array.from({ length: rows }, (_, rowIndex) =>
+            Array.from({ length: columns }, (_, columnIndex) => ({
+              id: '',
+              eventHallId: eventHallId,
+              row: rowIndex,
+              column: columnIndex,
+              label: "",
+              status: "Available"
+            }))
+          ).flat();
+          setSeats(defaultSeats);
+        } else {
+          setSeats(fetchedSeats);
+        }
+      } catch (error) {
+        console.error('Koltukları yükleme hatası:', error);
+        setSeats([]);
       }
-    } catch (error) {
-      console.error('Koltukları yükleme hatası:', error);
-      // Hata durumunda boş bir dizi set edebilir veya kullanıcıya bir hata mesajı gösterebilirsiniz
-      setSeats([]);
-    }
-  };
-  
+    };
+
+    fetchEventHall(id);
+    fetchSeats(id);
+  }, [id, rows, columns]);
 
   const handleSeatClick = (row: number, column: number) => {
-    const existingSeat = seats.find((seat) => seat.row === row && seat.column === column);
-  
-    if (existingSeat && existingSeat.label) {
-      const updatedSeats = seats.map((seat) => 
-        seat.row === row && seat.column === column
-          ? { ...seat, label: "", status: "Available" } 
-          : seat
-      );
-      setSeats(updatedSeats);
-      form.resetFields(); 
+    const existingSeat = seats.find(seat => seat.row === row && seat.column === column);
+
+    if (existingSeat) {
+      if (existingSeat.status === "Booked") {
+        const updatedSeats = seats.map(seat =>
+          seat.row === row && seat.column === column
+            ? { ...seat, label: "", status: "Available" }
+            : seat
+        );
+        setSeats(updatedSeats);
+        setSelectedSeat(null); 
+        form.resetFields();
+      } else {
+        setSelectedSeat(existingSeat);
+        form.setFieldsValue(existingSeat);
+      }
     } else {
-      setSelectedSeat(
-        existingSeat || {
-          id: '', 
-          eventHallId: id, 
-          row,
-          column,
-          label: "",
-          status: "Available",
-        }
-      );
-      form.setFieldsValue(
-        existingSeat || { row, column, label: "", status: "Available" }
-      );
+      const newSeat = {
+        id: '',
+        eventHallId: id,
+        row,
+        column,
+        label: "",
+        status: "Available",
+      };
+      setSelectedSeat(newSeat);
+      form.setFieldsValue(newSeat);
     }
   };
 
-  const onFinish = (values: Seat) => {
-    const existingSeatIndex = seats.findIndex(
-      (seat) => seat.row === values.row && seat.column === values.column
-    );
+  const onFinish = async (values: Seat) => {
+    const existingSeatIndex = seats.findIndex(seat => seat.row === values.row && seat.column === values.column);
 
     const updatedSeats = [...seats];
     if (existingSeatIndex > -1) {
-      updatedSeats[existingSeatIndex] = { ...values, status: "Booked" }; 
+      updatedSeats[existingSeatIndex] = { ...values, status: "Booked" };
     } else {
       updatedSeats.push({ ...values, status: "Booked" }); 
     }
@@ -98,6 +103,21 @@ const Design = () => {
     setSeats(updatedSeats);
     setSelectedSeat(null);
     form.resetFields();
+
+    try {
+      await axios.post('/seats/save', {
+        eventHallId: id,
+        seats: updatedSeats.map(seat => ({
+          row: seat.row,
+          column: seat.column,
+          label: seat.label,
+          status: seat.status
+        }))
+      });
+      //store.notificationStore.openNotification("success", "Koltuk başarıyla güncellendi!", "");
+    } catch (error) {
+      console.error('Koltuk güncelleme hatası:', error);
+    }
   };
 
   const saveLayout = async () => {
@@ -111,20 +131,26 @@ const Design = () => {
           status: seat.status
         }))
       });
-      store.notificationStore.openNotification("success", "Salon düzeni başarıyla oluşturuldu!", "");
+      store.notificationStore.openNotification("success", "Salon düzeni başarıyla kaydedildi!", "");
       router.navigate("/salon-tasarimlari");
     } catch (error) {
       console.error('Koltuk düzeni kaydetme hatası:', error);
     }
   };
 
-  if (!selectedEventHall) {
-    return <div>Salon bilgileri yükleniyor...</div>;
-  }
-
   return (
     <div>
-      <h2 className="text-xs">{selectedEventHall.title} Koltuk Düzeni</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h2 className="text-xs">Koltuk Düzeni</h2>
+        <Button type="primary" onClick={saveLayout} size="large"  
+          style={{
+            padding: "10px 20px",  
+            fontSize: "18px",  
+            height: "50px", 
+          }}>
+          Düzeni Kaydet
+        </Button>
+      </div>
 
       {selectedSeat && (
         <Form form={form} onFinish={onFinish} layout="inline" style={{ marginBottom: 20 }}>
@@ -143,7 +169,7 @@ const Design = () => {
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Kaydet
+              Ekle
             </Button>
           </Form.Item>
         </Form>
@@ -152,48 +178,42 @@ const Design = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${selectedEventHall.columns}, 1fr)`, 
-          gap: "5px", 
-          width: "100%", 
+          gridTemplateColumns: `repeat(${columns}, 1fr)`,
+          gap: "5px",
+          width: "100%",
           maxWidth: "1000px",
           margin: "0 auto",
         }}
       >
-        {Array.from({ length: selectedEventHall.rows }).map((_, rowIndex) =>
-          Array.from({ length: selectedEventHall.columns }).map((_, columnIndex) => {
-            const isSelected =
-              selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex;
-            const seat = seats.find(
-              (seat) => seat.row === rowIndex && seat.column === columnIndex
-            );
+        {Array.from({ length: rows }).map((_, rowIndex) =>
+          Array.from({ length: columns }).map((_, columnIndex) => {
+            const seat = seats.find(seat => seat.row === rowIndex && seat.column === columnIndex);
 
             return (
               <div
                 key={`${rowIndex}-${columnIndex}`}
                 style={{
-                  width: "100%", 
+                  width: "100%",
                   height: "0",
-                  paddingBottom: "100%", 
+                  paddingBottom: "100%",
                   border: "0.5px solid lightgray",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: isSelected
-                    ? "lightblue" 
-                    : seat?.status === "Booked"
-                    ? "lightgreen" 
-                    : "white", 
+                  backgroundColor: seat?.status === "Booked"
+                    ? "lightgreen"
+                    : (selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex ? "lightblue" : "white"),
                   cursor: "pointer",
-                  position: "relative", 
+                  position: "relative",
                 }}
                 onClick={() => handleSeatClick(rowIndex, columnIndex)}
               >
                 <span
                   style={{
-                    position: "absolute", 
-                    top: "50%", 
+                    position: "absolute",
+                    top: "50%",
                     left: "50%",
-                    transform: "translate(-50%, -50%)", 
+                    transform: "translate(-50%, -50%)",
                     textAlign: "center",
                   }}
                 >
@@ -208,19 +228,17 @@ const Design = () => {
       <div style={{ marginTop: 20 }}>
         {seats.length > 0 ? (
           <ul>
-            {seats.map((seat, index) => (
-              seat.status === "Booked" && 
-              <li key={index}>
-                {`Koltuk: ${seat.label}, Satır: ${(seat.row) + 1}, Sütun: ${(seat.column) + 1}`}
-              </li>
-            ))}
+            {seats.map((seat, index) =>
+              seat.status === "Booked" && (
+                <li key={index}>
+                  {`Koltuk: ${seat.label}, Satır: ${(seat.row) + 1}, Sütun: ${(seat.column) + 1}`}
+                </li>
+              )
+            )}
           </ul>
         ) : (
           <p>Henüz koltuk seçilmedi.</p>
         )}
-        <Button type="primary" onClick={saveLayout}>
-          Düzeni Kaydet
-        </Button>
       </div>
     </div>
   );

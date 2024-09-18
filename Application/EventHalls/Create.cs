@@ -11,20 +11,18 @@ namespace Application.EventHalls
 {
     public class Create
     {
-
-
         public class Command : IRequest<Result<EventHallDTO>>
         {
             public EventHallDTO EventHall { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<EventHall>
+        {
+            public CommandValidator()
             {
-                public CommandValidator()
-                {
-                    RuleFor(x => x.Title).NotEmpty();
-                }
+                RuleFor(x => x.Title).NotEmpty();
             }
+        }
 
         public class Handler : IRequestHandler<Command, Result<EventHallDTO>>
         {
@@ -37,25 +35,49 @@ namespace Application.EventHalls
                 _context = context;
             }
 
-        
             public async Task<Result<EventHallDTO>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var place = await _context.Places.FirstOrDefaultAsync(x => x.Id == request.EventHall.PlaceId);
+
                 var eventHall = new EventHall
                 {
-                Title = request.EventHall.Title,
-                Rows = request.EventHall.Rows,
-                Columns = request.EventHall.Columns,
-                Place = place,
+                    Title = request.EventHall.Title,
+                    Rows = request.EventHall.Rows,
+                    Columns = request.EventHall.Columns,
+                    Place = place,
                 };
-        
+
+                // Event hall kaydediliyor
                 var savedEventHall = await _context.EventHalls.AddAsync(eventHall);
-        
                 var result = await _context.SaveChangesAsync() > 0;
-        
-                var rEventHall = _mapper.Map<EventHallDTO>(savedEventHall.Entity);
 
                 if (!result) return Result<EventHallDTO>.Failure("Salon oluşturulamadı.");
+
+                // Yeni salon oluşturulduktan sonra koltukları ekleme işlemi
+                var seats = new List<Seat>();
+
+                for (int row = 0; row < eventHall.Rows; row++)
+                {
+                    for (int col = 0; col < eventHall.Columns; col++)
+                    {
+                        seats.Add(new Seat
+                        {
+                            EventHallId = eventHall.Id, // Yeni oluşturulan salonun ID'si
+                            Row = row,
+                            Column = col,
+                            Label = "", // Varsayılan olarak boş etiket
+                            Status = "Available" // Varsayılan olarak Available
+                        });
+                    }
+                }
+
+                // Koltuklar veritabanına kaydediliyor
+                await _context.Seats.AddRangeAsync(seats);
+                var seatResult = await _context.SaveChangesAsync() > 0;
+
+                if (!seatResult) return Result<EventHallDTO>.Failure("Koltuklar eklenirken bir hata oluştu.");
+
+                var rEventHall = _mapper.Map<EventHallDTO>(savedEventHall.Entity);
 
                 return Result<EventHallDTO>.Success(rEventHall);
             }

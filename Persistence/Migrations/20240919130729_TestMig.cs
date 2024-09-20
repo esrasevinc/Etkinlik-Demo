@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMig : Migration
+    public partial class TestMig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -182,6 +182,27 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EventHalls",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    PlaceId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    Rows = table.Column<int>(type: "INTEGER", nullable: false),
+                    Columns = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventHalls", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventHalls_Places_PlaceId",
+                        column: x => x.PlaceId,
+                        principalTable: "Places",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Activities",
                 columns: table => new
                 {
@@ -193,7 +214,8 @@ namespace Persistence.Migrations
                     IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsCancelled = table.Column<bool>(type: "INTEGER", nullable: false),
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    PlaceId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    PlaceId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    EventHallId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -205,6 +227,12 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
+                        name: "FK_Activities_EventHalls_EventHallId",
+                        column: x => x.EventHallId,
+                        principalTable: "EventHalls",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_Activities_Places_PlaceId",
                         column: x => x.PlaceId,
                         principalTable: "Places",
@@ -212,10 +240,37 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Seats",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EventHallId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Label = table.Column<string>(type: "TEXT", nullable: true),
+                    Row = table.Column<int>(type: "INTEGER", nullable: false),
+                    Column = table.Column<int>(type: "INTEGER", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Seats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Seats_EventHalls_EventHallId",
+                        column: x => x.EventHallId,
+                        principalTable: "EventHalls",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_CategoryId",
                 table: "Activities",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_EventHallId",
+                table: "Activities",
+                column: "EventHallId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_PlaceId",
@@ -258,6 +313,16 @@ namespace Persistence.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventHalls_PlaceId",
+                table: "EventHalls",
+                column: "PlaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Seats_EventHallId",
+                table: "Seats",
+                column: "EventHallId");
         }
 
         /// <inheritdoc />
@@ -282,16 +347,22 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Seats");
 
             migrationBuilder.DropTable(
-                name: "Places");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "EventHalls");
+
+            migrationBuilder.DropTable(
+                name: "Places");
         }
     }
 }

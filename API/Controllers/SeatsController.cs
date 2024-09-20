@@ -97,31 +97,52 @@ namespace API.Controllers
         }
 
 
-// Endpoint in SeatsController
-[HttpPost("save")]
-public async Task<IActionResult> SaveSeats([FromBody] SaveSeatsDTO saveSeatsDTO)
-{
-    var existingSeats = await _context.Seats
-        .Where(s => s.EventHallId == saveSeatsDTO.EventHallId)
-        .ToListAsync();
+        // Endpoint for saving seats in EventHall
+        [HttpPost("save")]
+        public async Task<IActionResult> SaveSeats([FromBody] SaveSeatsDTO saveSeatsDTO)
+        {
+            // Salonu kontrol et
+            var eventHall = await _context.EventHalls.FindAsync(saveSeatsDTO.EventHallId);
+            if (eventHall == null)
+            {
+                return NotFound("Salon bulunamadı.");
+            }
 
-    _context.Seats.RemoveRange(existingSeats);
+            // Mevcut koltukları kaldır
+            var existingSeats = await _context.Seats
+                .Where(s => s.EventHallId == saveSeatsDTO.EventHallId)
+                .ToListAsync();
 
-    var newSeats = saveSeatsDTO.Seats.Select(seatDto => new Seat
-    {
-        Id = Guid.NewGuid(),
-        EventHallId = saveSeatsDTO.EventHallId,
-        Row = seatDto.Row,
-        Column = seatDto.Column,
-        Label = seatDto.Label,
-        Status = seatDto.Status
-    });
+            // Koltuklar varsa önce sil
+            if (existingSeats.Any())
+            {
+                _context.Seats.RemoveRange(existingSeats);
+            }
 
-    await _context.Seats.AddRangeAsync(newSeats);
-    await _context.SaveChangesAsync();
+            // Yeni koltukları ekle
+            var newSeats = saveSeatsDTO.Seats.Select(seatDto => new Seat
+            {
+                Id = Guid.NewGuid(),  // Yeni bir Id oluştur
+                EventHallId = saveSeatsDTO.EventHallId,  // EventHallId doğru şekilde atanıyor
+                Row = seatDto.Row,
+                Column = seatDto.Column,
+                Label = seatDto.Label,
+                Status = seatDto.Status
+            }).ToList(); // ToList() ekleyerek LINQ expression'ı materialize ediyorum
 
-    return Ok("Koltuk düzeni kaydedildi.");
-}
+            // Koltukları veri tabanına ekle
+            await _context.Seats.AddRangeAsync(newSeats);
+
+            // Değişiklikleri kaydet
+            var success = await _context.SaveChangesAsync() > 0;
+
+            if (success)
+            {
+                return Ok("Koltuk düzeni başarıyla kaydedildi.");
+            }
+
+            return BadRequest("Koltuk düzeni kaydedilemedi.");
+        }
 
     }
 }

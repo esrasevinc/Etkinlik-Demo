@@ -24,8 +24,19 @@ namespace Application.Activities
 
             public async Task<Result<List<ActivityDTO>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activities = await _context.Activities.Where(x => !x.IsDeleted).Include(a => a.Category).Include(x => x.Place).OrderByDescending(d => d.Date).ProjectTo<ActivityDTO>(_mapper.ConfigurationProvider).ToListAsync();
-                return Result<List<ActivityDTO>>.Success(activities);
+                var activities = await _context.Activities
+                    .Where(x => !x.IsDeleted)
+                    .Include(a => a.Category)
+                    .Include(x => x.Place)
+                    .Include(x => x.EventHall)
+                        .ThenInclude(eh => eh.Seats) 
+                    .OrderByDescending(d => d.Date)
+                    .ToListAsync();
+
+                var activityDTOs = _mapper.Map<List<ActivityDTO>>(activities);
+
+                return Result<List<ActivityDTO>>.Success(activityDTOs);
+
             }
         }
 

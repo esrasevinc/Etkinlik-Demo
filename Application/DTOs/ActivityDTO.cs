@@ -14,6 +14,6 @@ namespace Application.DTOs
         public Guid? EventHallId { get; set; }
         public CategoryDTO Category { get; set; }
         public PlaceDTO Place { get; set; }
-        public EventHallDTO EventHall{ get; set; }
+        public EventHallDTO EventHall { get; set; }
     }
 }

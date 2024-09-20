@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240815123636_InitialMig")]
-    partial class InitialMig
+    [Migration("20240919130729_TestMig")]
+    partial class TestMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("EventHallId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
@@ -53,6 +56,8 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("EventHallId");
 
                     b.HasIndex("PlaceId");
 
@@ -140,6 +145,31 @@ namespace Persistence.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Domain.EventHall", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Columns")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("PlaceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Rows")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("EventHalls");
+                });
+
             modelBuilder.Entity("Domain.Place", b =>
                 {
                     b.Property<Guid>("Id")
@@ -152,6 +182,34 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Places");
+                });
+
+            modelBuilder.Entity("Domain.Seat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Column")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("EventHallId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Row")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventHallId");
+
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -289,6 +347,11 @@ namespace Persistence.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("Domain.EventHall", "EventHall")
+                        .WithMany("Activities")
+                        .HasForeignKey("EventHallId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Domain.Place", "Place")
                         .WithMany("Activities")
                         .HasForeignKey("PlaceId")
@@ -296,7 +359,30 @@ namespace Persistence.Migrations
 
                     b.Navigation("Category");
 
+                    b.Navigation("EventHall");
+
                     b.Navigation("Place");
+                });
+
+            modelBuilder.Entity("Domain.EventHall", b =>
+                {
+                    b.HasOne("Domain.Place", "Place")
+                        .WithMany("EventHalls")
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Place");
+                });
+
+            modelBuilder.Entity("Domain.Seat", b =>
+                {
+                    b.HasOne("Domain.EventHall", "EventHall")
+                        .WithMany("Seats")
+                        .HasForeignKey("EventHallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventHall");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -355,9 +441,18 @@ namespace Persistence.Migrations
                     b.Navigation("Activities");
                 });
 
+            modelBuilder.Entity("Domain.EventHall", b =>
+                {
+                    b.Navigation("Activities");
+
+                    b.Navigation("Seats");
+                });
+
             modelBuilder.Entity("Domain.Place", b =>
                 {
                     b.Navigation("Activities");
+
+                    b.Navigation("EventHalls");
                 });
 #pragma warning restore 612, 618
         }

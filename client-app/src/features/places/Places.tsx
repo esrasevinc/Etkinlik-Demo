@@ -6,6 +6,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { Place } from "../../models/place";
+import { router } from "../../routes/Routes";
 
 const Places = observer(() => {
   const { placeStore } = useStore();
@@ -31,7 +32,7 @@ const Places = observer(() => {
       title: "İşlemler",
       dataIndex: "actions",
       render: (_, record) => (
-        <Flex wrap="wrap" gap="small">
+        <Flex wrap gap='small'>
           <Link to={`duzenle?placeId=${record.id}`}>
             <Tooltip title="Düzenle">
               <Button type="primary" shape="circle" icon={<EditOutlined />} />
@@ -52,11 +53,27 @@ const Places = observer(() => {
   ];
 
   return (
+    <>
+    <Flex wrap gap='large' vertical align="end">
+    <Button 
+    type="primary" 
+    size="large" 
+    onClick={() => router.navigate('/gosteri-merkezleri/yeni-ekle')}
+    style={ { width : '25%' }}
+    >
+      Yeni Ekle
+    </Button>
     <Table
-      columns={columns}
+      bordered
       scroll={{ x: 500 }}
+      columns={columns}
       dataSource={places}
+      loading={loadingInitial}
+      style={ { width : '100%' }}
     />
+    </Flex>
+    
+    </>
   );
 });
 

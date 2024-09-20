@@ -6,6 +6,8 @@ import { User } from "../../models/user";
 import { useStore } from "../../stores/store";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { observer } from "mobx-react-lite";
+import { router } from "../../routes/Routes";
+
 
 
 const Users = () => {
@@ -70,11 +72,28 @@ const Users = () => {
   ];
 
   return (
+    <>
+    <Flex wrap gap='large' vertical align="end">
+    <Button 
+    type="primary" 
+    size="large" 
+    onClick={() => router.navigate('/kullanicilar/yeni-ekle')}
+    style={ { width : '25%' }}
+    >
+      Yeni Ekle
+    </Button>
     <Table
-      columns={columns}
+      bordered
       scroll={{ x: 500 }}
+      columns={columns}
       dataSource={usersAll}
+      loading={loadingInitial}
+      style={ { width : '100%' }}
     />
+    </Flex>
+    
+    </>
+    
   );
 };
 

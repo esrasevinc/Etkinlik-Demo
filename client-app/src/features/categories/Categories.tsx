@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useStore } from "../../stores/store";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { Category } from "../../models/category";
+import { router } from "../../routes/Routes";
 
 
 const Categories = observer(() => {
@@ -32,7 +33,7 @@ const Categories = observer(() => {
       title: "İşlemler",
       dataIndex: "actions",
       render: (_, record) => (
-        <Flex wrap="wrap" gap="small">
+        <Flex wrap gap='small'>
           <Link to={`duzenle?categoryId=${record.id}`}>
             <Tooltip title="Düzenle">
               <Button type="primary" shape="circle" icon={<EditOutlined />} />
@@ -53,11 +54,27 @@ const Categories = observer(() => {
   ];
 
   return (
+    <>
+    <Flex wrap gap='large' vertical align="end">
+    <Button 
+    type="primary" 
+    size="large" 
+    onClick={() => router.navigate('/etkinlik-turleri/yeni-ekle')}
+    style={ { width : '25%' }}
+    >
+      Yeni Ekle
+    </Button>
     <Table
-      columns={columns}
+      bordered
       scroll={{ x: 500 }}
+      columns={columns}
       dataSource={categories}
+      loading={loadingInitial}
+      style={ { width : '100%' }}
     />
+    </Flex>
+    
+    </>
   );
 });
 

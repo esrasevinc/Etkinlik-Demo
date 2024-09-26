@@ -1,36 +1,42 @@
 {
   "format": 1,
   "restore": {
-    "/Users/bimteknik/Etkinlik-Demo/Application/Application.csproj": {}
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj": {}
   },
   "projects": {
-    "/Users/bimteknik/Etkinlik-Demo/Application/Application.csproj": {
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/bimteknik/Etkinlik-Demo/Application/Application.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "/Users/bimteknik/Etkinlik-Demo/Application/Application.csproj",
-        "packagesPath": "/Users/bimteknik/.nuget/packages/",
-        "outputPath": "/Users/bimteknik/Etkinlik-Demo/Application/obj/",
+        "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/bimteknik/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj": {
-                "projectPath": "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj"
+              "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj"
               },
-              "/Users/bimteknik/Etkinlik-Demo/Persistence/Persistence.csproj": {
-                "projectPath": "/Users/bimteknik/Etkinlik-Demo/Persistence/Persistence.csproj"
+              "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj": {
+                "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj"
               }
             }
           }
@@ -79,26 +85,32 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj": {
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj",
-        "packagesPath": "/Users/bimteknik/.nuget/packages/",
-        "outputPath": "/Users/bimteknik/Etkinlik-Demo/Domain/obj/",
+        "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/bimteknik/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -143,34 +155,40 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/bimteknik/Etkinlik-Demo/Persistence/Persistence.csproj": {
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/bimteknik/Etkinlik-Demo/Persistence/Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj",
         "projectName": "Persistence",
-        "projectPath": "/Users/bimteknik/Etkinlik-Demo/Persistence/Persistence.csproj",
-        "packagesPath": "/Users/bimteknik/.nuget/packages/",
-        "outputPath": "/Users/bimteknik/Etkinlik-Demo/Persistence/obj/",
+        "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/bimteknik/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj": {
-                "projectPath": "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj"
+              "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj"
               }
             }
           }
@@ -211,7 +229,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

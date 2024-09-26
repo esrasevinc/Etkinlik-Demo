@@ -9,7 +9,7 @@ export default class EventHallStore {
   selectedEventHall: EventHall | undefined = undefined;
   loading = false;
   loadingInitial = false;
-  eventHallsByPlaceId: Map<string, EventHall[]> = new Map();
+  eventHallsByPlaceIdRegistry = new Map<string, EventHall[]>();
 
   constructor() {
     makeAutoObservable(this);
@@ -19,27 +19,10 @@ export default class EventHallStore {
     return Array.from(this.eventHallsRegistry.values());
   }
 
-  getEventHallsByPlaceId = async (placeId: string) => {
-    if (this.eventHallsByPlaceId.has(placeId)) {
-      return this.eventHallsByPlaceId.get(placeId) || [];
-    } else {
-      this.loading = true;
-      try {
-        const eventHalls = await agent.EventHalls.listByPlaceId(placeId);
-        runInAction(() => {
-          this.eventHallsByPlaceId.set(placeId, eventHalls);
-          this.loading = false;
-        });
-        return eventHalls;
-      } catch (err) {
-        console.log(err);
-        runInAction(() => {
-          this.loading = false;
-        });
-        return [];
-      }
-    }
-  };
+  get eventHallsByPlaceId() {
+    return Array.from(this.eventHallsByPlaceIdRegistry.values());
+  }
+
 
   private setEventHall = (eventHall: EventHall) => {
     this.eventHallsRegistry.set(eventHall.id!, eventHall);
@@ -89,6 +72,20 @@ export default class EventHallStore {
     }
   };
 
+  getEventHallsByPlaceId = async (placeId: string) => {
+    this.setLoadingInitial(true);
+    try {
+      const eventHalls = await agent.EventHalls.listByPlaceId(placeId);
+      runInAction(() => {
+        this.eventHallsByPlaceIdRegistry.set(placeId, eventHalls);
+        this.setLoadingInitial(false);
+      });
+    } catch (err) {
+      console.log(err);
+      this.setLoadingInitial(false);
+    }
+  };
+  
   createEventHall = async (eventHall: EventHall) => {
     try {
       this.loading = true;

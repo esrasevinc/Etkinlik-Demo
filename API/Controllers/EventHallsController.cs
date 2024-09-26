@@ -38,5 +38,12 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteEventHall(Guid id) {
             return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
         }
-    }
+
+        [HttpGet("by-place/{placeId}")] 
+        [Authorize]
+        public async Task<IActionResult> GetEventHallsByPlaceId(Guid placeId) 
+        {
+            return HandleResult(await Mediator.Send(new ListByPlaceId.Query { PlaceId = placeId }));
+        }
+        }
 }

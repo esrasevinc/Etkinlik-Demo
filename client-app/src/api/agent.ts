@@ -110,7 +110,7 @@ const EventHalls = {
   create: (eventHall: EventHall) => requests.post<EventHall>("/eventhalls", eventHall),
   update: (eventHall: EventHall) => requests.put<void>(`/eventhalls/${eventHall.id}`, eventHall),
   delete: (id: string) => requests.del<void>(`/eventhalls/${id}`),
-  listByPlaceId: (placeId: string) => requests.get<EventHall[]>(`/eventhalls?placeId=${placeId}`)
+  listByPlaceId: (placeId: string) => requests.get<EventHall[]>(`/eventhalls/by-place/${placeId}`)
 }
 
 const Seats = {

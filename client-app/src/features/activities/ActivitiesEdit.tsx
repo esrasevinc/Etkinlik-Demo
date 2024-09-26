@@ -9,7 +9,6 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import dayjs from 'dayjs';
 import locale from 'antd/es/date-picker/locale/tr_TR';
-import { EventHall } from '../../models/eventHall';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -24,8 +23,6 @@ const ActivitiesEdit = observer(() => {
     const { categories, loadCategories } = categoryStore;
     const { places, loadPlaces } = placeStore;
     const { getEventHallsByPlaceId } = eventHallStore;
-
-    const [filteredEventHalls, setFilteredEventHalls] = useState<EventHall[]>([]);
     const [selectedPlaceId, setSelectedPlaceId] = useState<string | undefined>(undefined);
 
     useEffect(() => {
@@ -35,13 +32,12 @@ const ActivitiesEdit = observer(() => {
         if (id) {
             loadActivityById(id).then((activity) => {
                 if (activity) {
-                    setSelectedPlaceId(activity.placeId);
+                    setSelectedPlaceId(activity.placeId); // Set selected place if activity exists
                     form.setFieldsValue({
                         ...activity,
                         date: dayjs.utc(activity.date).tz('Europe/Istanbul'),
-                        placeId: activity.placeId,
-                        eventHallId: activity.eventHallId
                     });
+                    getEventHallsByPlaceId(activity.placeId); // Load event halls for the existing activity
                 }
             });
         } else {
@@ -49,21 +45,13 @@ const ActivitiesEdit = observer(() => {
         }
 
         return () => clearSelectedActivity();
-    }, [id, loadActivityById, clearSelectedActivity, form, loadCategories, loadPlaces]);
+    }, [id, loadActivityById, clearSelectedActivity, form, loadCategories, loadPlaces, getEventHallsByPlaceId]);
 
     useEffect(() => {
         if (selectedPlaceId) {
-            getEventHallsByPlaceId(selectedPlaceId).then(eventHalls => {
-                setFilteredEventHalls(eventHalls);
-            });
-        } else {
-            setFilteredEventHalls([]);
+            getEventHallsByPlaceId(selectedPlaceId); // Load event halls for the selected place
         }
     }, [selectedPlaceId, getEventHallsByPlaceId]);
-
-    const onPlaceChange = (placeId: string) => {
-        setSelectedPlaceId(placeId);
-    };
 
     const onFinish: FormProps<ActivityFormValues>["onFinish"] = (values) => {
         if (id) {
@@ -100,7 +88,12 @@ const ActivitiesEdit = observer(() => {
                 <Input />
             </Form.Item>
             <Form.Item<ActivityFormValues> label="Gösteri Merkezi" name={"placeId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
-                <Select onChange={onPlaceChange} value={selectedPlaceId}>
+                <Select
+                    onChange={(value) => {
+                        setSelectedPlaceId(value);
+                        form.setFieldsValue({ eventHallId: undefined }); // Reset event hall selection
+                    }}
+                >
                     {places.map((pl) => (
                         <Select.Option key={pl.id} value={pl.id}>
                             {pl.title.charAt(0).toUpperCase() + pl.title.slice(1)}
@@ -109,10 +102,10 @@ const ActivitiesEdit = observer(() => {
                 </Select>
             </Form.Item>
             <Form.Item<ActivityFormValues> label="Salon" name={"eventHallId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
-                <Select>
-                    {filteredEventHalls.map((eh) => (
-                        <Select.Option key={eh.id} value={eh.id}>
-                            {eh.title.charAt(0).toUpperCase() + eh.title.slice(1)}
+                <Select disabled={!selectedPlaceId}>
+                    {selectedPlaceId && eventHallStore.eventHallsByPlaceIdRegistry.get(selectedPlaceId)?.map((eventHall) => (
+                        <Select.Option key={eventHall.id} value={eventHall.id}>
+                            {eventHall.title.charAt(0).toUpperCase() + eventHall.title.slice(1)}
                         </Select.Option>
                     ))}
                 </Select>

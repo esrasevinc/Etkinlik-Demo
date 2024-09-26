@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj": {}
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj": {
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "/Users/bimteknik/Etkinlik-Demo/Domain/Domain.csproj",
-        "packagesPath": "/Users/bimteknik/.nuget/packages/",
-        "outputPath": "/Users/bimteknik/Etkinlik-Demo/Domain/obj/",
+        "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/bimteknik/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -64,7 +70,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

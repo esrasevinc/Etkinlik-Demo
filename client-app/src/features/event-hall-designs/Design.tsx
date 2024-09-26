@@ -40,14 +40,20 @@ const Design = () => {
       try {
         const response = await axios.get(`/seats/${eventHallId}`);
         const fetchedSeats = response.data;
-
+    
         if (Array.isArray(fetchedSeats)) {
-          setSeats(
-            fetchedSeats.map((seat) => ({
-              ...seat,
-              status: seat.status || "Boşluk",
-            }))
-          );
+          const updatedSeats = fetchedSeats.map((seat) => ({
+            ...seat,
+            status: seat.status || "Boşluk",
+          }));
+    
+          setSeats(updatedSeats);
+    
+          // Update the rows and columns based on the fetched seats
+          const maxRow = Math.max(...updatedSeats.map(seat => seat.row), 0) + 1; // Add 1 to include zero-based index
+          const maxColumn = Math.max(...updatedSeats.map(seat => seat.column), 0) + 1; // Add 1 to include zero-based index
+          setRows(maxRow);
+          setColumns(maxColumn);
         } else {
           console.error("Geçersiz koltuk verisi alındı:", fetchedSeats);
         }
@@ -56,6 +62,7 @@ const Design = () => {
         setSeats([]);
       }
     };
+    
 
     fetchEventHall(id);
     fetchSeats(id);
@@ -143,39 +150,54 @@ const Design = () => {
     setIsBalconyModalVisible(true);
   };
 
-  const handleBalconySubmit = () => {
+  const handleBalconySubmit = async () => {
     const newSeats = [...seats];
-
     for (let row = 0; row < balconyRows; row++) {
       for (let col = 0; col < balconyColumns; col++) {
         const newSeat = {
           id: "",
           eventHallId: id,
-          row: rows + row, // Add the new rows below the current seats
-          column: col, // Balcony columns start from the left
-          label: `B${row + 1}-${col + 1}`, // Label for balcony seats
+          row: rows + row,
+          column: col,
+          label: `B${row + 1}-${col + 1}`,
           status: "Koltuk",
         };
         newSeats.push(newSeat);
       }
     }
-
+  
     setSeats(newSeats);
-    setRows((prev) => prev + balconyRows); // Adjust the total rows to include balcony
-    setColumns(Math.max(columns, balconyColumns)); // Expand columns if balcony is wider
-    setIsBalconyModalVisible(false); // Close the modal
+    setRows((prev) => prev + balconyRows);
+    setColumns(Math.max(columns, balconyColumns));
+    setIsBalconyModalVisible(false);
+  
+    // Verileri güncelle
+    try {
+      await axios.post("/seats/save", {
+        eventHallId: id,
+        seats: newSeats.map((seat) => ({
+          row: seat.row,
+          column: seat.column,
+          label: seat.label,
+          status: seat.status,
+        })),
+      });
+    } catch (error) {
+      console.error("Balkon koltuklarını kaydetme hatası:", error);
+    }
   };
+  
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
         <h2 style={{ fontSize: "18px" }}>{hallName} Koltuk Düzeni</h2>
         <div>
-          <Button type="primary" onClick={saveLayout} size="large" style={{ marginRight: 10 }}>
-            Düzeni Kaydet
-          </Button>
-          <Button type="primary" onClick={handleAddBalcony} size="large">
+          <Button type="primary" onClick={handleAddBalcony} size="large" style={{ marginRight: 10 }}>
             Balkon Ekle
+          </Button>
+          <Button type="primary" onClick={saveLayout} size="large">
+            Düzeni Kaydet
           </Button>
         </div>
       </div>

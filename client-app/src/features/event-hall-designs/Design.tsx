@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router";
 import { Seat } from "../../models/seat";
@@ -11,9 +11,14 @@ const Design = () => {
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const [seats, setSeats] = useState<Seat[]>([]);
   const [form] = Form.useForm();
-  const [rows, setRows] = useState<number>(10); 
-  const [columns, setColumns] = useState<number>(10); 
-  const [hallName, setHallName] = useState<string>(""); 
+  const [rows, setRows] = useState<number>(10);
+  const [columns, setColumns] = useState<number>(10);
+  const [hallName, setHallName] = useState<string>("");
+
+  const [isBalconyModalVisible, setIsBalconyModalVisible] = useState(false);
+  const [balconyRows, setBalconyRows] = useState<number>(0);
+  const [balconyColumns, setBalconyColumns] = useState<number>(0);
+
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const id = params.get("id") || "";
@@ -25,9 +30,9 @@ const Design = () => {
         const eventHall = response.data;
         setRows(eventHall.rows);
         setColumns(eventHall.columns);
-        setHallName(eventHall.title); 
+        setHallName(eventHall.title);
       } catch (error) {
-        console.error('Salon bilgilerini yükleme hatası:', error);
+        console.error("Salon bilgilerini yükleme hatası:", error);
       }
     };
 
@@ -37,15 +42,17 @@ const Design = () => {
         const fetchedSeats = response.data;
 
         if (Array.isArray(fetchedSeats)) {
-          setSeats(fetchedSeats.map(seat => ({
-            ...seat,
-            status: seat.status || "Boşluk"
-          })));
+          setSeats(
+            fetchedSeats.map((seat) => ({
+              ...seat,
+              status: seat.status || "Boşluk",
+            }))
+          );
         } else {
-          console.error('Geçersiz koltuk verisi alındı:', fetchedSeats);
+          console.error("Geçersiz koltuk verisi alındı:", fetchedSeats);
         }
       } catch (error) {
-        console.error('Koltukları yükleme hatası:', error);
+        console.error("Koltukları yükleme hatası:", error);
         setSeats([]);
       }
     };
@@ -55,17 +62,17 @@ const Design = () => {
   }, [id]);
 
   const handleSeatClick = (row: number, column: number) => {
-    const existingSeat = seats.find(seat => seat.row === row && seat.column === column);
+    const existingSeat = seats.find((seat) => seat.row === row && seat.column === column);
 
     if (existingSeat) {
       if (existingSeat.status === "Koltuk") {
-        const updatedSeats = seats.map(seat =>
+        const updatedSeats = seats.map((seat) =>
           seat.row === row && seat.column === column
             ? { ...seat, label: "", status: "Boşluk" }
             : seat
         );
         setSeats(updatedSeats);
-        setSelectedSeat(null); 
+        setSelectedSeat(null);
         form.resetFields();
       } else {
         setSelectedSeat(existingSeat);
@@ -73,7 +80,7 @@ const Design = () => {
       }
     } else {
       const newSeat = {
-        id: '',
+        id: "",
         eventHallId: id,
         row,
         column,
@@ -86,13 +93,13 @@ const Design = () => {
   };
 
   const onFinish = async (values: Seat) => {
-    const existingSeatIndex = seats.findIndex(seat => seat.row === values.row && seat.column === values.column);
+    const existingSeatIndex = seats.findIndex((seat) => seat.row === values.row && seat.column === values.column);
 
     const updatedSeats = [...seats];
     if (existingSeatIndex > -1) {
       updatedSeats[existingSeatIndex] = { ...values, status: "Koltuk" };
     } else {
-      updatedSeats.push({ ...values, status: "Koltuk" }); 
+      updatedSeats.push({ ...values, status: "Koltuk" });
     }
 
     setSeats(updatedSeats);
@@ -100,51 +107,77 @@ const Design = () => {
     form.resetFields();
 
     try {
-      await axios.post('/seats/save', {
+      await axios.post("/seats/save", {
         eventHallId: id,
-        seats: updatedSeats.map(seat => ({
+        seats: updatedSeats.map((seat) => ({
           row: seat.row,
           column: seat.column,
           label: seat.label,
-          status: seat.status
-        }))
+          status: seat.status,
+        })),
       });
-      //store.notificationStore.openNotification("success", "Koltuk başarıyla güncellendi!", "");
     } catch (error) {
-      console.error('Koltuk güncelleme hatası:', error);
+      console.error("Koltuk güncelleme hatası:", error);
     }
   };
 
   const saveLayout = async () => {
     try {
-      await axios.post('/seats/save', {
+      await axios.post("/seats/save", {
         eventHallId: id,
-        seats: seats.map(seat => ({
+        seats: seats.map((seat) => ({
           row: seat.row,
           column: seat.column,
           label: seat.label,
-          status: seat.status
-        }))
+          status: seat.status,
+        })),
       });
       store.notificationStore.openNotification("success", "Salon düzeni başarıyla kaydedildi!", "");
       router.navigate("/salon-tasarimlari");
     } catch (error) {
-      console.error('Koltuk düzeni kaydetme hatası:', error);
+      console.error("Koltuk düzeni kaydetme hatası:", error);
     }
+  };
+
+  const handleAddBalcony = () => {
+    setIsBalconyModalVisible(true);
+  };
+
+  const handleBalconySubmit = () => {
+    const newSeats = [...seats];
+
+    for (let row = 0; row < balconyRows; row++) {
+      for (let col = 0; col < balconyColumns; col++) {
+        const newSeat = {
+          id: "",
+          eventHallId: id,
+          row: rows + row, // Add the new rows below the current seats
+          column: col, // Balcony columns start from the left
+          label: `B${row + 1}-${col + 1}`, // Label for balcony seats
+          status: "Koltuk",
+        };
+        newSeats.push(newSeat);
+      }
+    }
+
+    setSeats(newSeats);
+    setRows((prev) => prev + balconyRows); // Adjust the total rows to include balcony
+    setColumns(Math.max(columns, balconyColumns)); // Expand columns if balcony is wider
+    setIsBalconyModalVisible(false); // Close the modal
   };
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px"}}>
-        <h2 style={{ fontSize: "18px" }}>{hallName} Koltuk Düzeni</h2> 
-        <Button type="primary" onClick={saveLayout} size="large"  
-          style={{
-            padding: "10px 20px",  
-            fontSize: "18px",  
-            height: "50px", 
-          }}>
-          Düzeni Kaydet
-        </Button>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+        <h2 style={{ fontSize: "18px" }}>{hallName} Koltuk Düzeni</h2>
+        <div>
+          <Button type="primary" onClick={saveLayout} size="large" style={{ marginRight: 10 }}>
+            Düzeni Kaydet
+          </Button>
+          <Button type="primary" onClick={handleAddBalcony} size="large">
+            Balkon Ekle
+          </Button>
+        </div>
       </div>
 
       {selectedSeat && (
@@ -157,7 +190,7 @@ const Design = () => {
           </Form.Item>
           <Form.Item
             label="Koltuk Adı"
-            name="label" 
+            name="label"
             rules={[{ required: true, message: "Koltuk adı giriniz!" }]}
           >
             <Input />
@@ -182,7 +215,9 @@ const Design = () => {
       >
         {Array.from({ length: rows }).map((_, rowIndex) =>
           Array.from({ length: columns }).map((_, columnIndex) => {
-            const seat = seats.find(seat => seat.row === rowIndex && seat.column === columnIndex);
+            const seat = seats.find((seat) => seat.row === rowIndex && seat.column === columnIndex);
+            const isSelected = selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex; // Seçili koltuk kontrolü
+            const isBalconySeat = rowIndex >= rows; // Check if the seat is in the balcony section
 
             return (
               <div
@@ -195,9 +230,7 @@ const Design = () => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: seat?.status === "Koltuk"
-                    ? "lightgreen"
-                    : (selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex ? "lightblue" : "white"),
+                  backgroundColor: isSelected ? "lightblue" : (seat?.status === "Koltuk" ? (isBalconySeat ? "lightcoral" : "lightgreen") : "white"), // Distinguish balcony seats with a different color
                   cursor: "pointer",
                   position: "relative",
                 }}
@@ -220,21 +253,31 @@ const Design = () => {
         )}
       </div>
 
-      <div style={{ marginTop: 20 }}>
-        {seats.length > 0 ? (
-          <ul>
-            {seats.map((seat, index) =>
-              seat.status === "Koltuk" && (
-                <li key={index}>
-                  {`Koltuk: ${seat.label}, Satır: ${(seat.row) + 1}, Sütun: ${(seat.column) + 1}`}
-                </li>
-              )
-            )}
-          </ul>
-        ) : (
-          <p>Henüz koltuk seçilmedi.</p>
-        )}
-      </div>
+      <Modal
+        title="Balkon Ekle"
+        visible={isBalconyModalVisible}
+        onOk={handleBalconySubmit}
+        onCancel={() => setIsBalconyModalVisible(false)}
+      >
+        <Form layout="vertical">
+          <Form.Item label="Balkon Satırı" required>
+            <Input
+              type="number"
+              min={1}
+              value={balconyRows}
+              onChange={(e) => setBalconyRows(parseInt(e.target.value))}
+            />
+          </Form.Item>
+          <Form.Item label="Balkon Sütunu" required>
+            <Input
+              type="number"
+              min={1}
+              value={balconyColumns}
+              onChange={(e) => setBalconyColumns(parseInt(e.target.value))}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

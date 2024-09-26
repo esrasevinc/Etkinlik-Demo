@@ -17,7 +17,6 @@ namespace API.Controllers
             _context = context;
         }
 
-        // Belirli bir salonun koltuklarını getir
         [HttpGet("{eventHallId}")]
         public async Task<ActionResult<List<Seat>>> GetSeats(Guid eventHallId)
         {
@@ -33,18 +32,15 @@ namespace API.Controllers
             return Ok(seats);
         }
 
-        // Bir salona koltuk ekle
         [HttpPost("{eventHallId}")]
         public async Task<ActionResult> CreateSeats(Guid eventHallId, [FromBody] List<Seat> seats)
         {
-            // Salonu kontrol et
             var eventHall = await _context.EventHalls.FindAsync(eventHallId);
             if (eventHall == null)
             {
                 return NotFound("Salon bulunamadı.");
             }
 
-            // Koltukları salona ekle
             foreach (var seat in seats)
             {
                 seat.EventHallId = eventHallId;
@@ -58,7 +54,7 @@ namespace API.Controllers
             return BadRequest("Koltuk ekleme başarısız oldu.");
         }
 
-        // Bir koltuğu güncelle
+
         [HttpPut("{seatId}")]
         public async Task<ActionResult> UpdateSeat(Guid seatId, [FromBody] Seat updatedSeat)
         {
@@ -66,7 +62,6 @@ namespace API.Controllers
 
             if (seat == null) return NotFound("Koltuk bulunamadı.");
 
-            // Koltuğun özelliklerini güncelle
             seat.Label = updatedSeat.Label;
             seat.Row = updatedSeat.Row;
             seat.Column = updatedSeat.Column;
@@ -79,7 +74,7 @@ namespace API.Controllers
             return BadRequest("Koltuk güncelleme başarısız oldu.");
         }
 
-        // Bir koltuğu sil
+    
         [HttpDelete("{seatId}")]
         public async Task<ActionResult> DeleteSeat(Guid seatId)
         {
@@ -96,44 +91,37 @@ namespace API.Controllers
             return BadRequest("Koltuk silme başarısız oldu.");
         }
 
-
-        // Endpoint for saving seats in EventHall
         [HttpPost("save")]
         public async Task<IActionResult> SaveSeats([FromBody] SaveSeatsDTO saveSeatsDTO)
         {
-            // Salonu kontrol et
+
             var eventHall = await _context.EventHalls.FindAsync(saveSeatsDTO.EventHallId);
             if (eventHall == null)
             {
                 return NotFound("Salon bulunamadı.");
             }
 
-            // Mevcut koltukları kaldır
             var existingSeats = await _context.Seats
                 .Where(s => s.EventHallId == saveSeatsDTO.EventHallId)
                 .ToListAsync();
 
-            // Koltuklar varsa önce sil
             if (existingSeats.Any())
             {
                 _context.Seats.RemoveRange(existingSeats);
             }
 
-            // Yeni koltukları ekle
             var newSeats = saveSeatsDTO.Seats.Select(seatDto => new Seat
             {
-                Id = Guid.NewGuid(),  // Yeni bir Id oluştur
-                EventHallId = saveSeatsDTO.EventHallId,  // EventHallId doğru şekilde atanıyor
+                Id = Guid.NewGuid(),  
+                EventHallId = saveSeatsDTO.EventHallId,  
                 Row = seatDto.Row,
                 Column = seatDto.Column,
                 Label = seatDto.Label,
                 Status = seatDto.Status
-            }).ToList(); // ToList() ekleyerek LINQ expression'ı materialize ediyorum
+            }).ToList(); 
 
-            // Koltukları veri tabanına ekle
             await _context.Seats.AddRangeAsync(newSeats);
 
-            // Değişiklikleri kaydet
             var success = await _context.SaveChangesAsync() > 0;
 
             if (success)
@@ -142,6 +130,44 @@ namespace API.Controllers
             }
 
             return BadRequest("Koltuk düzeni kaydedilemedi.");
+        }
+
+
+        [HttpPost("{eventHallId}/add-balcony")]
+        public async Task<IActionResult> AddBalcony(Guid eventHallId, [FromBody] BalconyDTO balconyDto)
+        {
+            var eventHall = await _context.EventHalls.FindAsync(eventHallId);
+            if (eventHall == null)
+            {
+                return NotFound("Salon bulunamadı.");
+            }
+
+            var newSeats = new List<Seat>();
+            for (int i = 0; i < balconyDto.Rows; i++)
+            {
+                for (int j = 0; j < balconyDto.Columns; j++)
+                {
+                    newSeats.Add(new Seat
+                    {
+                        Id = Guid.NewGuid(),
+                        EventHallId = eventHallId,
+                        Row = balconyDto.StartRow + i,  
+                        Column = balconyDto.StartColumn + j,
+                        Label = $"Balkon {i + 1}-{j + 1}",
+                        Status = "Koltuk"
+                    });
+                }
+            }
+
+            await _context.Seats.AddRangeAsync(newSeats);
+            var success = await _context.SaveChangesAsync() > 0;
+
+            if (success)
+            {
+                return Ok(newSeats);  
+            }
+
+            return BadRequest("Balkon ekleme başarısız oldu.");
         }
 
     }

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input } from "antd";
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router";
 import { Seat } from "../../models/seat";
 import axios from "axios";
 import { router } from "../../routes/Routes";
 import { store } from "../../stores/store";
+import agent from "../../api/agent";
 
 const Design = () => {
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
@@ -15,10 +16,6 @@ const Design = () => {
   const [columns, setColumns] = useState<number>(10);
   const [hallName, setHallName] = useState<string>("");
 
-  const [isBalconyModalVisible, setIsBalconyModalVisible] = useState(false);
-  const [balconyRows, setBalconyRows] = useState<number>(0);
-  const [balconyColumns, setBalconyColumns] = useState<number>(0);
-
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const id = params.get("id") || "";
@@ -26,8 +23,7 @@ const Design = () => {
   useEffect(() => {
     const fetchEventHall = async (eventHallId: string) => {
       try {
-        const response = await axios.get(`/eventhalls/${eventHallId}`);
-        const eventHall = response.data;
+        const eventHall = await agent.EventHalls.details(eventHallId);
         setRows(eventHall.rows);
         setColumns(eventHall.columns);
         setHallName(eventHall.title);
@@ -146,46 +142,6 @@ const Design = () => {
     }
   };
 
-  const handleAddBalcony = () => {
-    setIsBalconyModalVisible(true);
-  };
-
-  const handleBalconySubmit = async () => {
-    const newSeats = [...seats];
-    for (let row = 0; row < balconyRows; row++) {
-      for (let col = 0; col < balconyColumns; col++) {
-        const newSeat = {
-          id: "",
-          eventHallId: id,
-          row: rows + row,
-          column: col,
-          label: `B${row + 1}-${col + 1}`,
-          status: "Koltuk",
-        };
-        newSeats.push(newSeat);
-      }
-    }
-  
-    setSeats(newSeats);
-    setRows((prev) => prev + balconyRows);
-    setColumns(Math.max(columns, balconyColumns));
-    setIsBalconyModalVisible(false);
-  
-    // Verileri güncelle
-    try {
-      await axios.post("/seats/save", {
-        eventHallId: id,
-        seats: newSeats.map((seat) => ({
-          row: seat.row,
-          column: seat.column,
-          label: seat.label,
-          status: seat.status,
-        })),
-      });
-    } catch (error) {
-      console.error("Balkon koltuklarını kaydetme hatası:", error);
-    }
-  };
   
 
   return (
@@ -193,9 +149,6 @@ const Design = () => {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
         <h2 style={{ fontSize: "18px" }}>{hallName} Koltuk Düzeni</h2>
         <div>
-          <Button type="primary" onClick={handleAddBalcony} size="large" style={{ marginRight: 10 }}>
-            Balkon Ekle
-          </Button>
           <Button type="primary" onClick={saveLayout} size="large">
             Düzeni Kaydet
           </Button>
@@ -275,31 +228,7 @@ const Design = () => {
         )}
       </div>
 
-      <Modal
-        title="Balkon Ekle"
-        visible={isBalconyModalVisible}
-        onOk={handleBalconySubmit}
-        onCancel={() => setIsBalconyModalVisible(false)}
-      >
-        <Form layout="vertical">
-          <Form.Item label="Balkon Satırı" required>
-            <Input
-              type="number"
-              min={1}
-              value={balconyRows}
-              onChange={(e) => setBalconyRows(parseInt(e.target.value))}
-            />
-          </Form.Item>
-          <Form.Item label="Balkon Sütunu" required>
-            <Input
-              type="number"
-              min={1}
-              value={balconyColumns}
-              onChange={(e) => setBalconyColumns(parseInt(e.target.value))}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      
     </div>
   );
 };

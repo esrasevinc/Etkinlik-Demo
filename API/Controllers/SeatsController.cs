@@ -133,42 +133,5 @@ namespace API.Controllers
         }
 
 
-        [HttpPost("{eventHallId}/add-balcony")]
-        public async Task<IActionResult> AddBalcony(Guid eventHallId, [FromBody] BalconyDTO balconyDto)
-        {
-            var eventHall = await _context.EventHalls.FindAsync(eventHallId);
-            if (eventHall == null)
-            {
-                return NotFound("Salon bulunamadı.");
-            }
-
-            var newSeats = new List<Seat>();
-            for (int i = 0; i < balconyDto.Rows; i++)
-            {
-                for (int j = 0; j < balconyDto.Columns; j++)
-                {
-                    newSeats.Add(new Seat
-                    {
-                        Id = Guid.NewGuid(),
-                        EventHallId = eventHallId,
-                        Row = balconyDto.StartRow + i,  
-                        Column = balconyDto.StartColumn + j,
-                        Label = $"Balkon {i + 1}-{j + 1}",
-                        Status = "Koltuk"
-                    });
-                }
-            }
-
-            await _context.Seats.AddRangeAsync(newSeats);
-            var success = await _context.SaveChangesAsync() > 0;
-
-            if (success)
-            {
-                return Ok(newSeats);  
-            }
-
-            return BadRequest("Balkon ekleme başarısız oldu.");
-        }
-
     }
 }

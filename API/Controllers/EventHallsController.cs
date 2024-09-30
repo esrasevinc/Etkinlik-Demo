@@ -15,7 +15,6 @@ namespace API.Controllers
 
 
         [HttpGet("{id}")] 
-        [Authorize]
         public async Task<IActionResult> GetSingleEventHall(Guid id) {
             return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
         }

@@ -131,7 +131,5 @@ namespace API.Controllers
 
             return BadRequest("Koltuk düzeni kaydedilemedi.");
         }
-
-
     }
 }

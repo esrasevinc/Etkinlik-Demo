@@ -29,17 +29,12 @@ namespace Application.Activities
 
       public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
       {
-        /* Search item in database */
         var activity = await _context.Activities.FindAsync(request.Activity.Id);
 
-        /* Return null and handle it if not found */
         if (activity == null) return null;
-
-        /* Update fields based on given object */
         
         _mapper.Map(request.Activity, activity);
         
-
         if (request.Activity.CategoryId.HasValue)
         {
           var category = await _context.Categories.FindAsync(request.Activity.CategoryId);
@@ -58,13 +53,10 @@ namespace Application.Activities
           activity.EventHall = eventHall;
         }
 
-        /* Save updated item to database */
         var result = await _context.SaveChangesAsync() > 0;
 
-        /* Handle if can't save to database */
         if (!result) return Result<Unit>.Failure("Etkinlik güncellenemedi.");
 
-        /* Done! */
         return Result<Unit>.Success(Unit.Value);
       }
     }

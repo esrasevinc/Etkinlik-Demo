@@ -24,17 +24,17 @@ namespace API.Controllers
         public async Task<ActionResult<TicketDTO>> CreateTicket(TicketDTO ticketDTO)
         {
             var seat = await _context.TicketSeats
-                .FirstOrDefaultAsync(s => s.Id == ticketDTO.TicketSeatId && s.Status != "Satıldı");
+                .FirstOrDefaultAsync(s => s.Id == ticketDTO.TicketSeatId && s.Status != "Dolu");
 
             if (seat == null)
             {
-                return BadRequest("Bu koltuk zaten satıldı.");
+                return BadRequest("Bu koltuk zaten dolu.");
             }
 
         
             var ticket = _mapper.Map<Ticket>(ticketDTO);
 
-            seat.Status = "Satıldı";
+            seat.Status = "Dolu";
 
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();

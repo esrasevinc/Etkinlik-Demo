@@ -6,9 +6,11 @@ namespace Application.DTOs
         public string Name { get; set; } 
         public DateTime Date { get; set; }
         public string Description { get; set; }
+        public string Duration { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsCancelled { get; set; }
+        public bool IsPaid { get; set; }
         public Guid? CategoryId { get; set; }
         public Guid? PlaceId { get; set; }
         public Guid? EventHallId { get; set; }

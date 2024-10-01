@@ -48,12 +48,17 @@ namespace Application.Activities
                 Name = request.Activity.Name,
                 Description = request.Activity.Description,
                 Date = request.Activity.Date,
+                Duration = request.Activity.Duration,
                 IsActive = request.Activity.IsActive,
+                IsPaid = request.Activity.IsPaid,
                 IsDeleted = false,
                 IsCancelled = false,
                 Category = category,
                 Place = place,
+<<<<<<< HEAD
                 EventHall = eventHall
+=======
+>>>>>>> 5addf47fee54a749e02a84477ceb2045667e26e8
                 };
         
                 var savedActivity = await _context.Activities.AddAsync(activity);

@@ -42,6 +42,7 @@ namespace Application.Activities
             {
                 var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == request.Activity.CategoryId);
                 var place = await _context.Places.FirstOrDefaultAsync(x => x.Id == request.Activity.PlaceId);
+                var eventHall = await _context.EventHalls.FirstOrDefaultAsync(x => x.Id == request.Activity.EventHallId);
                 var activity = new Activity
                 {
                 Name = request.Activity.Name,
@@ -54,6 +55,7 @@ namespace Application.Activities
                 IsCancelled = false,
                 Category = category,
                 Place = place,
+                EventHall = eventHall
                 };
         
                 var savedActivity = await _context.Activities.AddAsync(activity);

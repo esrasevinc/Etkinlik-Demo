@@ -10,7 +10,7 @@ namespace Domain
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsCancelled { get; set; }
-        public bool IsPaid { get; set; }
+         public bool IsPaid { get; set; }
         public Category Category { get; set; }
         public Place Place { get; set; }
         public EventHall EventHall { get; set; }

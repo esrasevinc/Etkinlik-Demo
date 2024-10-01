@@ -2,6 +2,7 @@ namespace Application.DTOs
 {
     public class SeatDTO
     {
+        public Guid Id { get; set; }
         public string Label { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }

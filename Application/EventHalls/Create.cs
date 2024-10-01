@@ -47,13 +47,11 @@ namespace Application.EventHalls
                     Place = place,
                 };
 
-                // Event hall kaydediliyor
                 var savedEventHall = await _context.EventHalls.AddAsync(eventHall);
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<EventHallDTO>.Failure("Salon oluşturulamadı.");
 
-                // Yeni salon oluşturulduktan sonra koltukları ekleme işlemi
                 var seats = new List<Seat>();
 
                 for (int row = 0; row < eventHall.Rows; row++)

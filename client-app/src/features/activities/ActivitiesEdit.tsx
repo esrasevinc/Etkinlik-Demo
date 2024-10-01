@@ -32,12 +32,12 @@ const ActivitiesEdit = observer(() => {
         if (id) {
             loadActivityById(id).then((activity) => {
                 if (activity) {
-                    setSelectedPlaceId(activity.placeId); // Set selected place if activity exists
+                    setSelectedPlaceId(activity.placeId); 
                     form.setFieldsValue({
                         ...activity,
                         date: dayjs.utc(activity.date).tz('Europe/Istanbul'),
                     });
-                    getEventHallsByPlaceId(activity.placeId); // Load event halls for the existing activity
+                    getEventHallsByPlaceId(activity.placeId); 
                 }
             });
         } else {
@@ -49,7 +49,7 @@ const ActivitiesEdit = observer(() => {
 
     useEffect(() => {
         if (selectedPlaceId) {
-            getEventHallsByPlaceId(selectedPlaceId); // Load event halls for the selected place
+            getEventHallsByPlaceId(selectedPlaceId); 
         }
     }, [selectedPlaceId, getEventHallsByPlaceId]);
 
@@ -83,6 +83,9 @@ const ActivitiesEdit = observer(() => {
             <Form.Item<ActivityFormValues> label="Durum" name="isActive" valuePropName="checked">
                 <Switch checkedChildren="Aktif" unCheckedChildren="Pasif" defaultChecked />
             </Form.Item>
+            <Form.Item<ActivityFormValues> label="Ücretli mi?" name="isPaid" valuePropName="unchecked">
+                <Switch checkedChildren="Evet" unCheckedChildren="Hayır" />
+            </Form.Item>
             <Divider orientation="left">Etkinlik Detayları</Divider>
             <Form.Item<ActivityFormValues> label="Başlık" name="name" rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
                 <Input />
@@ -91,7 +94,7 @@ const ActivitiesEdit = observer(() => {
                 <Select
                     onChange={(value) => {
                         setSelectedPlaceId(value);
-                        form.setFieldsValue({ eventHallId: undefined }); // Reset event hall selection
+                        form.setFieldsValue({ eventHallId: undefined }); 
                     }}
                 >
                     {places.map((pl) => (
@@ -131,6 +134,9 @@ const ActivitiesEdit = observer(() => {
                     showNow={false}
                     locale={locale}
                 />
+            </Form.Item>
+            <Form.Item<ActivityFormValues> label="Etkinlik Süresi" name="duration">
+                <Input />
             </Form.Item>
             <Form.Item>
                 <Button type="primary" size='large' htmlType='submit' loading={loading}>Kaydet</Button>

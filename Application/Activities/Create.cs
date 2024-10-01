@@ -47,11 +47,13 @@ namespace Application.Activities
                 Name = request.Activity.Name,
                 Description = request.Activity.Description,
                 Date = request.Activity.Date,
+                Duration = request.Activity.Duration,
                 IsActive = request.Activity.IsActive,
+                IsPaid = request.Activity.IsPaid,
                 IsDeleted = false,
                 IsCancelled = false,
                 Category = category,
-                Place= place,
+                Place = place,
                 };
         
                 var savedActivity = await _context.Activities.AddAsync(activity);

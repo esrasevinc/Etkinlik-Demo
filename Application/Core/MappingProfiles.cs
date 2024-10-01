@@ -30,11 +30,7 @@ namespace Application.Core
                 .ForMember(dest => dest.Seats, opt => opt.MapFrom(src => src.Seats))
                 .ForMember(x => x.Place, o => o.MapFrom(s => s.Place ?? null))
                 .ForMember(x => x.PlaceId, o => o.MapFrom(s => s.Place.Id));
-<<<<<<< HEAD
 
-=======
-                
->>>>>>> 5addf47fee54a749e02a84477ceb2045667e26e8
             CreateMap<Seat, Seat>();
             CreateMap<Seat, SeatDTO>();
 

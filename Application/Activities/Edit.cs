@@ -32,10 +32,6 @@ namespace Application.Activities
         var activity = await _context.Activities.FindAsync(request.Activity.Id);
 
         if (activity == null) return null;
-<<<<<<< HEAD
-=======
-
->>>>>>> 5addf47fee54a749e02a84477ceb2045667e26e8
         
         _mapper.Map(request.Activity, activity);
         

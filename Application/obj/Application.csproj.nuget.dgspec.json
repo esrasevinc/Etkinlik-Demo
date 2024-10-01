@@ -1,36 +1,42 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Application\\Application.csproj": {}
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj": {}
   },
   "projects": {
-    "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Application\\Application.csproj": {
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Application\\Application.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Application\\Application.csproj",
-        "packagesPath": "C:\\Users\\esrasevinc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Application\\obj\\",
+        "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\Application.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Application\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\esrasevinc\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\Domain.csproj"
+              "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj"
               },
-              "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Persistence\\Persistence.csproj": {
-                "projectPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Persistence\\Persistence.csproj"
+              "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj": {
+                "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj"
               }
             }
           }
@@ -79,26 +85,32 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\Domain.csproj": {
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\esrasevinc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\obj\\",
+        "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\esrasevinc\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -125,6 +137,12 @@
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
             }
           },
           "imports": [
@@ -143,34 +161,40 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Persistence\\Persistence.csproj": {
+    "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Persistence\\Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj",
         "projectName": "Persistence",
-        "projectPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Persistence\\Persistence.csproj",
-        "packagesPath": "C:\\Users\\esrasevinc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Persistence\\obj\\",
+        "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\Persistence.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Persistence\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\esrasevinc\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\esrasevinc\\Etkinlik-Demo\\Domain\\Domain.csproj"
+              "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\Lenovo\\Etkinlik-Demo\\Domain\\Domain.csproj"
               }
             }
           }
@@ -211,7 +235,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

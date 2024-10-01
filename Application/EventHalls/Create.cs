@@ -79,6 +79,7 @@ namespace Application.EventHalls
                 var rEventHall = _mapper.Map<EventHallDTO>(savedEventHall.Entity);
 
                 return Result<EventHallDTO>.Success(rEventHall);
+    
             }
         }
     }

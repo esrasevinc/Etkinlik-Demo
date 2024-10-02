@@ -28,8 +28,15 @@ namespace Application.Activities
 
             public async Task<Result<ActivityDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activity =  await _context.Activities.ProjectTo<ActivityDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(x => x.Id == request.Id && x.IsActive);
-                return Result<ActivityDTO>.Success(activity);
+                var activity = await _context.Activities
+                    .Include(a => a.EventHall) 
+                    .ThenInclude(eh => eh.Seats) 
+                    .FirstOrDefaultAsync(x => x.Id == request.Id && x.IsActive);
+
+                if (activity == null) return Result<ActivityDTO>.Failure("Activity not found");
+
+                var activityDTO = _mapper.Map<ActivityDTO>(activity); // Map işlemini bellekte yap
+                return Result<ActivityDTO>.Success(activityDTO);
             }
         }
     }

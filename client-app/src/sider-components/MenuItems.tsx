@@ -53,6 +53,7 @@ export function MenuItems(): MenuProps["items"] {
       ],
       "group"
     ),
+   
     getItem(
       "ETKİNLİK YÖNETİMİ",
       "etkinlik yönetimi",
@@ -62,6 +63,17 @@ export function MenuItems(): MenuProps["items"] {
           getItem(<NavLink to={"/etkinlikler"}>Tümünü Listele</NavLink>, "etkinlikler", null),
           getItem(<NavLink to={"/etkinlikler/yeni-ekle"}>Yeni Ekle</NavLink>, "etkinlikler/yeni-ekle", null),
         ]),
+      ],
+      "group"
+    ),
+
+    getItem(
+      "BİLET İŞLEMLERİ",
+      "bilet işlemleri",
+      null,
+      [
+        getItem(<NavLink to={"/biletler"}>Biletler</NavLink>, "biletler", <ReadOutlined />),
+        getItem(<NavLink to={"/bilet-olustur"}>Bilet Oluştur</NavLink>, "bilet-olustur", <ReadOutlined />),
       ],
       "group"
     ),

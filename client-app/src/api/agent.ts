@@ -7,6 +7,7 @@ import { router } from '../routes/Routes';
 import { message } from 'antd';
 import { Place } from '../models/place';
 import { EventHall } from '../models/eventHall';
+import { Ticket } from '../models/ticket';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -126,13 +127,20 @@ const Users = {
     delete: (id: string) => requests.del<void>(`/users/${id}`)
   }
 
+  const Tickets = {
+    list: (activityId: string) => requests.get<Ticket[]>(`/tickets?activityId=${activityId}`),
+    listAll: () => requests.get<Ticket[]>(`/tickets/all`),
+    buyTicket: (ticket: Ticket) => requests.post<Ticket>('/tickets', ticket)
+  }
+
 const agent = {
     Activities,
     Categories,
     Places,
     EventHalls,
     Account,
-    Users
+    Users,
+    Tickets
 }
 
 export default agent;

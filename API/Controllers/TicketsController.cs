@@ -41,5 +41,24 @@ namespace API.Controllers
 
             return Ok(_mapper.Map<TicketDTO>(ticket));
         }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<List<Ticket>>> GetAllTickets()
+        {
+            var tickets = await _context.Tickets.ToListAsync();
+            return Ok(tickets);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Ticket>>> GetTicketsByActivityId([FromQuery] Guid activityId)
+        {
+            var tickets = await _context.Tickets
+                .Where(t => t.ActivityId == activityId)
+                .ToListAsync();
+
+            return Ok(tickets);
+        }
+
+
     }
 }

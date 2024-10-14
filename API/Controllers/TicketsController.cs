@@ -39,13 +39,15 @@ namespace API.Controllers
             return Ok(_mapper.Map<TicketDTO>(ticket));
         }
 
-
         [HttpGet("all")]
         public async Task<ActionResult<List<TicketDTO>>> GetAllTickets()
         {
             var tickets = await _context.Tickets
-                .Include(t => t.Customer) 
+                .Include(t => t.Customer)
                 .Include(t => t.Activity) 
+                    .ThenInclude(a => a.Place) 
+                .Include(t => t.Activity.EventHall) 
+                .Include(t => t.Activity.Category) 
                 .Include(t => t.TicketSeat) 
                 .ToListAsync();
 
@@ -55,19 +57,36 @@ namespace API.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<List<TicketDTO>>> GetTicketsByActivityId([FromQuery] Guid activityId)
+    [HttpGet]
+    public async Task<ActionResult<List<TicketDTO>>> GetTicketsByActivityId([FromQuery] Guid activityId)
+    {
+        var tickets = await _context.Tickets
+            .Where(t => t.ActivityId == activityId)
+            .Include(t => t.Customer) 
+            .Include(t => t.Activity) 
+                 .ThenInclude(a => a.Place) 
+            .Include(t => t.Activity.EventHall)
+            .Include(t => t.Activity.Category)
+            .Include(t => t.TicketSeat) 
+            .ToListAsync();
+
+        var ticketDTOs = _mapper.Map<List<TicketDTO>>(tickets); 
+
+        return Ok(ticketDTOs);
+    }
+
+    
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTicketById(Guid id)
         {
-            var tickets = await _context.Tickets
-                .Where(t => t.ActivityId == activityId)
-                .Include(t => t.Customer) 
-                .Include(t => t.Activity) 
-                .Include(t => t.TicketSeat) 
-                .ToListAsync();
+             var ticket = await _context.Tickets.FindAsync(id);
 
-            var ticketDTOs = _mapper.Map<List<TicketDTO>>(tickets); 
+            if (ticket == null)
+                return NotFound();
 
-            return Ok(ticketDTOs);
+            var ticketDTO = _mapper.Map<TicketDTO>(ticket);
+            return Ok(ticketDTO);
         }
+
     }
 }

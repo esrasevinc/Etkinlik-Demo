@@ -39,7 +39,7 @@ namespace API.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCustomerById(int id)
+        public async Task<IActionResult> GetCustomerById(Guid id)
         {
              var customer = await _context.Customers.FindAsync(id);
 

@@ -45,8 +45,28 @@ export default class TicketStore {
     }
   };
 
+  loadTicketById = async (id: string) => {
+    let ticket = this.getTicket(id);
+    if (ticket) {
+      this.selectedTicket = ticket;
+      return ticket;
+    } else {
+      this.setLoadingInitial(true);
+      try {
+        ticket = await agent.Tickets.details(id);
+        this.setTicket(ticket);
+        runInAction(() => (this.selectedTicket = ticket));
 
-  createCategory = async (ticket: Ticket) => {
+        this.setLoadingInitial(false);
+        return ticket;
+      } catch (err) {
+        console.log(err);
+        this.setLoadingInitial(false);
+      }
+    }
+  };
+
+  createTicket = async (ticket: Ticket) => {
     try {
       this.loading = true;
       const cretaedTicket = await agent.Tickets.buyTicket(ticket);

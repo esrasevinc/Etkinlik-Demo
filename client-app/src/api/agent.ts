@@ -8,6 +8,8 @@ import { message } from 'antd';
 import { Place } from '../models/place';
 import { EventHall } from '../models/eventHall';
 import { Ticket } from '../models/ticket';
+import { Customer } from '../models/customer';
+import { TicketSeat } from '../models/ticketSeat';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -128,9 +130,18 @@ const Users = {
   }
 
   const Tickets = {
-    list: (activityId: string) => requests.get<Ticket[]>(`/tickets?activityId=${activityId}`),
+    listByActivity: (activityId: string) => requests.get<Ticket[]>(`/tickets?activityId=${activityId}`),
     listAll: () => requests.get<Ticket[]>(`/tickets/all`),
+    details: (id: string) => requests.get<Ticket>(`/tickets/${id}`),
     buyTicket: (ticket: Ticket) => requests.post<Ticket>('/tickets', ticket)
+  }
+
+  const Customers = {
+    create: (customer: Customer) => requests.post<Customer>('/customers', customer)
+  }
+
+  const TicketSeats = {
+    create: (ticketSeat: TicketSeat) => requests.post<TicketSeat>('/ticketseats', ticketSeat)
   }
 
 const agent = {
@@ -140,7 +151,9 @@ const agent = {
     EventHalls,
     Account,
     Users,
-    Tickets
+    Tickets,
+    Customers,
+    TicketSeats
 }
 
 export default agent;

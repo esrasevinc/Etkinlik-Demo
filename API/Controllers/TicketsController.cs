@@ -31,34 +31,43 @@ namespace API.Controllers
                 return BadRequest("Bu koltuk zaten dolu.");
             }
 
-        
             var ticket = _mapper.Map<Ticket>(ticketDTO);
-
             seat.Status = "Dolu";
-
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
 
             return Ok(_mapper.Map<TicketDTO>(ticket));
         }
 
+
         [HttpGet("all")]
-        public async Task<ActionResult<List<Ticket>>> GetAllTickets()
+        public async Task<ActionResult<List<TicketDTO>>> GetAllTickets()
         {
-            var tickets = await _context.Tickets.ToListAsync();
-            return Ok(tickets);
+            var tickets = await _context.Tickets
+                .Include(t => t.Customer) 
+                .Include(t => t.Activity) 
+                .Include(t => t.TicketSeat) 
+                .ToListAsync();
+
+            var ticketDTOs = _mapper.Map<List<TicketDTO>>(tickets); 
+
+            return Ok(ticketDTOs);
         }
 
+
         [HttpGet]
-        public async Task<ActionResult<List<Ticket>>> GetTicketsByActivityId([FromQuery] Guid activityId)
+        public async Task<ActionResult<List<TicketDTO>>> GetTicketsByActivityId([FromQuery] Guid activityId)
         {
             var tickets = await _context.Tickets
                 .Where(t => t.ActivityId == activityId)
+                .Include(t => t.Customer) 
+                .Include(t => t.Activity) 
+                .Include(t => t.TicketSeat) 
                 .ToListAsync();
 
-            return Ok(tickets);
+            var ticketDTOs = _mapper.Map<List<TicketDTO>>(tickets); 
+
+            return Ok(ticketDTOs);
         }
-
-
     }
 }

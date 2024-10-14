@@ -33,24 +33,7 @@ const CreateTicket = observer(() => {
       
       if (!customerId) {
         throw new Error('Customer ID not returned');
-      }
-
-      const ticketSeatResponse = await agent.TicketSeats.create({
-        seatId: values.seatId,
-        activityId: values.activityId,
-        label: values.label,
-        row: values.row,
-        column: values.column,
-        status: values.status,
-      });
-
-      const ticketSeatId = ticketSeatResponse.id;
-      
-      if (!ticketSeatId) {
-        throw new Error('Ticket Seat ID not returned');
-      }
-  
-      
+      }  
   
     } catch (error) {
       console.error('Error creating ticket:', error);

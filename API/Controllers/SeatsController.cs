@@ -45,6 +45,18 @@ namespace API.Controllers
             {
                 seat.EventHallId = eventHallId;
                 _context.Seats.Add(seat);
+
+                var ticketSeat = new TicketSeat
+                {
+                    Id = Guid.NewGuid(),
+                    SeatId = seat.Id,
+                    Label = seat.Label,
+                    Row = seat.Row,
+                    Column = seat.Column,
+                    Status = "Boş" 
+                };
+
+                _context.TicketSeats.Add(ticketSeat);
             }
 
             var success = await _context.SaveChangesAsync() > 0;
@@ -94,7 +106,6 @@ namespace API.Controllers
         [HttpPost("save")]
         public async Task<IActionResult> SaveSeats([FromBody] SaveSeatsDTO saveSeatsDTO)
         {
-
             var eventHall = await _context.EventHalls.FindAsync(saveSeatsDTO.EventHallId);
             if (eventHall == null)
             {
@@ -108,28 +119,47 @@ namespace API.Controllers
             if (existingSeats.Any())
             {
                 _context.Seats.RemoveRange(existingSeats);
-            }
 
-            var newSeats = saveSeatsDTO.Seats.Select(seatDto => new Seat
-            {
-                Id = Guid.NewGuid(),  
-                EventHallId = saveSeatsDTO.EventHallId,  
-                Row = seatDto.Row,
-                Column = seatDto.Column,
-                Label = seatDto.Label,
-                Status = seatDto.Status
-            }).ToList(); 
 
-            await _context.Seats.AddRangeAsync(newSeats);
-
-            var success = await _context.SaveChangesAsync() > 0;
-
-            if (success)
-            {
-                return Ok("Koltuk düzeni başarıyla kaydedildi.");
-            }
-
-            return BadRequest("Koltuk düzeni kaydedilemedi.");
+            var existingTicketSeats = await _context.TicketSeats
+            .ToListAsync();
+            _context.TicketSeats.RemoveRange(existingTicketSeats);
         }
+
+    var newSeats = saveSeatsDTO.Seats.Select(seatDto => new Seat
+    {
+        Id = Guid.NewGuid(),
+        EventHallId = saveSeatsDTO.EventHallId,
+        Row = seatDto.Row,
+        Column = seatDto.Column,
+        Label = seatDto.Label,
+        Status = seatDto.Status
+    }).ToList();
+
+    await _context.Seats.AddRangeAsync(newSeats);
+
+    
+    var newTicketSeats = newSeats.Select(seat => new TicketSeat
+    {
+        Id = Guid.NewGuid(),
+        SeatId = seat.Id,
+        Row = seat.Row,
+        Column = seat.Column,
+        Label = seat.Label,
+        Status = "Boş"
+    }).ToList();
+
+    await _context.TicketSeats.AddRangeAsync(newTicketSeats);
+
+    var success = await _context.SaveChangesAsync() > 0;
+
+    if (success)
+    {
+        return Ok("Koltuk düzeni başarıyla kaydedildi.");
+    }
+
+    return BadRequest("Koltuk düzeni kaydedilemedi.");
+}
+
     }
 }

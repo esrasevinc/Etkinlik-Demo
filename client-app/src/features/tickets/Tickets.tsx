@@ -19,15 +19,49 @@ const Tickets = observer(() => {
 
   const columns: TableProps<Ticket>["columns"] = [
     {
-      title: "Müşteri Adı",
+      title: "Bilet ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text) => <p>{text}</p>,
+      width: 300,
+    },
+    {
+      title: "Ad Soyad",
       dataIndex: "customer",
       key: "customer",
       render: (customer) => {
         return customer?.name && <p>{customer.name.charAt(0).toUpperCase() + customer.name.slice(1)}</p>
       },
       width: 300,
-    }
-   
+    },
+    {
+      title: "Telefon Numarası",
+      dataIndex: "customer",
+      key: "customer",
+      render: (customer) => <p>{customer.phone}</p>,
+      width: 300,
+    },
+    {
+      title: "Email",
+      dataIndex: "customer",
+      key: "customer",
+      render: (customer) => <p>{customer.email}</p>,
+      width: 300,
+    },
+    {
+      title: "Etkinlik",
+      dataIndex: "activity",
+      key: "activity",
+      render: (activity) => <p>{activity.name}</p>,
+      width: 300,
+    },
+    {
+      title: "Koltuk",
+      dataIndex: "ticketSeat",
+      key: "ticketSeat",
+      render: (ticketseat) => <p>{ticketseat.label}</p>,
+      width: 300,
+    },
   ];
 
   return (

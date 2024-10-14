@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241001124453_DenemeMigration")]
-    partial class DenemeMigration
+    [Migration("20241014064534_Deneme")]
+    partial class Deneme
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

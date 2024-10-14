@@ -9,12 +9,12 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TicketController : ControllerBase
+    public class TicketsController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly DataContext _context;
 
-        public TicketController(IMapper mapper, DataContext context)
+        public TicketsController(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
             _context = context;

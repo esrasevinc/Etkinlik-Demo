@@ -62,6 +62,27 @@ const CreateTicket = observer(() => {
           >
             <Input />
           </Form.Item>
+          <Form.Item
+            label="TC Kimlik"
+            name="name"
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Telefon"
+            name="name"
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="name"
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
+          >
+            <Input />
+          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" loading={loading}>
               Bilet Oluştur

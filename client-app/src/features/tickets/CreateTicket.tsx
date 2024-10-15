@@ -32,7 +32,7 @@ const CreateTicket = observer(() => {
                 form.setFieldsValue({
                     id: tic.id,
                     name: tic.customer?.name ?? '',
-                    tcNumber: tic.customer?.TCNumber ?? '',                   
+                    tcNumber: tic.customer?.tcNumber ?? '',                   
                     phone: tic.customer?.phone ?? '',
                     email: tic.customer?.email ?? '',
                     address: tic.customer?.address ?? '',
@@ -65,7 +65,7 @@ const CreateTicket = observer(() => {
     try {
         const customerResponse = await agent.Customers.create({
             name: values.name,
-            TCNumber: values.tcNumber,
+            tcNumber: values.tcNumber,
             phone: values.phone,
             email: values.email,
             address: values.address,
@@ -152,7 +152,7 @@ const handleSeatClick = (seatId: string) => {
           </Form.Item>
           <Form.Item
             label="TC Kimlik"
-            name={"tcNumber"} 
+            name="tcNumber"
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >
             <Input />

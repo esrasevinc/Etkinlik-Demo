@@ -5,9 +5,9 @@ import { TicketSeat } from "./ticketSeat";
 export interface Ticket {
     id?: string;
     activity: Activity,
-    activityId: string;
+    activityId?: string;
     customer: Customer;
-    customerId: string;
+    customerId?: string;
     ticketSeat: TicketSeat;
-    ticketSeatId: string;
+    ticketSeatId?: string;
 }

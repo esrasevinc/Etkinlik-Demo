@@ -114,5 +114,24 @@ namespace API.Controllers
         return BadRequest("Ticket seat'ler oluşturulamadı.");
     }
 
+    [HttpGet("activity/{activityId}")]
+    public async Task<ActionResult<IEnumerable<TicketSeatDTO>>> GetTicketSeatsByActivityId(Guid activityId)
+    {
+
+        var ticketSeats = await _context.TicketSeats
+            .Where(ts => ts.ActivityId == activityId)
+            .ToListAsync();
+
+        if (ticketSeats == null || !ticketSeats.Any())
+        {
+            return NotFound("Bu aktivite için koltuk bulunamadı.");
+        }
+
+        var ticketSeatDTOs = _mapper.Map<IEnumerable<TicketSeatDTO>>(ticketSeats);
+
+         return Ok(ticketSeatDTOs);
+    }
+
+
     }
 }

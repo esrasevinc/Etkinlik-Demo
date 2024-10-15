@@ -88,13 +88,7 @@ const Tickets = observer(() => {
       render: (activity) => <p>{activity.name}</p>,
       width: 200,
     },
-    {
-      title: "Etkinlik Yeri",
-      dataIndex: "activity",
-      key: "activity",
-      render: (activity) => <p>{activity.place.title}</p>,
-      width: 200,
-    },
+  
     {
       title: "Koltuk",
       dataIndex: "ticketSeat",

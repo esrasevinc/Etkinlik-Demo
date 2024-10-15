@@ -190,8 +190,8 @@ const Design = () => {
         {Array.from({ length: rows }).map((_, rowIndex) =>
           Array.from({ length: columns }).map((_, columnIndex) => {
             const seat = seats.find((seat) => seat.row === rowIndex && seat.column === columnIndex);
-            const isSelected = selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex; // Seçili koltuk kontrolü
-            const isBalconySeat = rowIndex >= rows; // Check if the seat is in the balcony section
+            const isSelected = selectedSeat?.row === rowIndex && selectedSeat?.column === columnIndex;
+            const isBalconySeat = rowIndex >= rows; 
 
             return (
               <div
@@ -204,7 +204,7 @@ const Design = () => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: isSelected ? "lightblue" : (seat?.status === "Koltuk" ? (isBalconySeat ? "lightcoral" : "lightgreen") : "white"), // Distinguish balcony seats with a different color
+                  backgroundColor: isSelected ? "lightblue" : (seat?.status === "Koltuk" ? (isBalconySeat ? "lightcoral" : "lightgreen") : "white"), 
                   cursor: "pointer",
                   position: "relative",
                 }}

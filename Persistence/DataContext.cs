@@ -49,6 +49,11 @@ namespace Persistence
             .WithOne(s => s.EventHall)
             .HasForeignKey(s => s.EventHallId);
 
+            modelBuilder.Entity<Activity>()
+            .HasMany(a => a.TicketSeats)
+            .WithOne(s => s.Activity)
+            .HasForeignKey(s => s.ActivityId);
+
             modelBuilder.Entity<Ticket>()
                 .HasOne(t => t.TicketSeat)
                 .WithMany(ts => ts.Tickets)

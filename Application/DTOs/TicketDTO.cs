@@ -8,4 +8,13 @@ namespace Application.DTOs {
         public Guid? TicketSeatId { get; set; }
         public TicketSeatDTO TicketSeat { get; set; }
     }
+
+    public class CreateTicketDTO
+    {
+        public Guid CustomerId { get; set; } 
+        public Guid ActivityId { get; set; } 
+        public Guid TicketSeatId { get; set; } 
+    }
+
+
 }

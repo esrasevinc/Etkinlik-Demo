@@ -15,5 +15,6 @@ namespace Domain
         public Place Place { get; set; }
         public EventHall EventHall { get; set; }
         public ICollection<Ticket> Tickets { get; set; } 
+        public List<TicketSeat> TicketSeats { get; set; }
     }
 }

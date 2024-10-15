@@ -1,5 +1,5 @@
 export interface TicketSeat {
-    id?: string;
+    id: string;
     seatId: string;
     activityId: string;
     label: string;

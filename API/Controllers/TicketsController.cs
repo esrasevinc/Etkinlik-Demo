@@ -20,24 +20,51 @@ namespace API.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<TicketDTO>> CreateTicket(TicketDTO ticketDTO)
-        {
-            var seat = await _context.TicketSeats
-                .FirstOrDefaultAsync(s => s.Id == ticketDTO.TicketSeatId && s.Status != "Dolu");
+       [HttpPost]
+public async Task<ActionResult<TicketDTO>> CreateTicket(CreateTicketDTO createTicketDTO)
+{
+    // Koltuğun mevcut olup olmadığını ve dolu olup olmadığını kontrol et
+    var seat = await _context.TicketSeats
+        .Include(s => s.Activity) // Gerekirse aktivite bilgilerini de dahil et
+        .FirstOrDefaultAsync(s => s.Id == createTicketDTO.TicketSeatId && s.Status != "Dolu");
 
-            if (seat == null)
-            {
-                return BadRequest("Bu koltuk zaten dolu.");
-            }
+    if (seat == null)
+    {
+        return BadRequest("Bu koltuk zaten dolu.");
+    }
 
-            var ticket = _mapper.Map<Ticket>(ticketDTO);
-            seat.Status = "Dolu";
-            _context.Tickets.Add(ticket);
-            await _context.SaveChangesAsync();
+    // Müşteriyi ve etkinliği veritabanından yükle
+    var customer = await _context.Customers.FindAsync(createTicketDTO.CustomerId);
+    var activity = await _context.Activities.FindAsync(createTicketDTO.ActivityId);
 
-            return Ok(_mapper.Map<TicketDTO>(ticket));
-        }
+    if (customer == null || activity == null)
+    {
+        return BadRequest("Müşteri veya etkinlik bulunamadı.");
+    }
+
+    // Yeni Ticket nesnesi oluşturma
+    var ticket = new Ticket
+    {
+        CustomerId = createTicketDTO.CustomerId, // Müşteri kimliğini ata
+        ActivityId = createTicketDTO.ActivityId, // Etkinlik kimliğini ata
+        TicketSeatId = createTicketDTO.TicketSeatId, // Koltuk kimliğini ata
+        Customer = customer, // Müşteriyi ata
+        Activity = activity, // Etkinliği ata
+        TicketSeat = seat // Seçilen koltuğu ata
+    };
+
+    // Koltuk durumunu güncelle
+    seat.Status = "Dolu";
+
+    // Ticket'ı ekleyin ve kaydedin
+    _context.Tickets.Add(ticket);
+    await _context.SaveChangesAsync();
+
+    // Oluşturulan Ticket'ı DTO'ya dönüştürerek geri döndürün
+    return Ok(_mapper.Map<TicketDTO>(ticket));
+}
+
+
 
         [HttpGet("all")]
         public async Task<ActionResult<List<TicketDTO>>> GetAllTickets()

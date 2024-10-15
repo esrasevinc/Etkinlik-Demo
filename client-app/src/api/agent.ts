@@ -142,8 +142,10 @@ const Users = {
 
   const TicketSeats = {
     create: (ticketSeat: TicketSeat) => requests.post<TicketSeat>('/ticketseats', ticketSeat),
-    initialize: (activityId: string) => requests.post(`/ticketseats/initialize/${activityId}`, {})
+    initialize: (activityId: string) => requests.post(`/ticketseats/initialize/${activityId}`, {}),
+    listByActivityId: (activityId: string) => requests.get<TicketSeat[]>(`/ticketseats/activity/${activityId}`)
   }
+
 
 const agent = {
     Activities,

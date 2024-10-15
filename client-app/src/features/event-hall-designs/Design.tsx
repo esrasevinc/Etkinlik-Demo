@@ -44,10 +44,9 @@ const Design = () => {
           }));
     
           setSeats(updatedSeats);
-    
-          // Update the rows and columns based on the fetched seats
-          const maxRow = Math.max(...updatedSeats.map(seat => seat.row), 0) + 1; // Add 1 to include zero-based index
-          const maxColumn = Math.max(...updatedSeats.map(seat => seat.column), 0) + 1; // Add 1 to include zero-based index
+  
+          const maxRow = Math.max(...updatedSeats.map(seat => seat.row), 0) + 1; 
+          const maxColumn = Math.max(...updatedSeats.map(seat => seat.column), 0) + 1; 
           setRows(maxRow);
           setColumns(maxColumn);
         } else {

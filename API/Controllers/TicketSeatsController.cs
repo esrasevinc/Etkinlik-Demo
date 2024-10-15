@@ -82,33 +82,37 @@ namespace API.Controllers
             if (existingTicketSeats.Any())
             {
                 _context.TicketSeats.RemoveRange(existingTicketSeats);
-                 await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
 
             foreach (var seat in seats)
             {
+
+            if (seat.Status == "Koltuk") 
+            {
                 var ticketSeat = new TicketSeat
                 {
-                    Id = Guid.NewGuid(),
-                    ActivityId = activityId,
-                    Row = seat.Row,
-                    Column = seat.Column,
-                    Label = seat.Label,
-                    Status = "Boş"  
+                Id = Guid.NewGuid(),
+                ActivityId = activityId,
+                Row = seat.Row,
+                Column = seat.Column,
+                Label = seat.Label,
+                Status = "Boş" 
                 };
 
                 _context.TicketSeats.Add(ticketSeat);
             }
-
-            var success = await _context.SaveChangesAsync() > 0;
-
-            if (success)
-            {
-                return Ok("Tüm ticket seat'ler başarıyla oluşturuldu.");
-            }
-
-            return BadRequest("Ticket seat'ler oluşturulamadı.");
         }
+
+        var success = await _context.SaveChangesAsync() > 0;
+
+        if (success)
+        {
+            return Ok("Tüm ticket seat'ler başarıyla oluşturuldu.");
+        }
+
+        return BadRequest("Ticket seat'ler oluşturulamadı.");
+    }
 
     }
 }

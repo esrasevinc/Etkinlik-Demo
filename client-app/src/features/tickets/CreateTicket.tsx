@@ -1,20 +1,26 @@
 
 import { useStore } from "../../stores/store";
-import { Button, Col, Form, FormProps, Input, Row } from "antd";
+import { Button, Col, Form, FormProps, Input, Row, Select } from "antd";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { observer } from "mobx-react-lite";
 import agent from "../../api/agent";
+import { useEffect } from "react";
 
 const CreateTicket = observer(() => {
   const [form] = Form.useForm();
 
-  const { ticketStore } = useStore();
+  const { ticketStore, activityStore } = useStore();
   const {
     loadingInitial,
     loading,
     createTicket,
-    loadTicketById
   } = ticketStore;
+
+  const { loadActivities, activitiesAll } = activityStore;
+
+  useEffect(() => {
+    loadActivities();
+  }, [loadActivities, form]);
 
 
   const onFinish: FormProps["onFinish"] = async (values) => {
@@ -83,9 +89,18 @@ const CreateTicket = observer(() => {
           >
             <Input />
           </Form.Item>
+          <Form.Item label="Etkinlik Seçimi" name={"activityId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
+          <Select>
+          {activitiesAll.map((a) => (
+            <Select.Option key={a.id} value={a.id}>
+              {a.name.charAt(0).toUpperCase() + a.name.slice(1)}
+            </Select.Option>
+          ))}
+        </Select>
+        </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" loading={loading}>
-              Bilet Oluştur
+              Bilet Oluşturrr
             </Button>
           </Form.Item>
         </Col>

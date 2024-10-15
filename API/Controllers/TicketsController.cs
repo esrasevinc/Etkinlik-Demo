@@ -21,49 +21,44 @@ namespace API.Controllers
         }
 
        [HttpPost]
-public async Task<ActionResult<TicketDTO>> CreateTicket(CreateTicketDTO createTicketDTO)
-{
-    // Koltuğun mevcut olup olmadığını ve dolu olup olmadığını kontrol et
-    var seat = await _context.TicketSeats
-        .Include(s => s.Activity) // Gerekirse aktivite bilgilerini de dahil et
-        .FirstOrDefaultAsync(s => s.Id == createTicketDTO.TicketSeatId && s.Status != "Dolu");
+        public async Task<ActionResult<TicketDTO>> CreateTicket(CreateTicketDTO createTicketDTO)
+        {
+       
+            var seat = await _context.TicketSeats
+                .Include(s => s.Activity) 
+                .FirstOrDefaultAsync(s => s.Id == createTicketDTO.TicketSeatId && s.Status != "Dolu");
 
-    if (seat == null)
-    {
-        return BadRequest("Bu koltuk zaten dolu.");
-    }
+            if (seat == null)
+            {
+                return BadRequest("Bu koltuk zaten dolu.");
+            }
 
-    // Müşteriyi ve etkinliği veritabanından yükle
-    var customer = await _context.Customers.FindAsync(createTicketDTO.CustomerId);
-    var activity = await _context.Activities.FindAsync(createTicketDTO.ActivityId);
+            var customer = await _context.Customers.FindAsync(createTicketDTO.CustomerId);
+            var activity = await _context.Activities.FindAsync(createTicketDTO.ActivityId);
 
-    if (customer == null || activity == null)
-    {
-        return BadRequest("Müşteri veya etkinlik bulunamadı.");
-    }
+            if (customer == null || activity == null)
+            {
+                return BadRequest("Müşteri veya etkinlik bulunamadı.");
+            }
 
-    // Yeni Ticket nesnesi oluşturma
-    var ticket = new Ticket
-    {
-        CustomerId = createTicketDTO.CustomerId, // Müşteri kimliğini ata
-        ActivityId = createTicketDTO.ActivityId, // Etkinlik kimliğini ata
-        TicketSeatId = createTicketDTO.TicketSeatId, // Koltuk kimliğini ata
-        Customer = customer, // Müşteriyi ata
-        Activity = activity, // Etkinliği ata
-        TicketSeat = seat // Seçilen koltuğu ata
-    };
+            var ticket = new Ticket
+            {
+                CustomerId = createTicketDTO.CustomerId, 
+                ActivityId = createTicketDTO.ActivityId, 
+                TicketSeatId = createTicketDTO.TicketSeatId, 
+                Customer = customer, 
+                Activity = activity,
+                TicketSeat = seat 
+            };
 
-    // Koltuk durumunu güncelle
-    seat.Status = "Dolu";
+ 
+            seat.Status = "Dolu";
 
-    // Ticket'ı ekleyin ve kaydedin
-    _context.Tickets.Add(ticket);
-    await _context.SaveChangesAsync();
+            _context.Tickets.Add(ticket);
+            await _context.SaveChangesAsync();
 
-    // Oluşturulan Ticket'ı DTO'ya dönüştürerek geri döndürün
-    return Ok(_mapper.Map<TicketDTO>(ticket));
-}
-
+            return Ok(_mapper.Map<TicketDTO>(ticket));
+        }
 
 
         [HttpGet("all")]
@@ -103,17 +98,82 @@ public async Task<ActionResult<TicketDTO>> CreateTicket(CreateTicketDTO createTi
     }
 
     
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTicketById(Guid id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetTicketById(Guid id)
+    {
+        var ticket = await _context.Tickets
+            .Include(t => t.Customer) 
+            .Include(t => t.TicketSeat) 
+            .Include(t => t.Activity) 
+            .FirstOrDefaultAsync(t => t.Id == id); 
+
+        if (ticket == null)
+            return NotFound();
+
+        var ticketDTO = _mapper.Map<TicketDTO>(ticket);
+        return Ok(ticketDTO);
+    }
+
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<TicketDTO>> UpdateTicket(Guid id, UpdateTicketDTO updateTicketDTO)
+    {
+        var ticket = await _context.Tickets.FindAsync(id);
+
+        if (ticket == null)
         {
-             var ticket = await _context.Tickets.FindAsync(id);
-
-            if (ticket == null)
-                return NotFound();
-
-            var ticketDTO = _mapper.Map<TicketDTO>(ticket);
-            return Ok(ticketDTO);
+            return NotFound("Bilet bulunamadı.");
         }
+
+        var seat = await _context.TicketSeats.FindAsync(updateTicketDTO.TicketSeatId);
+        if (seat == null || seat.Status == "Dolu")
+        {
+            return BadRequest("Koltuk bulunamadı veya dolu.");
+        }
+
+        var customer = await _context.Customers.FindAsync(updateTicketDTO.CustomerId);
+        var activity = await _context.Activities.FindAsync(updateTicketDTO.ActivityId);
+
+        if (customer == null || activity == null)
+        {
+            return BadRequest("Müşteri veya etkinlik bulunamadı.");
+        }
+
+        ticket.TicketSeatId = updateTicketDTO.TicketSeatId;
+        ticket.CustomerId = updateTicketDTO.CustomerId;
+        ticket.ActivityId = updateTicketDTO.ActivityId;
+
+        seat.Status = "Dolu";
+
+        await _context.SaveChangesAsync();
+
+        return Ok(_mapper.Map<TicketDTO>(ticket));
+    }
+
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTicket(Guid id)
+    {
+        var ticket = await _context.Tickets.FindAsync(id);
+
+        if (ticket == null)
+        {
+            return NotFound("Bilet bulunamadı.");
+        }
+
+   
+        var seat = await _context.TicketSeats.FindAsync(ticket.TicketSeatId);
+        if (seat != null)
+        {
+            seat.Status = "Boş"; 
+        }
+
+        _context.Tickets.Remove(ticket);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
 
     }
 }

@@ -86,6 +86,48 @@ export default class TicketStore {
     }
   };
 
+  updateTicket = async (ticket: Ticket) => {
+    try {
+      this.loading = true;
+      await agent.Tickets.update(ticket);
+      runInAction(() => {
+        if (ticket.id) {
+          const updatedTicket = { ...this.getTicket(ticket.id), ...ticket };
+          this.ticketsRegistry.set(ticket.id, updatedTicket as Ticket);
+          this.selectedTicket = updatedTicket as Ticket;
+        }
+        router.navigate("/biletler");
+        store.notificationStore.openNotification("success", "Bilet başarıyla güncellendi.", "");
+        this.loading = false;
+      });
+    } catch (err) {
+      if (err instanceof Array) {
+        for (const error of err) {
+          store.notificationStore.openNotification("error", error, "");
+        }
+      } else store.notificationStore.openNotification("error", "Bilet güncellenemedi.", "");
+      runInAction(() => {
+        this.loading = false;
+      });
+    }
+  };
+
+  deleteTicket = async (id: string) => {
+    this.loading = true;
+    try {
+      await agent.Tickets.delete(id);
+      runInAction(() => {
+        this.ticketsRegistry.delete(id);
+        this.loading = false;
+      });
+    } catch (err) {
+      console.log(err);
+      runInAction(() => {
+        this.loading = false;
+      });
+    }
+  };
+
   clearSelectedTicket = () => {
     this.selectedTicket = undefined;
   };

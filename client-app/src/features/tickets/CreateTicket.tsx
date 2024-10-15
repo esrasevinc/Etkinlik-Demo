@@ -7,20 +7,40 @@ import { useEffect, useState } from "react";
 import { TicketSeat } from "../../models/ticketSeat";
 import dayjs from "dayjs";
 import locale from 'antd/es/date-picker/locale/tr_TR';
+import { useLocation } from "react-router-dom";
 
 const CreateTicket = observer(() => {
   const [form] = Form.useForm();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const id = params.get("ticketId") || '';
 
   const { ticketStore, activityStore } = useStore();
-  const { loadingInitial, loading, createTicket } = ticketStore;
+  const { loadingInitial, loading, createTicket, updateTicket, loadTicketById, clearSelectedTicket } = ticketStore;
   const { loadActivities, activitiesAll } = activityStore;
 
   const [seats, setSeats] = useState<TicketSeat[]>([]);
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null); 
 
-  useEffect(() => {
-    loadActivities();
-  }, [loadActivities]);
+    useEffect(() => {
+        loadActivities();
+
+        if (id) {
+            loadTicketById(id).then((tic) => {
+                if (tic) {
+                    setSelectedSeatId(tic.ticketSeat.id); 
+                    form.setFieldsValue({
+                        ...tic,
+                        date: dayjs.utc(tic.activity.date).tz('Europe/Istanbul'),
+                    });
+                
+                }
+            });
+        } 
+
+        return () => clearSelectedTicket();
+    }, [id, loadTicketById, clearSelectedTicket, form, loadActivities]);
+
 
   const handleActivityChange = async (activityId: string) => {
     try {
@@ -36,6 +56,7 @@ const CreateTicket = observer(() => {
 };
 
   const onFinish: FormProps["onFinish"] = async (values) => {
+    
     try {
         const customerResponse = await agent.Customers.create({
             name: values.name,
@@ -68,13 +89,18 @@ const CreateTicket = observer(() => {
             ticketSeat: { ...ticketSeat } 
         };
 
-        await createTicket(ticketData); 
+        if (id) {
+          await updateTicket(ticketData)
+        } else {
+          await createTicket(ticketData); 
+        }
+        
 
         form.resetFields();
         setSelectedSeatId(null); 
 
     } catch (error) {
-        console.error('Bilet oluştururken hata oluştu:', error);
+        console.error('Bir hata oluştu:', error);
     }
 };
 

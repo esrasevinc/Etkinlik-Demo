@@ -49,6 +49,7 @@ export const routes: RouteObject[] = [
               { path: "salon-tasarimlari", element: <EventHallsDesign /> },
               { path: "salon-tasarimlari/tasarla", element: <Design /> },
               { path: "biletler", element: <Tickets /> },
+              { path: "biletler/duzenle", element: <CreateTicket /> },
               { path: "bilet-olustur", element: <CreateTicket /> },
               { path: "kullanicilar", element: <RequireAdmin> <Users /> </RequireAdmin> },
               { path: "kullanicilar/yeni-ekle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> },

@@ -1,5 +1,6 @@
 namespace Application.DTOs {
-    public class TicketDTO {
+    public class TicketDTO
+    {
         public Guid Id { get; set; }
         public CustomerDTO Customer { get; set; }
         public Guid? CustomerId { get; set; }
@@ -16,5 +17,12 @@ namespace Application.DTOs {
         public Guid TicketSeatId { get; set; } 
     }
 
+    public class UpdateTicketDTO
+    {
+        public Guid TicketId { get; set; }
+        public Guid TicketSeatId { get; set; }
+        public Guid CustomerId { get; set; }
+        public Guid ActivityId { get; set; }
+    }
 
 }

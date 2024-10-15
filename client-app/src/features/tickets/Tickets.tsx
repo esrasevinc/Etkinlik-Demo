@@ -1,22 +1,24 @@
-import { Button, Col, Modal, Row, Table, TableProps, Tooltip } from "antd";
+import { Button, Col, Flex, Modal, Popconfirm, Row, Table, TableProps, Tooltip } from "antd";
 import { useStore } from "../../stores/store";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { Ticket } from "../../models/ticket";
-import { LinkOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, LinkOutlined } from "@ant-design/icons";
 import { QRCodeCanvas } from "qrcode.react"; 
 import jsPDF from "jspdf";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
+
 
 const Tickets = observer(() => {
-  const { ticketStore } = useStore();
-  const { tickets, loadTickets, loadingInitial } = ticketStore;
+  const { ticketStore, activityStore } = useStore();
+  const { tickets, loadTickets, loadingInitial, deleteTicket } = ticketStore;
+  const { loadActivities, activitiesAll } = activityStore;
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
 
   const calculateAge = (birthdate: Date): number => {
-   
     const birthDate = typeof birthdate === 'string' ? new Date(birthdate) : birthdate;
   
     if (isNaN(birthDate.getTime())) return 0; 
@@ -33,10 +35,10 @@ const Tickets = observer(() => {
   };
   
   
-
   useEffect(() => {
     loadTickets();
-  }, [loadTickets]);
+    loadActivities();
+  }, [loadTickets, loadActivities]);
 
   if (loadingInitial) return <LoadingComponent />;
 
@@ -116,6 +118,11 @@ const Tickets = observer(() => {
       dataIndex: "activity",
       key: "activity",
       render: (activity) => <p>{activity.name}</p>,
+      filters: activitiesAll.map(a => ({
+        text: a.name.charAt(0).toUpperCase() + a.name.slice(1), 
+        value: a.id!,
+      })),
+      onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
       width: 200,
     },
     {
@@ -125,6 +132,11 @@ const Tickets = observer(() => {
       render: (activity) => {
         return dayjs.utc((activity.date)).tz('Europe/Istanbul').format('DD.MM.YYYY HH:mm')
        },
+       sorter: (a: Ticket, b: Ticket) => {
+        const dateA = dayjs.utc(a.activity.date).tz('Europe/Istanbul');
+        const dateB = dayjs.utc(b.activity.date).tz('Europe/Istanbul');
+        return dateA.isBefore(dateB) ? -1 : dateA.isAfter(dateB) ? 1 : 0;
+      },
       width: 200,
     },
     {
@@ -135,25 +147,46 @@ const Tickets = observer(() => {
       width: 100,
     },
     {
-      title: "Görüntüle",
+      title: "İşlemler",
       dataIndex: "actions",
       render: (_, record) => (
-        <Tooltip title="Bileti Görüntüle">
+        <Flex wrap="wrap" gap="small">
+          <Link to={`duzenle?ticketId=${record.id}`}>
+            <Tooltip title="Düzenle">
+              <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            </Tooltip>
+            </Link>
+          <Popconfirm
+            title="Bileti sil"
+            description="Bu bileti silmek istediğinize emin misiniz?"
+            onConfirm={() => {
+              deleteTicket(record.id as string);
+            }}
+            okText="Sil"
+            cancelText="İptal"
+          >
+            <Tooltip title="Sil">
+            <Button type="primary" danger shape="circle" icon={<DeleteOutlined />} />
+            </Tooltip>
+          </Popconfirm>
+          <Tooltip title="Bileti Görüntüle">
           <Button
+          style={{ backgroundColor: 'green', borderColor: 'green' }} 
             type="primary"
             shape="circle"
             icon={<LinkOutlined />}
             onClick={() => showModal(record)} 
           />
         </Tooltip>
+        </Flex>
       ),
-      width: 200,
+      width: 250,
     },
+
   ];
 
   return (
     <>
-
       <Table
         bordered
         scroll={{ x: 500 }}
@@ -162,7 +195,6 @@ const Tickets = observer(() => {
         loading={loadingInitial}
         style={{ width: "100%" }}
       />
-
       <Modal
         title="Bilet Detayları"
         visible={isModalVisible}
@@ -183,7 +215,6 @@ const Tickets = observer(() => {
       >
         {selectedTicket && (
           <>
-    
             <Row justify="center" style={{ marginBottom: 20 }}>
               <QRCodeCanvas value={JSON.stringify(selectedTicket)} />
             </Row>

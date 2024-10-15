@@ -133,7 +133,9 @@ const Users = {
     listByActivity: (activityId: string) => requests.get<Ticket[]>(`/tickets?activityId=${activityId}`),
     listAll: () => requests.get<Ticket[]>(`/tickets/all`),
     details: (id: string) => requests.get<Ticket>(`/tickets/${id}`),
-    buyTicket: (ticket: Ticket) => requests.post<Ticket>('/tickets', ticket)
+    buyTicket: (ticket: Ticket) => requests.post<Ticket>('/tickets', ticket),
+    update: (ticket: Ticket) => requests.put<void>(`/tickets/${ticket.id}`, ticket),
+    delete: (id: string) => requests.del<void>(`/tickets/${id}`)
   }
 
   const Customers = {

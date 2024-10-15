@@ -55,22 +55,38 @@ const ActivitiesEdit = observer(() => {
     }, [selectedPlaceId, getEventHallsByPlaceId]);
 
     useEffect(() => {
-        const initializeTicketSeats = async () => {
+
+        const initializeTicketSeats = async (activityId: string) => {
           try {
-            await agent.TicketSeats.initialize(id);  
+            await agent.TicketSeats.initialize(activityId);
           } catch (error) {
             console.error('Ticket seat initialization failed:', error);
           }
         };
-      
-        initializeTicketSeats();
+
+        if (id) {
+          initializeTicketSeats(id);
+        }
       }, [id]);
 
-    const onFinish: FormProps<ActivityFormValues>["onFinish"] = (values) => {
-        if (id) {
-            updateActivity(values);
-        } else {
-            createActivity(values);
+      const onFinish: FormProps<ActivityFormValues>["onFinish"] = async (values) => {
+        try {
+            if (id) {
+                await updateActivity(values); 
+            } else {
+    
+                await createActivity(values); 
+
+                const activities = await agent.Activities.list(); 
+                const newActivity = activities[activities.length - 1]; 
+    
+                if (newActivity) {
+                    await agent.TicketSeats.initialize(newActivity.id as string); 
+                }
+            }
+            form.resetFields(); 
+        } catch (error) {
+            console.error('An error occurred while saving the activity:', error);
         }
     };
 

@@ -22,24 +22,29 @@ const CreateTicket = observer(() => {
   const [seats, setSeats] = useState<TicketSeat[]>([]);
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null); 
 
-    useEffect(() => {
-        loadActivities();
+  useEffect(() => {
+    loadActivities();
 
-        if (id) {
-            loadTicketById(id).then((tic) => {
-                if (tic) {
-                    setSelectedSeatId(tic.ticketSeat.id); 
-                    form.setFieldsValue({
-                        ...tic,
-                        date: dayjs.utc(tic.activity.date).tz('Europe/Istanbul'),
-                    });
-                
-                }
-            });
-        } 
+    if (id) {
+        loadTicketById(id).then((tic) => {
+            if (tic) {
+                setSelectedSeatId(tic.ticketSeat?.id ?? null); 
+                form.setFieldsValue({
+                    id: tic.id,
+                    name: tic.customer?.name ?? '',
+                    tcNumber: tic.customer?.TCNumber ?? '',                   
+                    phone: tic.customer?.phone ?? '',
+                    email: tic.customer?.email ?? '',
+                    address: tic.customer?.address ?? '',
+                    birthDate: tic.customer?.birthDate ? dayjs(tic.customer.birthDate) : null,
+                    activityId: tic.activity?.id ?? '',
+                });
+            }
+        });
+    }
 
-        return () => clearSelectedTicket();
-    }, [id, loadTicketById, clearSelectedTicket, form, loadActivities]);
+    return () => clearSelectedTicket();
+}, [id, loadTicketById, clearSelectedTicket, form, loadActivities]);
 
 
   const handleActivityChange = async (activityId: string) => {
@@ -60,7 +65,7 @@ const CreateTicket = observer(() => {
     try {
         const customerResponse = await agent.Customers.create({
             name: values.name,
-            TCNumber: values.TCNumber,
+            TCNumber: values.tcNumber,
             phone: values.phone,
             email: values.email,
             address: values.address,
@@ -90,7 +95,15 @@ const CreateTicket = observer(() => {
         };
 
         if (id) {
-          await updateTicket(ticketData)
+          await updateTicket({
+            id: id,
+            customerId: customerId,
+            activityId: values.activityId,
+            ticketSeatId: selectedSeatId,
+            customer: { ...customerResponse }, 
+            activity: { ...activity }, 
+            ticketSeat: { ...ticketSeat } 
+          })
         } else {
           await createTicket(ticketData); 
         }
@@ -139,7 +152,7 @@ const handleSeatClick = (seatId: string) => {
           </Form.Item>
           <Form.Item
             label="TC Kimlik"
-            name="TCNumber" 
+            name={"tcNumber"} 
             rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
           >
             <Input />

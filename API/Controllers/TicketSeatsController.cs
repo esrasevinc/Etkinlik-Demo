@@ -20,7 +20,7 @@ namespace API.Controllers
             _context = context;
         }
 
-       [HttpPost]
+        [HttpPost]
         public async Task<ActionResult<TicketSeatDTO>> CreateTicketSeat(TicketSeatDTO ticketSeatDTO)
         {
             var seat = await _context.Seats
@@ -51,8 +51,7 @@ namespace API.Controllers
                 Column = ticketSeat.Column,
                 Status = ticketSeat.Status
             });
-            }
-
+        }
 
         [HttpPost("initialize/{activityId}")]
         public async Task<ActionResult> InitializeTicketSeats(Guid activityId)
@@ -87,51 +86,69 @@ namespace API.Controllers
 
             foreach (var seat in seats)
             {
-
-            if (seat.Status == "Koltuk") 
-            {
-                var ticketSeat = new TicketSeat
+                if (seat.Status == "Koltuk") 
                 {
-                Id = Guid.NewGuid(),
-                ActivityId = activityId,
-                Row = seat.Row,
-                Column = seat.Column,
-                Label = seat.Label,
-                Status = "Boş" 
-                };
+                    var ticketSeat = new TicketSeat
+                    {
+                        Id = Guid.NewGuid(),
+                        ActivityId = activityId,
+                        Row = seat.Row,
+                        Column = seat.Column,
+                        Label = seat.Label,
+                        Status = "Boş" 
+                    };
 
-                _context.TicketSeats.Add(ticketSeat);
+                    _context.TicketSeats.Add(ticketSeat);
+                }
             }
+
+            var success = await _context.SaveChangesAsync() > 0;
+
+            if (success)
+            {
+                return Ok("Tüm ticket seat'ler başarıyla oluşturuldu.");
+            }
+
+            return BadRequest("Ticket seat'ler oluşturulamadı.");
         }
 
-        var success = await _context.SaveChangesAsync() > 0;
-
-        if (success)
+        [HttpGet("activity/{activityId}")]
+        public async Task<ActionResult<IEnumerable<TicketSeatDTO>>> GetTicketSeatsByActivityId(Guid activityId)
         {
-            return Ok("Tüm ticket seat'ler başarıyla oluşturuldu.");
+            var ticketSeats = await _context.TicketSeats
+                .Where(ts => ts.ActivityId == activityId)
+                .ToListAsync();
+
+            if (ticketSeats == null || !ticketSeats.Any())
+            {
+                return NotFound("Bu aktivite için koltuk bulunamadı.");
+            }
+
+            var ticketSeatDTOs = _mapper.Map<IEnumerable<TicketSeatDTO>>(ticketSeats);
+            return Ok(ticketSeatDTOs);
         }
 
-        return BadRequest("Ticket seat'ler oluşturulamadı.");
-    }
-
-    [HttpGet("activity/{activityId}")]
-    public async Task<ActionResult<IEnumerable<TicketSeatDTO>>> GetTicketSeatsByActivityId(Guid activityId)
-    {
-
-        var ticketSeats = await _context.TicketSeats
-            .Where(ts => ts.ActivityId == activityId)
-            .ToListAsync();
-
-        if (ticketSeats == null || !ticketSeats.Any())
+        [HttpPut("{id}")]
+        public async Task<ActionResult<TicketSeatDTO>> UpdateTicketSeat(Guid id, UpdateTicketSeatDTO updateTicketSeatDTO)
         {
-            return NotFound("Bu aktivite için koltuk bulunamadı.");
+            var ticketSeat = await _context.TicketSeats.FindAsync(id);
+
+            if (ticketSeat == null)
+            {
+                return NotFound("Koltuk bulunamadı.");
+            }
+
+            ticketSeat.Status = updateTicketSeatDTO.Status; 
+
+            var success = await _context.SaveChangesAsync() > 0;
+
+            if (success)
+            {
+                var updatedTicketSeatDTO = _mapper.Map<TicketSeatDTO>(ticketSeat);
+                return Ok(updatedTicketSeatDTO);
+            }
+
+            return BadRequest("Koltuk durumu güncellenemedi.");
         }
-
-        var ticketSeatDTOs = _mapper.Map<IEnumerable<TicketSeatDTO>>(ticketSeats);
-
-         return Ok(ticketSeatDTOs);
-    }
-
-
     }
 }

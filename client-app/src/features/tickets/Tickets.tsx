@@ -7,12 +7,32 @@ import { Ticket } from "../../models/ticket";
 import { LinkOutlined } from "@ant-design/icons";
 import { QRCodeCanvas } from "qrcode.react"; 
 import jsPDF from "jspdf";
+import dayjs from "dayjs";
 
 const Tickets = observer(() => {
   const { ticketStore } = useStore();
   const { tickets, loadTickets, loadingInitial } = ticketStore;
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
+
+  const calculateAge = (birthdate: Date): number => {
+   
+    const birthDate = typeof birthdate === 'string' ? new Date(birthdate) : birthdate;
+  
+    if (isNaN(birthDate.getTime())) return 0; 
+  
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+  
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+  
+    return age;
+  };
+  
+  
 
   useEffect(() => {
     loadTickets();
@@ -82,13 +102,31 @@ const Tickets = observer(() => {
       width: 200,
     },
     {
+      title: "Yaş",
+      dataIndex: "customer",
+      key: "customer",
+      render: (customer) => {
+        const age = calculateAge(customer.birthDate);
+        return <p>{age}</p>;
+      },
+      width: 100,
+    },
+    {
       title: "Etkinlik Adı",
       dataIndex: "activity",
       key: "activity",
       render: (activity) => <p>{activity.name}</p>,
       width: 200,
     },
-  
+    {
+      title: "Etkinlik Yeri ve Tarihi",
+      dataIndex: "activity",
+      key: "activity",
+      render: (activity) => {
+        return dayjs.utc((activity.date)).tz('Europe/Istanbul').format('DD.MM.YYYY HH:mm')
+       },
+      width: 200,
+    },
     {
       title: "Koltuk",
       dataIndex: "ticketSeat",

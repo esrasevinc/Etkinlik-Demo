@@ -1,10 +1,12 @@
 import { useStore } from "../../stores/store";
-import { Button, Col, Form, FormProps, Input, Row, Select } from "antd";
+import { Button, Col, DatePicker, DatePickerProps, Form, FormProps, Input, Row, Select } from "antd";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { observer } from "mobx-react-lite";
 import agent from "../../api/agent";
 import { useEffect, useState } from "react";
 import { TicketSeat } from "../../models/ticketSeat";
+import dayjs from "dayjs";
+import locale from 'antd/es/date-picker/locale/tr_TR';
 
 const CreateTicket = observer(() => {
   const [form] = Form.useForm();
@@ -28,6 +30,10 @@ const CreateTicket = observer(() => {
       console.error('Koltukları yüklerken hata oluştu:', error);
     }
   };
+
+  const onChange: DatePickerProps['onChange'] = (_) => {
+    console.log(dayjs.utc(_).tz('Europe/Istanbul').format('DD.MM.YYYY'));
+};
 
   const onFinish: FormProps["onFinish"] = async (values) => {
     try {
@@ -126,6 +132,22 @@ const handleSeatClick = (seatId: string) => {
           >
             <Input />
           </Form.Item>
+          <Form.Item
+            label="Adres"
+            name="address" 
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Doğum Tarihi" name={"birthDate"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
+                <DatePicker
+                    format="DD.MM.YYYY"
+                    placeholder='Tarih seçiniz'
+                    onChange={onChange}
+                    showNow={false}
+                    locale={locale}
+                />
+            </Form.Item>
           <Form.Item label="Etkinlik Seçimi" name={"activityId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
             <Select onChange={handleActivityChange}>
               {activitiesAll.map((a) => (

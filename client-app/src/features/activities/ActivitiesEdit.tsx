@@ -9,6 +9,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import dayjs from 'dayjs';
 import locale from 'antd/es/date-picker/locale/tr_TR';
+import agent from '../../api/agent';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -16,7 +17,7 @@ dayjs.extend(timezone);
 const ActivitiesEdit = observer(() => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    const id = params.get("activityId");
+    const id = params.get("activityId") || '';
     const [form] = Form.useForm();
     const { activityStore, categoryStore, placeStore, eventHallStore } = useStore();
     const { loadActivityById, loadingInitial, updateActivity, createActivity, clearSelectedActivity, loading } = activityStore;
@@ -52,6 +53,18 @@ const ActivitiesEdit = observer(() => {
             getEventHallsByPlaceId(selectedPlaceId); 
         }
     }, [selectedPlaceId, getEventHallsByPlaceId]);
+
+    useEffect(() => {
+        const initializeTicketSeats = async () => {
+          try {
+            await agent.TicketSeats.initialize(id);  
+          } catch (error) {
+            console.error('Ticket seat initialization failed:', error);
+          }
+        };
+      
+        initializeTicketSeats();
+      }, [id]);
 
     const onFinish: FormProps<ActivityFormValues>["onFinish"] = (values) => {
         if (id) {

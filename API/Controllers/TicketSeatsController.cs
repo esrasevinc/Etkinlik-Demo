@@ -21,38 +21,94 @@ namespace API.Controllers
         }
 
        [HttpPost]
-    public async Task<ActionResult<TicketSeatDTO>> CreateTicketSeat(TicketSeatDTO ticketSeatDTO)
-    {
-  
-        var seat = await _context.Seats
-            .FirstOrDefaultAsync(s => s.Id == ticketSeatDTO.SeatId);
+        public async Task<ActionResult<TicketSeatDTO>> CreateTicketSeat(TicketSeatDTO ticketSeatDTO)
+        {
+            var seat = await _context.Seats
+                .FirstOrDefaultAsync(s => s.Id == ticketSeatDTO.SeatId);
 
-    if (seat == null)
-    {
-        return NotFound("Seçilen koltuk bulunamadı.");
-    }
+            if (seat == null)
+            {
+                return NotFound("Seçilen koltuk bulunamadı.");
+            }
 
-    var ticketSeat = new TicketSeat
-    {
-        Id = ticketSeatDTO.SeatId,
-        Row = seat.Row,
-        Column = seat.Column,
-        Status = "Boş",
-        ActivityId = ticketSeatDTO.ActivityId
-    };
+            var ticketSeat = new TicketSeat
+            {
+                Id = ticketSeatDTO.SeatId,
+                Row = seat.Row,
+                Column = seat.Column,
+                Status = "Boş",
+                ActivityId = ticketSeatDTO.ActivityId
+            };
 
-    _context.TicketSeats.Add(ticketSeat);
-    await _context.SaveChangesAsync();
+            _context.TicketSeats.Add(ticketSeat);
+            await _context.SaveChangesAsync();
 
-    return Ok(new TicketSeatDTO
-    {
-        Id = ticketSeat.Id,
-        SeatId = ticketSeat.SeatId,
-        Row = ticketSeat.Row,
-        Column = ticketSeat.Column,
-        Status = ticketSeat.Status
-    });
-}
+            return Ok(new TicketSeatDTO
+            {
+                Id = ticketSeat.Id,
+                SeatId = ticketSeat.SeatId,
+                Row = ticketSeat.Row,
+                Column = ticketSeat.Column,
+                Status = ticketSeat.Status
+            });
+            }
+
+
+        [HttpPost("initialize/{activityId}")]
+        public async Task<ActionResult> InitializeTicketSeats(Guid activityId)
+        {
+            var activity = await _context.Activities
+                .Include(a => a.EventHall)
+                .FirstOrDefaultAsync(a => a.Id == activityId);
+
+            if (activity == null)
+            {
+                return NotFound("Aktivite bulunamadı.");
+            }
+
+            var seats = await _context.Seats
+                .Where(s => s.EventHallId == activity.EventHall.Id)
+                .ToListAsync();
+
+            if (seats == null || seats.Count == 0)
+            {
+                return NotFound("Koltuk bulunamadı.");
+            }
+
+            var existingTicketSeats = await _context.TicketSeats
+                .Where(ts => ts.ActivityId == activityId)
+                .ToListAsync();
+
+            if (existingTicketSeats.Any())
+            {
+                _context.TicketSeats.RemoveRange(existingTicketSeats);
+                 await _context.SaveChangesAsync();
+            }
+
+            foreach (var seat in seats)
+            {
+                var ticketSeat = new TicketSeat
+                {
+                    Id = Guid.NewGuid(),
+                    ActivityId = activityId,
+                    Row = seat.Row,
+                    Column = seat.Column,
+                    Label = seat.Label,
+                    Status = "Boş"  
+                };
+
+                _context.TicketSeats.Add(ticketSeat);
+            }
+
+            var success = await _context.SaveChangesAsync() > 0;
+
+            if (success)
+            {
+                return Ok("Tüm ticket seat'ler başarıyla oluşturuldu.");
+            }
+
+            return BadRequest("Ticket seat'ler oluşturulamadı.");
+        }
 
     }
 }

@@ -19,6 +19,7 @@ import Design from "../features/event-hall-designs/Design";
 import EventHallsDesign from "../features/event-hall-designs/EventHallsList";
 import Tickets from "../features/tickets/Tickets";
 import CreateTicket from "../features/tickets/CreateTicket";
+import CreateReport from "../features/reports/CreateReport";
 
 
 export const routes: RouteObject[] = [
@@ -51,6 +52,7 @@ export const routes: RouteObject[] = [
               { path: "biletler", element: <Tickets /> },
               { path: "biletler/duzenle", element: <CreateTicket /> },
               { path: "bilet-olustur", element: <CreateTicket /> },
+              { path: "rapor-olustur", element: <CreateReport /> },
               { path: "kullanicilar", element: <RequireAdmin> <Users /> </RequireAdmin> },
               { path: "kullanicilar/yeni-ekle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> },
               { path: "kullanicilar/duzenle", element: <RequireAdmin> <UsersEdit /> </RequireAdmin> }

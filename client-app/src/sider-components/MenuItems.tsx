@@ -77,6 +77,16 @@ export function MenuItems(): MenuProps["items"] {
       ],
       "group"
     ),
+
+    getItem(
+      "RAPORLAR",
+      "raporlar",
+      null,
+      [
+        getItem(<NavLink to={"/rapor-olustur"}>Rapor Oluştur</NavLink>, "rapor-olustur", <ReadOutlined />),
+      ],
+      "group"
+    ),
     
     userRole === "Admin" ? getItem(
       "YÖNETİCİ İŞLEMLERİ",

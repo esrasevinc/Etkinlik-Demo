@@ -134,6 +134,7 @@ const Design = () => {
           status: seat.status,
         })),
       });
+
       store.notificationStore.openNotification("success", "Salon düzeni başarıyla kaydedildi!", "");
       router.navigate("/salon-tasarimlari");
     } catch (error) {

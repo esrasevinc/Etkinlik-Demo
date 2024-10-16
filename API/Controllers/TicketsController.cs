@@ -118,6 +118,7 @@ namespace API.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<TicketDTO>> UpdateTicket(Guid id, UpdateTicketDTO updateTicketDTO)
     {
+
         var ticket = await _context.Tickets.FindAsync(id);
 
         if (ticket == null)
@@ -125,11 +126,15 @@ namespace API.Controllers
             return NotFound("Bilet bulunamadı.");
         }
 
-        var seat = await _context.TicketSeats.FindAsync(updateTicketDTO.TicketSeatId);
-        if (seat == null || seat.Status == "Dolu")
+        var oldSeat = await _context.TicketSeats.FindAsync(ticket.TicketSeatId);
+   
+        var newSeat = await _context.TicketSeats.FindAsync(updateTicketDTO.TicketSeatId);
+    
+        if (newSeat == null || newSeat.Status == "Dolu")
         {
-            return BadRequest("Koltuk bulunamadı veya dolu.");
+            return BadRequest("Yeni koltuk bulunamadı veya dolu.");
         }
+
 
         var customer = await _context.Customers.FindAsync(updateTicketDTO.CustomerId);
         var activity = await _context.Activities.FindAsync(updateTicketDTO.ActivityId);
@@ -139,16 +144,23 @@ namespace API.Controllers
             return BadRequest("Müşteri veya etkinlik bulunamadı.");
         }
 
+        if (oldSeat != null)
+        {
+            oldSeat.Status = "Boş";
+        }
+
         ticket.TicketSeatId = updateTicketDTO.TicketSeatId;
         ticket.CustomerId = updateTicketDTO.CustomerId;
         ticket.ActivityId = updateTicketDTO.ActivityId;
 
-        seat.Status = "Dolu";
+  
+        newSeat.Status = "Dolu";
 
         await _context.SaveChangesAsync();
 
         return Ok(_mapper.Map<TicketDTO>(ticket));
     }
+
 
 
     [HttpDelete("{id}")]

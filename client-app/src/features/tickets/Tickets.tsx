@@ -4,12 +4,11 @@ import { observer } from "mobx-react-lite";
 import { Key, useEffect, useState } from "react";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { Ticket } from "../../models/ticket";
-import { DeleteOutlined, EditOutlined, LinkOutlined } from "@ant-design/icons";
+import { DeleteOutlined, LinkOutlined } from "@ant-design/icons";
 import { QRCodeCanvas } from "qrcode.react"; 
 import jsPDF from "jspdf";
 import dayjs from "dayjs";
-import { Link } from "react-router-dom";
-
+// import { Link } from "react-router-dom";
 
 const Tickets = observer(() => {
   const { ticketStore, activityStore } = useStore();
@@ -126,7 +125,19 @@ const Tickets = observer(() => {
       width: 200,
     },
     {
-      title: "Etkinlik Yeri ve Tarihi",
+      title: "Etkinlik Yeri",
+      dataIndex: "activity",
+      key: "activity",
+      render: (activity) => <p>{activity.place.title}</p>,
+      filters: activitiesAll.map(a => ({
+        text: a.place.title.charAt(0).toUpperCase() + a.place.title.slice(1), 
+        value: a.id!,
+      })),
+      onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
+      width: 200,
+    },
+    {
+      title: "Etkinlik Tarihi ve Saati",
       dataIndex: "activity",
       key: "activity",
       render: (activity) => {
@@ -151,12 +162,23 @@ const Tickets = observer(() => {
       dataIndex: "actions",
       render: (_, record) => (
         <Flex wrap="wrap" gap="small">
-          <Link to={`duzenle?ticketId=${record.id}`}>
+          {/* <Link to={`duzenle?ticketId=${record.id}`}>
             <Tooltip title="Düzenle">
               <Button type="primary" shape="circle" icon={<EditOutlined />} />
             </Tooltip>
-            </Link>
-          <Popconfirm
+            </Link> */}
+          
+          <Tooltip title="Bileti Görüntüle">
+          <Button
+          style={{ backgroundColor: 'green', borderColor: 'green' }} 
+            type="primary"
+            shape="circle"
+            icon={<LinkOutlined />}
+            onClick={() => showModal(record)} 
+          />
+        </Tooltip>
+
+        <Popconfirm
             title="Bileti sil"
             description="Bu bileti silmek istediğinize emin misiniz?"
             onConfirm={() => {
@@ -169,15 +191,6 @@ const Tickets = observer(() => {
             <Button type="primary" danger shape="circle" icon={<DeleteOutlined />} />
             </Tooltip>
           </Popconfirm>
-          <Tooltip title="Bileti Görüntüle">
-          <Button
-          style={{ backgroundColor: 'green', borderColor: 'green' }} 
-            type="primary"
-            shape="circle"
-            icon={<LinkOutlined />}
-            onClick={() => showModal(record)} 
-          />
-        </Tooltip>
         </Flex>
       ),
       width: 250,

@@ -29,6 +29,7 @@ namespace Application.Activities
             public async Task<Result<ActivityDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var activity = await _context.Activities
+                    .Include(p => p.Place)
                     .Include(a => a.EventHall) 
                     .ThenInclude(eh => eh.Seats) 
                     .FirstOrDefaultAsync(x => x.Id == request.Id && x.IsActive);

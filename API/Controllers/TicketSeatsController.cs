@@ -150,5 +150,21 @@ namespace API.Controllers
 
             return BadRequest("Koltuk durumu güncellenemedi.");
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TicketSeatDTO>> GetTicketSeatById(Guid id)
+        {
+        var ticketSeat = await _context.TicketSeats
+            .FirstOrDefaultAsync(ts => ts.Id == id);
+
+        if (ticketSeat == null)
+        {
+            return NotFound("Koltuk bulunamadı.");
+        }
+
+        var ticketSeatDTO = _mapper.Map<TicketSeatDTO>(ticketSeat);
+        return Ok(ticketSeatDTO);
+        }   
+
     }
 }

@@ -29,7 +29,7 @@ namespace Application.Activities
                     .Include(a => a.Category)
                     .Include(x => x.Place)
                     .Include(x => x.EventHall)
-                        .ThenInclude(eh => eh.Seats) 
+                    .Include(x => x.TicketSeats)
                     .OrderByDescending(d => d.Date)
                     .ToListAsync();
 

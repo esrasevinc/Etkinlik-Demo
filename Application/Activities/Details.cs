@@ -31,12 +31,12 @@ namespace Application.Activities
                 var activity = await _context.Activities
                     .Include(p => p.Place)
                     .Include(a => a.EventHall) 
-                    .ThenInclude(eh => eh.Seats) 
+                    .Include(eh => eh.TicketSeats) 
                     .FirstOrDefaultAsync(x => x.Id == request.Id && x.IsActive);
 
                 if (activity == null) return Result<ActivityDTO>.Failure("Activity not found");
 
-                var activityDTO = _mapper.Map<ActivityDTO>(activity); // Map işlemini bellekte yap
+                var activityDTO = _mapper.Map<ActivityDTO>(activity);
                 return Result<ActivityDTO>.Success(activityDTO);
             }
         }

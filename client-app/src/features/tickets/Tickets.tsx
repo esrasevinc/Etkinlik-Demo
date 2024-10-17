@@ -31,6 +31,8 @@ const Tickets = observer(() => {
   
     return age;
   };
+
+ 
   
   
   useEffect(() => {
@@ -90,14 +92,14 @@ const Tickets = observer(() => {
     {
       title: "Telefon Numarası",
       dataIndex: "customer",
-      key: "customer",
+      key: "customerPhone",
       render: (customer) => <p>{customer.phone}</p>,
       width: 150,
     },
     {
       title: "Email",
       dataIndex: "customer",
-      key: "customer",
+      key: "customerEmail",
       render: (customer) => <p>{customer.email}</p>,
       width: 150,
     },
@@ -126,31 +128,31 @@ const Tickets = observer(() => {
     {
       title: "Gösteri Merkezi",
       dataIndex: "activity",
-      key: "activity",
+      key: "activityPlace",
       render: (activity) => <p>{activity.place.title}</p>,
-      filters: activitiesAll.map(a => ({
-        text: a.place.title.charAt(0).toUpperCase() + a.place.title.slice(1), 
-        value: a.id!,
-      })),
-      onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
+      // filters: activitiesAll.map(a => ({
+      //   text: a.place.title.charAt(0).toUpperCase() + a.place.title.slice(1), 
+      //   value: a.id!,
+      // })),
+      // onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
       width: 200,
     },
     {
       title: "Salon",
       dataIndex: "activity",
-      key: "activity",
+      key: "activityEventHall",
       render: (activity) => <p>{activity.eventHall.title}</p>,
-      filters: activitiesAll.map(a => ({
-        text: a.place.title.charAt(0).toUpperCase() + a.place.title.slice(1), 
-        value: a.id!,
-      })),
-      onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
+      // filters: activitiesAll.map(a => ({
+      //   text: a.eventHall.title.charAt(0).toUpperCase() + a.eventHall.title.slice(1), 
+      //   value: a.id!,
+      // })),
+      // onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
       width: 200,
     },
     {
       title: "Etkinlik Tarihi ve Saati",
       dataIndex: "activity",
-      key: "activity",
+      key: "activityDate",
       render: (activity) => {
         return dayjs.utc((activity.date)).tz('Europe/Istanbul').format('DD.MM.YYYY HH:mm')
        },

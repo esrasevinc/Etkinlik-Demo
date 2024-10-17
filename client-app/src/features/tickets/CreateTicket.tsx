@@ -21,6 +21,7 @@ const CreateTicket = observer(() => {
 
     const [seats, setSeats] = useState<TicketSeat[]>([]);
     const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
+    const [activityId, setActivityId] = useState<string | null>(null);
 
     useEffect(() => {
         loadActivities();
@@ -39,9 +40,10 @@ const CreateTicket = observer(() => {
                         birthDate: tic.customer?.birthDate ? dayjs(tic.customer.birthDate) : null,
                         activityId: tic.activity?.id ?? '',
                     });
-                    
+
                     const response = await agent.TicketSeats.listByActivityId(tic.activity?.id ?? '');
                     setSeats(response);
+                    setActivityId(tic.activity?.id ?? '');
                 }
             });
         }
@@ -60,10 +62,31 @@ const CreateTicket = observer(() => {
 
             const response = await agent.TicketSeats.listByActivityId(activityId);
             setSeats(response);
+            setActivityId(activityId);
         } catch (error) {
             console.error('Koltukları yüklerken hata oluştu:', error);
         }
     };
+
+    const createSeatingChart = (): (TicketSeat | undefined)[][] => {
+        if (!activityId) return [];
+        
+        const activity = activitiesAll.find(a => a.id === activityId);
+        const seatingChart: (TicketSeat | undefined)[][] = Array.from({ length: activity?.eventHall.rows! }, () =>
+            Array.from({ length: activity?.eventHall.columns! }, () => undefined)
+        );
+
+        seats.forEach(seat => {
+            const { row, column } = seat;
+            if (row < activity?.eventHall.rows! && column < activity?.eventHall.columns!) {
+                seatingChart[row][column] = seat;
+            }
+        });
+
+        return seatingChart;
+    };
+
+    const seatingChart = createSeatingChart();
 
     const onChange: DatePickerProps['onChange'] = (_) => {
         console.log(dayjs.utc(_).tz('Europe/Istanbul').format('DD.MM.YYYY'));
@@ -125,41 +148,41 @@ const CreateTicket = observer(() => {
     };
 
     const handleSeatClick = async (seatId: string) => {
-      try {
-          const seat = seats.find(seat => seat.id === seatId);
-          if (seat && seat.status === 'Boş' && seat.id) {
-              if (selectedSeatId) {
-                  const previousSeat = seats.find(seat => seat.id === selectedSeatId);
-                  if (previousSeat) {
-                      previousSeat.status = 'Boş'; 
-                      await agent.TicketSeats.update({ 
-                          id: previousSeat.id, 
-                          status: 'Boş', 
-                          seatId: previousSeat.seatId,
-                          activityId: previousSeat.activityId,
-                          label: previousSeat.label,
-                          row: previousSeat.row,
-                          column: previousSeat.column,
-                      });
-                  }
-              }
-              setSelectedSeatId(seat.id);
-              seat.status = 'Dolu';
-              await agent.TicketSeats.update({ 
-                  id: seat.id, 
-                  status: 'Dolu', 
-                  seatId: seat.seatId, 
-                  activityId: seat.activityId,
-                  label: seat.label,
-                  row: seat.row,
-                  column: seat.column,
-              });
-          }
-      } catch (error) {
-          console.error("Koltuk güncellenirken bir hata oluştu:", error);
-      }
-  };
-  
+        try {
+            const seat = seats.find(seat => seat.id === seatId);
+            if (seat && seat.status === 'Boş' && seat.id) {
+                if (selectedSeatId) {
+                    const previousSeat = seats.find(seat => seat.id === selectedSeatId);
+                    if (previousSeat) {
+                        previousSeat.status = 'Boş'; 
+                        await agent.TicketSeats.update({ 
+                            id: previousSeat.id, 
+                            status: 'Boş', 
+                            seatId: previousSeat.seatId,
+                            activityId: previousSeat.activityId,
+                            label: previousSeat.label,
+                            row: previousSeat.row,
+                            column: previousSeat.column,
+                        });
+                    }
+                }
+
+                setSelectedSeatId(seat.id);
+                seat.status = 'Dolu';
+                await agent.TicketSeats.update({ 
+                    id: seat.id, 
+                    status: 'Dolu', 
+                    seatId: seat.seatId, 
+                    activityId: seat.activityId,
+                    label: seat.label,
+                    row: seat.row,
+                    column: seat.column,
+                });
+            }
+        } catch (error) {
+            console.error("Koltuk güncellenirken bir hata oluştu:", error);
+        }
+    };
 
     if (loadingInitial) return <LoadingComponent />;
 
@@ -222,44 +245,51 @@ const CreateTicket = observer(() => {
                     </Form.Item>
                     <Form.Item label="Etkinlik Seçimi" name={"activityId"} rules={[{ required: true, message: "Bu alan boş bırakılamaz!" }]}>
                         <Select onChange={handleActivityChange}>
-                            {activitiesAll.map((a) => (
-                                <Select.Option key={a.id} value={a.id}>
-                                    {a.name.charAt(0).toUpperCase() + a.name.slice(1)}
-                                </Select.Option>
+                            {activitiesAll.map(activity => (
+                                <Select.Option key={activity.id} value={activity.id}>{activity.name}</Select.Option>
                             ))}
                         </Select>
                     </Form.Item>
-
-                    <Row gutter={8}>
-                        {seats.map(seat => (
-                            <Col key={seat.id} span={4} style={{ marginBottom: 16 }}>
-                                <div
-                                    onClick={() => handleSeatClick(seat.id)}
-                                    style={{
-                                        width: '50px',
-                                        height: '50px',
-                                        backgroundColor: selectedSeatId === seat.id ? 'lightblue' : (seat.status === 'Boş' ? 'lightgreen' : 'lightcoral'),
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        border: '1px solid #ccc',
-                                        borderRadius: '5px',
-                                        color: seat.status === 'Boş' ? 'black' : 'white',
-                                        fontWeight: 'bold',
-                                        cursor: seat.status === 'Boş' ? 'pointer' : 'not-allowed'
-                                    }}
-                                >
-                                    {seat.label}
-                                </div>
-                            </Col>
-                        ))}
-                    </Row>
-
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" size="large" loading={loading}>
-                            Bilet Oluştur
+                        <Button type="primary" htmlType="submit" loading={loading}>
+                            {id ? 'Güncelle' : 'Kaydet'}
                         </Button>
                     </Form.Item>
+                </Col>
+                <Col xs={24} lg={8}>
+                    <h3>Koltuk Seçimi</h3>
+                    <div className="seating-chart">
+                        {seatingChart.map((row, rowIndex) => (
+                            <div key={rowIndex} className="seating-row" style={{ display: 'flex' }}>
+                                {row.map((seat, colIndex) => (
+                                    seat ? (
+                                        <div
+                                            key={colIndex}
+                                            className={`seating-seat ${seat ? seat.status : 'empty'}`}
+                                            onClick={() => seat && handleSeatClick(seat.id)}
+                                            style={{
+                                                width: '30px',
+                                                height: '30px',
+                                                backgroundColor: seat 
+                                                    ? (seat.id === selectedSeatId 
+                                                        ? 'lightblue' 
+                                                        : (seat.status === 'Dolu' ? 'lightcoral' : 'lightgreen')) 
+                                                    : 'transparent',
+                                                margin: '2px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: seat ? 'pointer' : 'not-allowed',
+                                                border: '1px solid #ccc'
+                                            }}
+                                        >
+                                            {seat.label}
+                                        </div>
+                                    ) : null 
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 </Col>
             </Row>
         </Form>

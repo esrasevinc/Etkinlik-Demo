@@ -9,6 +9,7 @@ namespace Application.DTOs {
         public Guid ActivityId { get; set; }
         public Guid? TicketId { get; set; }
     
+    
     }
 
     public class UpdateTicketSeatDTO

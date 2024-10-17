@@ -46,11 +46,10 @@ namespace Application.Core
             
 
             CreateMap<TicketSeat, TicketSeat>();
+            CreateMap<TicketSeatDTO, TicketSeat>();
             CreateMap<TicketSeat, TicketSeatDTO>()
                 .ForMember(dest => dest.TicketId, opt => opt.MapFrom(src => src.Ticket != null ? src.Ticket.Id : (Guid?)null));
-            CreateMap<TicketSeatDTO, TicketSeat>();
-
-
+            
             CreateMap<Customer, Customer>();
             CreateMap<Customer, CustomerDTO>();
             CreateMap<CustomerDTO, Customer>();

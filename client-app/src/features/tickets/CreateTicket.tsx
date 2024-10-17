@@ -93,6 +93,11 @@ const CreateTicket = observer(() => {
     };
 
     const onFinish: FormProps["onFinish"] = async (values) => {
+        if (!selectedSeatId) {
+            alert("Lütfen bir koltuk seçin.");
+            return; 
+        }
+    
         try {
             const customerResponse = await agent.Customers.create({
                 name: values.name,
@@ -102,20 +107,20 @@ const CreateTicket = observer(() => {
                 address: values.address,
                 birthDate: values.birthDate,
             });
-
+    
             const customerId = customerResponse.id;
-
+    
             if (!customerId || selectedSeatId === null) {
                 throw new Error('Customer ID or selected seat not returned');
             }
-
+    
             const activity = activitiesAll.find(activity => activity.id === values.activityId);
             const ticketSeat = seats.find(seat => seat.id === selectedSeatId);
-
+    
             if (!activity || !ticketSeat) {
                 throw new Error('Geçersiz etkinlik veya koltuk.');
             }
-
+    
             const ticketData = {
                 customerId: customerId,
                 activityId: values.activityId,
@@ -124,7 +129,7 @@ const CreateTicket = observer(() => {
                 activity: { ...activity },
                 ticketSeat: { ...ticketSeat }
             };
-
+    
             if (id) {
                 await updateTicket({
                     id: id,
@@ -138,51 +143,45 @@ const CreateTicket = observer(() => {
             } else {
                 await createTicket(ticketData);
             }
-
+    
+       
+            await agent.TicketSeats.update({ 
+                id: selectedSeatId, 
+                status: 'Dolu', 
+                seatId: ticketSeat.seatId,
+                activityId: ticketSeat.activityId,
+                label: ticketSeat.label,
+                row: ticketSeat.row,
+                column: ticketSeat.column,
+            });
+    
             form.resetFields();
             setSelectedSeatId(null);
-
+    
         } catch (error) {
             console.error('Bir hata oluştu:', error);
         }
     };
+    
 
-    const handleSeatClick = async (seatId: string) => {
-        try {
-            const seat = seats.find(seat => seat.id === seatId);
-            if (seat && seat.status === 'Boş' && seat.id) {
-                if (selectedSeatId) {
-                    const previousSeat = seats.find(seat => seat.id === selectedSeatId);
-                    if (previousSeat) {
-                        previousSeat.status = 'Boş'; 
-                        await agent.TicketSeats.update({ 
-                            id: previousSeat.id, 
-                            status: 'Boş', 
-                            seatId: previousSeat.seatId,
-                            activityId: previousSeat.activityId,
-                            label: previousSeat.label,
-                            row: previousSeat.row,
-                            column: previousSeat.column,
-                        });
-                    }
+    const handleSeatClick = (seatId: string) => {
+        const seat = seats.find(seat => seat.id === seatId);
+        if (seat && seat.status === 'Boş') {
+
+            if (selectedSeatId) {
+                const previousSeat = seats.find(seat => seat.id === selectedSeatId);
+                if (previousSeat) {
+                   
+                    setSeats(prevSeats => 
+                        prevSeats.map(s => s.id === previousSeat.id ? { ...s, status: 'Boş' } : s)
+                    );
                 }
-
-                setSelectedSeatId(seat.id);
-                seat.status = 'Dolu';
-                await agent.TicketSeats.update({ 
-                    id: seat.id, 
-                    status: 'Dolu', 
-                    seatId: seat.seatId, 
-                    activityId: seat.activityId,
-                    label: seat.label,
-                    row: seat.row,
-                    column: seat.column,
-                });
             }
-        } catch (error) {
-            console.error("Koltuk güncellenirken bir hata oluştu:", error);
+            
+            setSelectedSeatId(seat.id);
         }
     };
+    
 
     if (loadingInitial) return <LoadingComponent />;
 
@@ -278,6 +277,7 @@ const CreateTicket = observer(() => {
                                                 margin: '2px',
                                                 display: 'flex',
                                                 alignItems: 'center',
+                                                color: 'white',
                                                 justifyContent: 'center',
                                                 cursor: seat ? 'pointer' : 'not-allowed',
                                                 border: '1px solid #ccc'

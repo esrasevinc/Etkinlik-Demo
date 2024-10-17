@@ -118,46 +118,26 @@ namespace API.Controllers
     public async Task<ActionResult<TicketDTO>> UpdateTicket(Guid id, UpdateTicketDTO updateTicketDTO)
     {
 
-        var ticket = await _context.Tickets.FindAsync(id);
+        var ticket = await _context.Tickets
+                .FindAsync(updateTicketDTO.TicketId);
 
-        if (ticket == null)
-        {
-            return NotFound("Bilet bulunamadı.");
-        }
+            if (ticket == null)
+            {
+                return BadRequest("Bilet bulunamadı.");
+            }
 
-        var oldSeat = await _context.TicketSeats.FindAsync(ticket.TicketSeatId);
-   
-        var newSeat = await _context.TicketSeats.FindAsync(updateTicketDTO.TicketSeatId);
-    
-        if (newSeat == null || newSeat.Status == "Dolu")
-        {
-            return BadRequest("Yeni koltuk bulunamadı veya dolu.");
-        }
+            ticket.CustomerId = updateTicketDTO.CustomerId; 
+            ticket.ActivityId = updateTicketDTO.ActivityId; 
+            ticket.TicketSeatId = updateTicketDTO.TicketSeatId;
 
+            var ticketSeat = await _context.TicketSeats.FindAsync(updateTicketDTO.TicketSeatId);
+ 
+            ticketSeat.Status = "Dolu";
 
-        var customer = await _context.Customers.FindAsync(updateTicketDTO.CustomerId);
-        var activity = await _context.Activities.FindAsync(updateTicketDTO.ActivityId);
+            _context.Tickets.Update(ticket);
+            await _context.SaveChangesAsync();
 
-        if (customer == null || activity == null)
-        {
-            return BadRequest("Müşteri veya etkinlik bulunamadı.");
-        }
-
-        if (oldSeat != null)
-        {
-            oldSeat.Status = "Boş";
-        }
-
-        ticket.TicketSeatId = updateTicketDTO.TicketSeatId;
-        ticket.CustomerId = updateTicketDTO.CustomerId;
-        ticket.ActivityId = updateTicketDTO.ActivityId;
-
-  
-        newSeat.Status = "Dolu";
-
-        await _context.SaveChangesAsync();
-
-        return Ok(_mapper.Map<TicketDTO>(ticket));
+            return Ok(_mapper.Map<TicketDTO>(ticket));
     }
 
 

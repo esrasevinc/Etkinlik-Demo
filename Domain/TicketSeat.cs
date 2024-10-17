@@ -9,6 +9,7 @@ namespace Domain {
     public string Status { get; set; } // "Dolu", "Boş"
     public Guid ActivityId { get; set; }
     public Activity Activity { get; set; }
-    public ICollection<Ticket> Tickets { get; set; } 
+    public Guid? TicketId { get; set; }  
+    public Ticket Ticket { get; set; } 
     }
 }

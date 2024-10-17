@@ -39,38 +39,43 @@ namespace Persistence
             .WithOne(x => x.EventHall)
             .OnDelete(DeleteBehavior.SetNull);
 
-            // modelBuilder.Entity<Place>()
-            // .HasMany(x => x.EventHalls)
-            // .WithOne(x => x.Place)
-            // .OnDelete(DeleteBehavior.SetNull);
 
              modelBuilder.Entity<EventHall>()
             .HasMany(eh => eh.Seats)
             .WithOne(s => s.EventHall)
             .HasForeignKey(s => s.EventHallId);
 
-            modelBuilder.Entity<Activity>()
-            .HasMany(a => a.TicketSeats)
-            .WithOne(s => s.Activity)
-            .HasForeignKey(s => s.ActivityId);
 
             modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.TicketSeat)
-                .WithMany(ts => ts.Tickets)
-                .HasForeignKey(t => t.TicketSeatId)
+                .HasOne(t => t.TicketSeat)  
+                .WithOne(ts => ts.Ticket)   
+                .HasForeignKey<Ticket>(t => t.TicketSeatId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Activity)
-                .WithMany(a => a.Tickets)
-                .HasForeignKey(t => t.ActivityId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TicketSeat>()
+                .HasOne(ts => ts.Ticket)
+                .WithOne(t => t.TicketSeat)
+                .HasForeignKey<TicketSeat>(ts => ts.TicketId)
+                .IsRequired(false); 
 
             modelBuilder.Entity<Ticket>()
                 .HasOne(t => t.Customer)
                 .WithMany(c => c.Tickets)
                 .HasForeignKey(t => t.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Activity>()
+                .HasMany(a => a.TicketSeats)
+                .WithOne(ts => ts.Activity)
+                .HasForeignKey(ts => ts.ActivityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Activity>()
+                .HasMany(a => a.Tickets)
+                .WithOne(ts => ts.Activity)
+                .HasForeignKey(ts => ts.ActivityId)
+                .OnDelete(DeleteBehavior.Cascade);
             }
+            
     }
 }

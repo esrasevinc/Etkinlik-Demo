@@ -53,64 +53,6 @@ namespace API.Controllers
             });
         }
 
-        [HttpPost("initialize/{activityId}")]
-        public async Task<ActionResult> InitializeTicketSeats(Guid activityId)
-        {
-            var activity = await _context.Activities
-                .Include(a => a.EventHall)
-                .FirstOrDefaultAsync(a => a.Id == activityId);
-
-            if (activity == null)
-            {
-                return NotFound("Aktivite bulunamadı.");
-            }
-
-            var seats = await _context.Seats
-                .Where(s => s.EventHallId == activity.EventHall.Id)
-                .ToListAsync();
-
-            if (seats == null || seats.Count == 0)
-            {
-                return NotFound("Koltuk bulunamadı.");
-            }
-
-            var existingTicketSeats = await _context.TicketSeats
-                .Where(ts => ts.ActivityId == activityId)
-                .ToListAsync();
-
-            if (existingTicketSeats.Any())
-            {
-                _context.TicketSeats.RemoveRange(existingTicketSeats);
-                await _context.SaveChangesAsync();
-            }
-
-            foreach (var seat in seats)
-            {
-                if (seat.Status == "Koltuk") 
-                {
-                    var ticketSeat = new TicketSeat
-                    {
-                        Id = Guid.NewGuid(),
-                        ActivityId = activityId,
-                        Row = seat.Row,
-                        Column = seat.Column,
-                        Label = seat.Label,
-                        Status = "Boş" 
-                    };
-
-                    _context.TicketSeats.Add(ticketSeat);
-                }
-            }
-
-            var success = await _context.SaveChangesAsync() > 0;
-
-            if (success)
-            {
-                return Ok("Tüm ticket seat'ler başarıyla oluşturuldu.");
-            }
-
-            return BadRequest("Ticket seat'ler oluşturulamadı.");
-        }
 
         [HttpGet("activity/{activityId}")]
         public async Task<ActionResult<IEnumerable<TicketSeatDTO>>> GetTicketSeatsByActivityId(Guid activityId)

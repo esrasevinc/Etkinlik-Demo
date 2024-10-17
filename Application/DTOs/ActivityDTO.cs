@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Application.DTOs
 {
     public class ActivityDTO
@@ -17,5 +19,11 @@ namespace Application.DTOs
         public CategoryDTO Category { get; set; }
         public PlaceDTO Place { get; set; }
         public EventHallDTO EventHall { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<TicketSeatDTO> TicketSeats { get; set; } 
+
+        [JsonIgnore]
+        public IEnumerable<TicketDTO> Tickets { get; set; } 
     }
 }

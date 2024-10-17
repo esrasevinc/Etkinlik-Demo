@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,9 +11,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241017091729_ActivityTicketseats")]
+    partial class ActivityTicketseats
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -279,6 +282,9 @@ namespace Persistence.Migrations
                     b.Property<Guid>("ActivityId")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("ActivityId1")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Column")
                         .HasColumnType("INTEGER");
 
@@ -297,6 +303,8 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ActivityId");
+
+                    b.HasIndex("ActivityId1");
 
                     b.ToTable("TicketSeats");
                 });
@@ -502,11 +510,15 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.TicketSeat", b =>
                 {
-                    b.HasOne("Domain.Activity", "Activity")
+                    b.HasOne("Domain.Activity", null)
                         .WithMany("TicketSeats")
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Activity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId1");
 
                     b.Navigation("Activity");
                 });

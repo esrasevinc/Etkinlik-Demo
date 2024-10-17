@@ -68,8 +68,7 @@ namespace API.Controllers
                 .Include(t => t.Customer)
                 .Include(t => t.Activity) 
                     .ThenInclude(a => a.Place) 
-                .Include(t => t.Activity.EventHall) 
-                .Include(t => t.Activity.Category) 
+                .Include(eh => eh.Activity.EventHall)
                 .Include(t => t.TicketSeat) 
                 .ToListAsync();
 

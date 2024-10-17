@@ -1,11 +1,10 @@
-import { Button, Col, Flex, Modal, Popconfirm, Row, Table, TableProps, Tooltip } from "antd";
+import { Button, Col, Flex, Modal, Popconfirm, QRCode, Row, Table, TableProps, Tooltip } from "antd";
 import { useStore } from "../../stores/store";
 import { observer } from "mobx-react-lite";
 import { Key, useEffect, useState } from "react";
 import LoadingComponent from "../../layout/LoadingComponent";
 import { Ticket } from "../../models/ticket";
 import { DeleteOutlined, LinkOutlined } from "@ant-design/icons";
-import { QRCodeCanvas } from "qrcode.react"; 
 import jsPDF from "jspdf";
 import dayjs from "dayjs";
 // import { Link } from "react-router-dom";
@@ -86,21 +85,21 @@ const Tickets = observer(() => {
       key: "customer",
       render: (customer) =>
         customer?.name && <p>{customer.name.charAt(0).toUpperCase() + customer.name.slice(1)}</p>,
-      width: 200,
+      width: 150,
     },
     {
       title: "Telefon Numarası",
       dataIndex: "customer",
       key: "customer",
       render: (customer) => <p>{customer.phone}</p>,
-      width: 200,
+      width: 150,
     },
     {
       title: "Email",
       dataIndex: "customer",
       key: "customer",
       render: (customer) => <p>{customer.email}</p>,
-      width: 200,
+      width: 150,
     },
     {
       title: "Yaş",
@@ -110,7 +109,7 @@ const Tickets = observer(() => {
         const age = calculateAge(customer.birthDate);
         return <p>{age}</p>;
       },
-      width: 100,
+      width: 50,
     },
     {
       title: "Etkinlik Adı",
@@ -122,13 +121,25 @@ const Tickets = observer(() => {
         value: a.id!,
       })),
       onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
-      width: 200,
+      width: 150,
     },
     {
-      title: "Etkinlik Yeri",
+      title: "Gösteri Merkezi",
       dataIndex: "activity",
       key: "activity",
       render: (activity) => <p>{activity.place.title}</p>,
+      filters: activitiesAll.map(a => ({
+        text: a.place.title.charAt(0).toUpperCase() + a.place.title.slice(1), 
+        value: a.id!,
+      })),
+      onFilter: (value: boolean | Key, record: Ticket) => record.activity.id === value,
+      width: 200,
+    },
+    {
+      title: "Salon",
+      dataIndex: "activity",
+      key: "activity",
+      render: (activity) => <p>{activity.eventHall.title}</p>,
       filters: activitiesAll.map(a => ({
         text: a.place.title.charAt(0).toUpperCase() + a.place.title.slice(1), 
         value: a.id!,
@@ -193,7 +204,7 @@ const Tickets = observer(() => {
           </Popconfirm>
         </Flex>
       ),
-      width: 250,
+      width: 150,
     },
 
   ];
@@ -229,7 +240,7 @@ const Tickets = observer(() => {
         {selectedTicket && (
           <>
             <Row justify="center" style={{ marginBottom: 20 }}>
-              <QRCodeCanvas value={JSON.stringify(selectedTicket)} />
+              <QRCode value={JSON.stringify(selectedTicket)} />
             </Row>
 
             <Row>

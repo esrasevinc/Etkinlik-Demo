@@ -44,5 +44,12 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new ListByPlaceId.Query { PlaceId = placeId }));
         }
+
+        [HttpGet("by-activity/{activityId}")] 
+        [Authorize]
+        public async Task<IActionResult> GetEventHallByActivityId(Guid activityId) 
+        {
+            return HandleResult(await Mediator.Send(new GetByActivityId.Query { ActivityId = activityId }));
+        }
         }
 }

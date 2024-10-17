@@ -7,13 +7,14 @@ namespace Application.DTOs {
         public int Column { get; set; } 
         public string Status { get; set; } // "Boş", "Dolu"
         public Guid ActivityId { get; set; }
-        public ActivityDTO Activity { get; set; }
+        public Guid? TicketId { get; set; }
+    
     }
 
     public class UpdateTicketSeatDTO
     {
     public Guid Id { get; set; }
     public string Status { get; set; }
-}
+    }
 
 }

@@ -36,7 +36,6 @@ namespace API.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteActivity(Guid id) {
             return HandleResult(await Mediator.Send(new Delete.Command{ Id = id}));
-           
         }
     }
 }

@@ -9,7 +9,6 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import dayjs from 'dayjs';
 import locale from 'antd/es/date-picker/locale/tr_TR';
-import agent from '../../api/agent';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

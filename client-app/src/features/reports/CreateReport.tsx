@@ -14,34 +14,37 @@ const CreateReport = () => {
         loadActivities(); 
     }, [loadActivities, form]);
 
-
     const onFinish = async (values: any) => {
         const { activityId } = values; 
         if (!activityId) {
             alert("Lütfen bir etkinlik seçin.");
             return;
         }
-
+    
         try {
             setLoading(true);
             const response = await axios({
-                url: `http://localhost:5000/api/reports/excel?activityId=${activityId}`,
+                url: `http://localhost:5000/api/reports/excel/${activityId}`,
                 method: 'GET',
-                responseType: 'blob',
+                responseType: 'blob', 
             });
-
+    
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'EtkinlikRaporu.xlsx'); 
+            link.setAttribute('download', `EtkinlikRaporu_${activityId}.xlsx`); 
             document.body.appendChild(link);
             link.click();
         } catch (error) {
             console.error("Rapor indirilemedi:", error);
+            alert("Rapor indirilirken bir hata oluştu.");
         } finally {
             setLoading(false);
         }
     };
+    
+
+
 
     return (
         <Form

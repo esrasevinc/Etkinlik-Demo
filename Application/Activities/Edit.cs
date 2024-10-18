@@ -4,6 +4,8 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Persistence;
+using Microsoft.EntityFrameworkCore;
+using Domain;
 
 namespace Application.Activities
 {
@@ -32,6 +34,8 @@ namespace Application.Activities
         var activity = await _context.Activities.FindAsync(request.Activity.Id);
 
         if (activity == null) return null;
+
+        bool eventHallChanged = activity.EventHall.Id != request.Activity.EventHallId;
         
         _mapper.Map(request.Activity, activity);
         
@@ -49,8 +53,31 @@ namespace Application.Activities
 
         if (request.Activity.EventHallId.HasValue)
         {
-          var eventHall = await _context.EventHalls.FindAsync(request.Activity.EventHallId);
-          activity.EventHall = eventHall;
+          var eventHall = await _context.EventHalls
+                        .Include(eh => eh.Seats) 
+                        .FirstOrDefaultAsync(eh => eh.Id == request.Activity.EventHallId, cancellationToken);
+
+          if (eventHallChanged)
+          {
+              var oldTicketSeats = await _context.TicketSeats
+              .Where(ts => ts.ActivityId == activity.Id)
+              .ToListAsync(cancellationToken);
+
+              _context.TicketSeats.RemoveRange(oldTicketSeats);
+
+              foreach (var seat in eventHall.Seats.Where(s => s.Status == "Koltuk")) 
+              {
+                  var ticketSeat = new TicketSeat
+                  {
+                    Label = seat.Label,
+                    Row = seat.Row,
+                    Column = seat.Column,
+                    Status = "Boş",  
+                    ActivityId = activity.Id,
+                  };
+              _context.TicketSeats.Add(ticketSeat);
+              }
+          }
         }
 
         var result = await _context.SaveChangesAsync() > 0;
